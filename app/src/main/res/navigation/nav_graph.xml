@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.proyek_mdp.HomeFragment"
+        android:label="Home" />
+
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.example.proyek_mdp.CameraFragment"
+        android:label="Camera" />
+
+    <fragment
+        android:id="@+id/collectionFragment"
+        android:name="com.example.proyek_mdp.CollectionFragment"
+        android:label="Koleksi" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.proyek_mdp.ProfileFragment"
+        android:label="Profile" />
+
+</navigation>
