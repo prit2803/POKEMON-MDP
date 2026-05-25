@@ -6,22 +6,26 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.proyek_mdp.HomeFragment"
+        android:name="com.example.proyek_mdp.UI.Home.HomeFragment"
         android:label="Home" />
 
     <fragment
         android:id="@+id/cameraFragment"
-        android:name="com.example.proyek_mdp.CameraFragment"
+        android:name="com.example.proyek_mdp.UI.Camera.CameraFragment"
         android:label="Camera" />
 
     <fragment
         android:id="@+id/collectionFragment"
-        android:name="com.example.proyek_mdp.CollectionFragment"
+        android:name="com.example.proyek_mdp.UI.Collection.CollectionFragment"
         android:label="Koleksi" />
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.proyek_mdp.ProfileFragment"
+        android:name="com.example.proyek_mdp.UI.Profile.ProfileFragment"
         android:label="Profile" />
+    <fragment
+        android:id="@+id/cameraXRFragment"
+        android:name="com.example.proyek_mdp.UI.XR.CameraXRFragment"
+        android:label="Camera XR" />
 
 </navigation>

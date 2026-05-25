@@ -1,11 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    android:background="#000000">
+
+    <!-- CAMERA FULLSCREEN -->
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
+
+    <!-- TOP TITLE -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Pokémon Card Scanner"
+
+        android:textColor="#FFFFFF"
+
+        android:textSize="24sp"
+
+        android:textStyle="bold"
+
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="20dp"/>
+
+    <!-- BOTTOM PANEL -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="bottom"
+
+        android:orientation="vertical"
+
+        android:padding="16dp"
+
+        android:background="#CC1E1E1E">
+
+        <!-- IMAGE -->
+
+        <ImageView
+            android:id="@+id/imgPokemon"
+
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+
+            android:layout_gravity="center_horizontal"
+
+            android:layout_marginBottom="12dp"/>
+
+        <!-- RESULT -->
+
+        <TextView
+            android:id="@+id/tvResult"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Arahkan kartu Pokémon"
+
+            android:textColor="#FFFFFF"
+
+            android:textSize="18sp"
+
+            android:gravity="center"
+
+            android:padding="8dp"/>
+
+        <!-- BUTTON ROW -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal"
+
+            android:layout_marginTop="12dp">
+
+            <!-- SAVE -->
+
+            <Button
+                android:id="@+id/btnSave"
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="1"
+
+                android:text="Save"/>
+
+            <!-- CLEAR -->
+
+            <Button
+                android:id="@+id/btnClear"
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="1"
+
+                android:layout_marginStart="8dp"
+
+                android:text="Clear"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>

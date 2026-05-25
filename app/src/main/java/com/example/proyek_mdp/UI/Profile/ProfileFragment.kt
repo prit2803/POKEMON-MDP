@@ -1,10 +1,12 @@
-package com.example.proyek_mdp
+package com.example.proyek_mdp.UI.Profile
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.example.proyek_mdp.R
 
-class ProfileFragment : Fragment(R.layout.fragment_profile) {
+class
+ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
