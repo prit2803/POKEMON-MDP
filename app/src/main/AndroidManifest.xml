@@ -8,6 +8,14 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Device harus support ARCore (opsional) -->
+    <uses-feature
+        android:name="android.hardware.camera.ar"
+        android:required="true"/>
+
+    <!-- Fallback jika device tidak support AR -->
+<!--    <uses-feature android:name="android.hardware.camera" android:required="true" />-->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

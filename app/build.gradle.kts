@@ -77,5 +77,11 @@ dependencies {
     implementation("androidx.room:room-ktx:2.7.0")
     ksp("androidx.room:room-compiler:2.7.0")  // ← pakai ksp, bukan kapt
 
+    implementation("io.github.sceneview:arsceneview:2.2.1")
+
+    implementation("com.google.ar:core:1.46.0")
+
+
+    implementation("io.coil-kt:coil:2.7.0")
 
 }
