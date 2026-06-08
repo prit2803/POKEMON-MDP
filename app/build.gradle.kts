@@ -37,7 +37,6 @@ android {
     }
 }
 
-
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -46,6 +45,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.tools.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,16 +72,13 @@ dependencies {
     // glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
-    // ROOM - UPDATE KE VERSI TERBARU
+    // ROOM
     implementation("androidx.room:room-runtime:2.7.0")
     implementation("androidx.room:room-ktx:2.7.0")
-    ksp("androidx.room:room-compiler:2.7.0")  // ← pakai ksp, bukan kapt
+    ksp("androidx.room:room-compiler:2.7.0")
 
-    implementation("io.github.sceneview:arsceneview:2.2.1")
-
-    implementation("com.google.ar:core:1.46.0")
-
-
+    // ARCore & SceneView - GUNAKAN VERSI YANG SUDAH ADA SEBELUMNYA
+    implementation("com.google.ar:core:1.48.0")
+    implementation("io.github.sceneview:arsceneview:2.3.0")
     implementation("io.coil-kt:coil:2.7.0")
-
 }

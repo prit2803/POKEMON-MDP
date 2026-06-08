@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# AR Core
+-keep class com.google.ar.core.** { *; }
+-dontwarn com.google.ar.core.**
+
+# SceneView
+-keep class io.github.sceneview.** { *; }
+-dontwarn io.github.sceneview.**
+
+# Keep model files
+-keep class com.example.proyek_mdp.models.** { *; }
+
+# Coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
