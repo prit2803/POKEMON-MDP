@@ -47,10 +47,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".user.UserActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".MainActivity"
             android:exported="false" />
 

@@ -1,18 +1,24 @@
 package com.example.proyek_mdp.auth
 
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.R
+import com.example.proyek_mdp.database.AppDatabase
+import com.example.proyek_mdp.database.User
+import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var etUsername: EditText
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
+    private lateinit var etConfirmPassword: EditText
     private lateinit var btnRegister: Button
     private lateinit var tvLogin: TextView
 
@@ -23,6 +29,7 @@ class RegisterActivity : AppCompatActivity() {
         etUsername = findViewById(R.id.etUsername)
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
+        etConfirmPassword = findViewById(R.id.etConfirmPassword)
         btnRegister = findViewById(R.id.btnRegister)
         tvLogin = findViewById(R.id.tvLogin)
 
@@ -31,10 +38,13 @@ class RegisterActivity : AppCompatActivity() {
             val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
+            val confirmPassword = etConfirmPassword.text.toString().trim()
 
-            if (username.isEmpty() ||
+            if (
+                username.isEmpty() ||
                 email.isEmpty() ||
-                password.isEmpty()
+                password.isEmpty() ||
+                confirmPassword.isEmpty()
             ) {
 
                 Toast.makeText(
@@ -57,18 +67,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (!email.contains("@")) {
-
-                Toast.makeText(
-                    this,
-                    "Email harus mengandung @",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                return@setOnClickListener
-            }
-
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
 
                 Toast.makeText(
                     this,
@@ -90,13 +89,57 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(
-                this,
-                "Registrasi berhasil",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (password != confirmPassword) {
 
-            finish()
+                Toast.makeText(
+                    this,
+                    "Password dan Confirm Password tidak sama",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            lifecycleScope.launch {
+
+                val db = AppDatabase.getDatabase(this@RegisterActivity)
+
+                val exists =
+                    db.userDao().isUsernameExists(username)
+
+                if (exists > 0) {
+
+                    runOnUiThread {
+
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Username sudah digunakan",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    return@launch
+                }
+
+                db.userDao().insert(
+                    User(
+                        username = username,
+                        email = email,
+                        password = password
+                    )
+                )
+
+                runOnUiThread {
+
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Registrasi berhasil",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    finish()
+                }
+            }
         }
 
         tvLogin.setOnClickListener {

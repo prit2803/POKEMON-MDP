@@ -23,4 +23,7 @@ interface UserDao {
         username: String,
         password: String
     ): User?
+
+    @Query("SELECT COUNT(*) FROM users WHERE username = :username")
+    suspend fun isUsernameExists(username: String): Int
 }

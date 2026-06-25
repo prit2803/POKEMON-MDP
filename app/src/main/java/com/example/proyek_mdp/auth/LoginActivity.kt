@@ -7,8 +7,12 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.proyek_mdp.MainActivity
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.admin.AdminActivity
+import com.example.proyek_mdp.database.AppDatabase
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -32,14 +36,17 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString().trim()
 
             if (username.isEmpty() || password.isEmpty()) {
+
                 Toast.makeText(
                     this,
                     "Username dan Password harus diisi",
                     Toast.LENGTH_SHORT
                 ).show()
+
                 return@setOnClickListener
             }
 
+            // LOGIN ADMIN
             if (username == "admin" && password == "admin") {
 
                 Toast.makeText(
@@ -59,11 +66,50 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(
-                this,
-                "Username atau Password salah",
-                Toast.LENGTH_SHORT
-            ).show()
+            // LOGIN USER
+            lifecycleScope.launch {
+
+                val db =
+                    AppDatabase.getDatabase(
+                        this@LoginActivity
+                    )
+
+                val user =
+                    db.userDao().login(
+                        username,
+                        password
+                    )
+
+                runOnUiThread {
+
+                    if (user != null) {
+
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Login Berhasil",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        startActivity(
+                            Intent(
+                                this@LoginActivity,
+                                MainActivity::class.java
+                            )
+                        )
+
+                        finish()
+
+                    } else {
+
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Username atau Password salah",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                }
+            }
         }
 
         tvRegister.setOnClickListener {
@@ -74,7 +120,6 @@ class LoginActivity : AppCompatActivity() {
                     RegisterActivity::class.java
                 )
             )
-
         }
     }
 }
