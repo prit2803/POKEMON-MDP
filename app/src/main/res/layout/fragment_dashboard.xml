@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".admin.DashboardFragment">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/tvTotalUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Users: 0"
+        android:textSize="20sp" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tvBannedUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Banned Users: 0"
+        android:textSize="20sp"
+        android:textColor="#FF0000"
+        android:layout_marginTop="8dp" />
+</LinearLayout>

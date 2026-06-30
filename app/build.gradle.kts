@@ -87,5 +87,5 @@ dependencies {
     // 2. TAMBAHKAN INI (Coroutines Core - Untuk memperbaiki error Supertype)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-
+    implementation("com.google.guava:guava:33.3.1-android")
 }

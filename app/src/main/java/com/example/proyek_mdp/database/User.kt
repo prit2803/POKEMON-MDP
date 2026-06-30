@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val username: String,
-    val email: String,
-    val password: String,
-    val role: String = "user", // Pastikan baris ini ada
-    val isBanned: Int = 0      // Pastikan baris ini ada
+    var username: String, // Ubah dari val ke var
+    var email: String,    // Ubah dari val ke var
+    var password: String, // Ubah dari val ke var
+    var role: String = "user",
+    var isBanned: Int = 0
 )
