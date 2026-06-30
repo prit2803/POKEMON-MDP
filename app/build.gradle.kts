@@ -6,31 +6,28 @@ plugins {
 
 android {
     namespace = "com.example.proyek_mdp"
-    compileSdk = 36 // FIXED: Correct Gradle syntax
+    compileSdk = 35 // Ubah ke 35 (Android 15) agar stabil
 
     defaultConfig {
         applicationId = "com.example.proyek_mdp"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35 // Ubah ke 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
+    // UPDATE INI: Gunakan Java 17
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
+    // UPDATE INI: Gunakan Target 17
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
     buildFeatures {
         viewBinding = true
     }

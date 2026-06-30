@@ -10,6 +10,6 @@ data class User(
     val username: String,
     val email: String,
     val password: String,
-    val role: String = "com/example/proyek_mdp/User", // "user" atau "admin"
-    val isBanned: Int = 0      // 0 = Aktif, 1 = Banned
+    val role: String = "user", // Pastikan baris ini ada
+    val isBanned: Int = 0      // Pastikan baris ini ada
 )
