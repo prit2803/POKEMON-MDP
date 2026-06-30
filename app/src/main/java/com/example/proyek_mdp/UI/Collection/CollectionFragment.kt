@@ -44,8 +44,10 @@ class CollectionFragment
             val pokemonList =
                 database.pokemonDao().getAllPokemon()
 
-            recyclerView.adapter =
-                PokemonAdapter(pokemonList)
+            recyclerView.adapter = PokemonAdapter(pokemonList) { pokemon ->
+                // Untuk User biasa, kita bisa mengosongkan fungsi hapus ini
+                // atau biarkan kosong seperti ini: { }
+            }
         }
     }
 }
