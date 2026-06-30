@@ -1,4 +1,6 @@
+// Top-level build.gradle.kts
 plugins {
     alias(libs.plugins.android.application) apply false
-    id("com.google.devtools.ksp") version "1.9.24-1.0.20" apply false
+    alias(libs.plugins.kotlin.android) apply false // MUST be above KSP
+    alias(libs.plugins.ksp) apply false
 }
