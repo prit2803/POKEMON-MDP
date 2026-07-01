@@ -16,7 +16,6 @@ class AdminActivity : AppCompatActivity() {
 
         bottomNav = findViewById(R.id.bottom_navigation)
 
-        // Set default fragment
         if (savedInstanceState == null) {
             loadFragment(DashboardFragment())
         }
@@ -26,6 +25,8 @@ class AdminActivity : AppCompatActivity() {
                 R.id.nav_dashboard -> DashboardFragment()
                 R.id.nav_users -> UserManagementFragment()
                 R.id.nav_pokemon -> PokemonManagementFragment()
+                R.id.nav_posts -> ManagePostsFragment()
+                R.id.nav_profile -> AdminProfileFragment()
                 else -> DashboardFragment()
             }
             loadFragment(fragment)
@@ -33,7 +34,7 @@ class AdminActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFragment(fragment: Fragment) {
+    fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()

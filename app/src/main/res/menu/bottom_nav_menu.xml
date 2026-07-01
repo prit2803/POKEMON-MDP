@@ -25,4 +25,9 @@
         android:icon="@android:drawable/ic_menu_compass"
         android:title="XR" />
 
+    <item
+        android:id="@+id/feedFragment"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="Feed" />
+
 </menu>

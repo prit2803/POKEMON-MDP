@@ -6,13 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [User::class],
-    version = 2, // Versi sudah benar 2
-    exportSchema = false // Tambahkan ini untuk menghindari peringatan folder skema
+    entities = [User::class, Post::class],
+    version = 3,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
+    abstract fun postDao(): PostDao
 
     companion object {
         @Volatile
@@ -25,7 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "pokemon_db"
                 )
-                    .fallbackToDestructiveMigration() // TAMBAHKAN BARIS INI (SANGAT PENTING)
+                    .fallbackToDestructiveMigration() // SANGAT PENTING agar tidak crash saat versi naik
                     .build()
                 INSTANCE = instance
                 instance
