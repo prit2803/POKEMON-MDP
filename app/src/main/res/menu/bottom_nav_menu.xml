@@ -17,9 +17,9 @@
         android:title="Koleksi" />
 
     <item
-        android:id="@+id/feedFragment"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:title="Feed" />
+        android:id="@+id/cameraXRFragment"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:title="XR"/>
 
     <item
         android:id="@+id/profileFragment"
