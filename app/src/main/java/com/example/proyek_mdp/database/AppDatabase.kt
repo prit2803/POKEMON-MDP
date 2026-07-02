@@ -40,10 +40,10 @@ abstract class AppDatabase : RoomDatabase() {
                             CoroutineScope(Dispatchers.IO).launch {
                                 getDatabase(context.applicationContext).foodDao().insertAll(
                                     listOf(
-                                        Food(name = "Pokeblock Merah", price = 20, description = "Makanan dasar untuk semua Pokemon", emoji = "🍎"),
-                                        Food(name = "Berry Oran", price = 35, description = "Memulihkan sedikit energi Pokemon", emoji = "🍓"),
-                                        Food(name = "Poffin Spesial", price = 60, description = "Makanan premium kesukaan banyak Pokemon", emoji = "🍰"),
-                                        Food(name = "Berry Sitrus", price = 50, description = "Menambah semangat Pokemon", emoji = "🍋")
+                                        Food(name = "Pokeblock Merah", price = 20, description = "Makanan dasar untuk semua Pokemon", emoji = "🍎", stock = 20),
+                                        Food(name = "Berry Oran", price = 35, description = "Memulihkan sedikit energi Pokemon", emoji = "🍓", stock = 15),
+                                        Food(name = "Poffin Spesial", price = 60, description = "Makanan premium kesukaan banyak Pokemon", emoji = "🍰", stock = 10),
+                                        Food(name = "Berry Sitrus", price = 50, description = "Menambah semangat Pokemon", emoji = "🍋", stock = 12)
                                     )
                                 )
                             }

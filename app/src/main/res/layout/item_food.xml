@@ -50,6 +50,15 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#F9A825" />
+
+        <TextView
+            android:id="@+id/tvFoodStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Stok: 10"
+            android:textSize="12sp"
+            android:textColor="#9E9E9E" />
     </LinearLayout>
 
     <Button

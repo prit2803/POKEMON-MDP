@@ -1,11 +1,14 @@
 package com.example.proyek_mdp.UI.Shop
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +24,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class FoodFragment : Fragment(R.layout.fragment_shop) {
+/**
+ * Popup shop makanan. Dipanggil dari HomeFragment lewat:
+ *   ShopDialogFragment().show(childFragmentManager, "shop")
+ *
+ * Stok makanan bersifat GLOBAL (bukan per-user) — kalau user lain beli duluan,
+ * stok berkurang untuk semua orang. Dicek ulang di level database (decreaseStock)
+ * supaya tidak bisa minus walau ada beberapa user beli hampir bersamaan.
+ */
+class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
 
     private lateinit var tvCoinBalance: TextView
     private lateinit var tvStreakInfo: TextView
@@ -30,6 +41,16 @@ class FoodFragment : Fragment(R.layout.fragment_shop) {
 
     private lateinit var sessionManager: SessionManager
     private var currentUser: User? = null
+    private var foodAdapter: FoodAdapter? = null
+
+    override fun onStart() {
+        super.onStart()
+        // Bikin dialog selebar layar, tinggi menyesuaikan isi, background transparan
+        dialog?.window?.apply {
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,9 +85,18 @@ class FoodFragment : Fragment(R.layout.fragment_shop) {
 
             if (isAdded) {
                 updateCoinDisplay()
-                rvFoodList.adapter = FoodAdapter(foods) { food ->
-                    handleBuyFood(food)
-                }
+                foodAdapter = FoodAdapter(foods) { food -> handleBuyFood(food) }
+                rvFoodList.adapter = foodAdapter
+            }
+        }
+    }
+
+    private fun refreshFoodList() {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(requireContext())
+            val foods = db.foodDao().getAllFood()
+            if (isAdded) {
+                foodAdapter?.updateData(foods)
             }
         }
     }
@@ -117,6 +147,11 @@ class FoodFragment : Fragment(R.layout.fragment_shop) {
     private fun handleBuyFood(food: Food) {
         val user = currentUser ?: return
 
+        if (food.stock <= 0) {
+            Toast.makeText(requireContext(), "Stok ${food.name} sudah habis", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (user.coins < food.price) {
             Toast.makeText(requireContext(), "Koin kamu tidak cukup", Toast.LENGTH_SHORT).show()
             return
@@ -124,6 +159,17 @@ class FoodFragment : Fragment(R.layout.fragment_shop) {
 
         lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
+
+            // Kurangi stok global dulu, dicek atomik di level SQL (aman kalau ada user lain beli bersamaan)
+            val rowsUpdated = db.foodDao().decreaseStock(food.id)
+
+            if (rowsUpdated == 0) {
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Stok ${food.name} baru saja habis", Toast.LENGTH_SHORT).show()
+                    refreshFoodList()
+                }
+                return@launch
+            }
 
             user.coins -= food.price
             db.userDao().update(user)
@@ -138,6 +184,7 @@ class FoodFragment : Fragment(R.layout.fragment_shop) {
 
             if (isAdded) {
                 updateCoinDisplay()
+                refreshFoodList()
                 Toast.makeText(requireContext(), "Berhasil beli ${food.name}", Toast.LENGTH_SHORT).show()
             }
         }

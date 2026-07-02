@@ -10,5 +10,6 @@ data class Food(
     val name: String,
     val price: Int,
     val description: String = "",
-    val emoji: String = "🍎" // dipakai sebagai icon sederhana, tanpa perlu asset gambar
+    val emoji: String = "🍎",
+    var stock: Int = 10 // stok global, sama untuk semua user
 )
