@@ -17,6 +17,7 @@ import com.example.proyek_mdp.database.AppDatabase
 import com.example.proyek_mdp.database.Post
 import com.example.proyek_mdp.database.UserInventory
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 
 class CollectionFragment
     : Fragment(R.layout.fragment_collection) {
@@ -214,17 +215,21 @@ class CollectionFragment
         }
     }
 
-    /** EXP sebanding sama harga makanan: harga / EXP_DIVISOR, dibatasi MIN..MAX biar gak ekstrem. */
+    /**
+     * EXP naik bertahap per kelipatan Rp5 harga makanan:
+     * harga 1-5 -> +3, 6-10 -> +5, 11-15 -> +7, 16-20 -> +9, dst (naik 2 tiap kelipatan 5).
+     * Gak ada batas atas, jadi makanan yang jauh lebih mahal EXP-nya jauh lebih besar juga.
+     */
     private fun calculateExpGain(price: Double): Int {
-        val raw = (price / EXP_DIVISOR).toInt()
-        return raw.coerceIn(MIN_EXP_GAIN, MAX_EXP_GAIN)
+        val bracket = ceil(price / BRACKET_SIZE).toInt().coerceAtLeast(1)
+        return BASE_EXP + (bracket - 1) * STEP_EXP
     }
 
     private fun expThreshold(level: Int): Int = level * 20
 
     companion object {
-        private const val EXP_DIVISOR = 5.0
-        private const val MIN_EXP_GAIN = 5
-        private const val MAX_EXP_GAIN = 100
+        private const val BRACKET_SIZE = 5.0
+        private const val BASE_EXP = 3
+        private const val STEP_EXP = 2
     }
 }
