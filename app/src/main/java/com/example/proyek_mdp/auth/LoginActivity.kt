@@ -94,10 +94,17 @@ class LoginActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
 
+                        // Belum pernah pilih starter -> wajib pilih dulu sebelum masuk Home
+                        val targetActivity = if (user.hasSelectedStarter == 0) {
+                            StarterSelectionActivity::class.java
+                        } else {
+                            MainActivity::class.java
+                        }
+
                         startActivity(
                             Intent(
                                 this@LoginActivity,
-                                MainActivity::class.java
+                                targetActivity
                             )
                         )
 

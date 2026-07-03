@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [PokemonEntity::class],
-    version = 1,
+    version = 2, // naik dari 1 -> 2 karena tambah userId, level, exp, isStarter
     exportSchema = false
 )
 abstract class PokemonDatabase : RoomDatabase() {
@@ -30,7 +30,9 @@ abstract class PokemonDatabase : RoomDatabase() {
                         context.applicationContext,
                         PokemonDatabase::class.java,
                         "pokemon_database"
-                    ).build()
+                    )
+                        .fallbackToDestructiveMigration() // biar gak crash pas versi naik
+                        .build()
 
                 INSTANCE = instance
 

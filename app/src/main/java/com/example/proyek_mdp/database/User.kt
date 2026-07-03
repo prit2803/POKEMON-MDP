@@ -12,7 +12,8 @@ data class User(
     var password: String,
     var role: String = "user",
     var isBanned: Int = 0,
-    var coins: Int = 0,              // saldo koin user
-    var lastClaimDate: String? = null, // format "yyyy-MM-dd", null = belum pernah klaim
-    var streakCount: Int = 0          // jumlah hari beruntun klaim
+    var coins: Int = 0,
+    var lastClaimDate: String? = null,
+    var streakCount: Int = 0,
+    var hasSelectedStarter: Int = 0 // 0 = belum pilih starter, 1 = sudah
 )

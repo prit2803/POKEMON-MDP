@@ -27,6 +27,59 @@
                 android:textStyle="bold"
                 android:textColor="#212121" />
 
+            <!-- Starter Kamu -->
+            <LinearLayout
+                android:id="@+id/layoutStarterCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@android:color/white"
+                android:padding="16dp"
+                android:elevation="4dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/imgStarter"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:scaleType="centerInside" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Starter Kamu"
+                        android:textSize="12sp"
+                        android:textColor="#9E9E9E" />
+
+                    <TextView
+                        android:id="@+id/tvStarterName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bulbasaur"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#212121" />
+
+                    <TextView
+                        android:id="@+id/tvStarterLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Level 1"
+                        android:textSize="13sp"
+                        android:textColor="#757575" />
+                </LinearLayout>
+            </LinearLayout>
+
             <!-- Hero banner -->
             <LinearLayout
                 android:layout_width="match_parent"
