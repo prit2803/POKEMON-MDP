@@ -22,4 +22,7 @@ interface PostDao {
 
     @Query("SELECT COUNT(*) FROM posts")
     suspend fun getTotalPosts(): Int
+
+    @Query("UPDATE posts SET stock = stock - 1 WHERE id = :postId AND stock > 0")
+    suspend fun decreaseStock(postId: Int): Int
 }

@@ -7,9 +7,12 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    var username: String, // Ubah dari val ke var
-    var email: String,    // Ubah dari val ke var
-    var password: String, // Ubah dari val ke var
+    var username: String,
+    var email: String,
+    var password: String,
     var role: String = "user",
-    var isBanned: Int = 0
+    var isBanned: Int = 0,
+    var coins: Int = 0,              // saldo koin user
+    var lastClaimDate: String? = null, // format "yyyy-MM-dd", null = belum pernah klaim
+    var streakCount: Int = 0          // jumlah hari beruntun klaim
 )

@@ -15,7 +15,8 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class PostAdapter(
-    private val onItemLongClick: (Post) -> Unit = {}
+    private val onItemLongClick: (Post) -> Unit = {},
+    private val onItemClick: (Post) -> Unit = {}
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback()) {
 
     class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -51,6 +52,11 @@ class PostAdapter(
         holder.itemView.setOnLongClickListener {
             onItemLongClick(post)
             true
+        }
+
+        // Klik biasa (dipakai Feed untuk buka Shop, tidak dipakai di Admin)
+        holder.itemView.setOnClickListener {
+            onItemClick(post)
         }
     }
 

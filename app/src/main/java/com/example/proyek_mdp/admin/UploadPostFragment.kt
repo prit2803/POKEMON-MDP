@@ -36,6 +36,7 @@ class UploadPostFragment : Fragment() {
         val etTitle = view.findViewById<EditText>(R.id.etTitle)
         val etDescription = view.findViewById<EditText>(R.id.etDescription)
         val etPrice = view.findViewById<EditText>(R.id.etPrice)
+        val etStock = view.findViewById<EditText>(R.id.etStock)
         val spinnerCategory = view.findViewById<Spinner>(R.id.spinnerCategory)
         val btnSave = view.findViewById<Button>(R.id.btnSave)
 
@@ -51,9 +52,10 @@ class UploadPostFragment : Fragment() {
             val title = etTitle.text.toString().trim()
             val description = etDescription.text.toString().trim()
             val priceText = etPrice.text.toString().trim()
+            val stockText = etStock.text.toString().trim()
 
-            if (title.isEmpty() || priceText.isEmpty()) {
-                Toast.makeText(requireContext(), "Judul dan harga wajib diisi", Toast.LENGTH_SHORT).show()
+            if (title.isEmpty() || priceText.isEmpty() || stockText.isEmpty()) {
+                Toast.makeText(requireContext(), "Judul, harga, dan stok wajib diisi", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -63,12 +65,19 @@ class UploadPostFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            val stock = stockText.toIntOrNull()
+            if (stock == null || stock < 0) {
+                Toast.makeText(requireContext(), "Stok tidak valid", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val post = Post(
                 title = title,
                 description = description,
                 price = price,
                 category = spinnerCategory.selectedItem as String,
-                imagePath = pickedImagePath
+                imagePath = pickedImagePath,
+                stock = stock
             )
 
             viewLifecycleOwner.lifecycleScope.launch {

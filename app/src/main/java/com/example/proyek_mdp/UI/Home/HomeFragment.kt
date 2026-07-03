@@ -3,52 +3,81 @@ package com.example.proyek_mdp.UI.Home
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.admin.PostAdapter
+import com.example.proyek_mdp.UI.Adapter.HomeInfoAdapter
+import com.example.proyek_mdp.UI.Shop.ShopDialogFragment
+import com.example.proyek_mdp.auth.SessionManager
 import com.example.proyek_mdp.database.AppDatabase
 import com.example.proyek_mdp.database.Post
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(R.layout.fragment_feed) {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private lateinit var rvFeed: RecyclerView
-    private lateinit var adapter: PostAdapter
-    private var allActivePosts: List<Post> = emptyList()
+    private lateinit var tvGreeting: TextView
+    private lateinit var rvInfoTerbaru: RecyclerView
+    private lateinit var rvInfoLainnya: RecyclerView
+    private lateinit var tvEmptyTerbaru: TextView
+    private lateinit var tvEmptyLainnya: TextView
+
+    private lateinit var terbaruAdapter: HomeInfoAdapter
+    private lateinit var lainnyaAdapter: HomeInfoAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rvFeed = view.findViewById(R.id.rvFeed)
-        rvFeed.layoutManager = LinearLayoutManager(requireContext())
+        tvGreeting = view.findViewById(R.id.tvGreeting)
+        rvInfoTerbaru = view.findViewById(R.id.rvInfoTerbaru)
+        rvInfoLainnya = view.findViewById(R.id.rvInfoLainnya)
+        tvEmptyTerbaru = view.findViewById(R.id.tvEmptyTerbaru)
+        tvEmptyLainnya = view.findViewById(R.id.tvEmptyLainnya)
 
-        // User tidak bisa hapus post, jadi callback dikosongkan
-        adapter = PostAdapter(onItemLongClick = {})
-        rvFeed.adapter = adapter
+        val onCardClick: (Post) -> Unit = { post ->
+            ShopDialogFragment.newInstance(post.id).show(childFragmentManager, "shop")
+        }
 
+        terbaruAdapter = HomeInfoAdapter(onCardClick)
+        lainnyaAdapter = HomeInfoAdapter(onCardClick)
+
+        rvInfoTerbaru.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        rvInfoTerbaru.adapter = terbaruAdapter
+
+        rvInfoLainnya.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        rvInfoLainnya.adapter = lainnyaAdapter
+
+        view.findViewById<Button>(R.id.btnOpenShop).setOnClickListener {
+            ShopDialogFragment.newInstance().show(childFragmentManager, "shop")
+        }
+
+        setupGreeting()
+        loadInfoSections()
+    }
+
+    private fun setupGreeting() {
+        val username = SessionManager(requireContext()).getUsername()
+        tvGreeting.text = if (!username.isNullOrEmpty()) "Halo, $username!" else "Halo, Trainer!"
+    }
+
+    private fun loadInfoSections() {
         val db = AppDatabase.getDatabase(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch {
             db.postDao().getActivePosts().collect { posts ->
-                allActivePosts = posts
-                adapter.submitList(posts)
-            }
-        }
+                if (!isAdded) return@collect
 
-        view.findViewById<Button>(R.id.btnFilterAll).setOnClickListener {
-            adapter.submitList(allActivePosts)
-        }
-        view.findViewById<Button>(R.id.btnFilterKartu).setOnClickListener {
-            adapter.submitList(allActivePosts.filter { it.category == "Kartu Pokemon" })
-        }
-        view.findViewById<Button>(R.id.btnFilterMakanan).setOnClickListener {
-            adapter.submitList(allActivePosts.filter { it.category == "Makanan" })
-        }
-        view.findViewById<Button>(R.id.btnFilterLainnya).setOnClickListener {
-            adapter.submitList(allActivePosts.filter { it.category == "Lainnya" })
+                // Info Terbaru: semua post aktif, terbaru duluan (query sudah ORDER BY createdAt DESC)
+                terbaruAdapter.submitList(posts)
+                tvEmptyTerbaru.visibility = if (posts.isEmpty()) View.VISIBLE else View.GONE
+
+                // Info Lainnya: khusus kategori "Lainnya"
+                val lainnya = posts.filter { it.category == "Lainnya" }
+                lainnyaAdapter.submitList(lainnya)
+                tvEmptyLainnya.visibility = if (lainnya.isEmpty()) View.VISIBLE else View.GONE
+            }
         }
     }
 }

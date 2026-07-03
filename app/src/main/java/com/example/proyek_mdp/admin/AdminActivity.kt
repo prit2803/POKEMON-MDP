@@ -24,7 +24,6 @@ class AdminActivity : AppCompatActivity() {
             val fragment = when (item.itemId) {
                 R.id.nav_dashboard -> DashboardFragment()
                 R.id.nav_users -> UserManagementFragment()
-                R.id.nav_pokemon -> PokemonManagementFragment()
                 R.id.nav_posts -> ManagePostsFragment()
                 R.id.nav_profile -> AdminProfileFragment()
                 else -> DashboardFragment()

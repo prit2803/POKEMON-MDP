@@ -84,6 +84,10 @@ class LoginActivity : AppCompatActivity() {
 
                     if (user != null) {
 
+                        // Simpan session user yang berhasil login
+                        SessionManager(this@LoginActivity)
+                            .saveSession(user.id, user.username)
+
                         Toast.makeText(
                             this@LoginActivity,
                             "Login Berhasil",
