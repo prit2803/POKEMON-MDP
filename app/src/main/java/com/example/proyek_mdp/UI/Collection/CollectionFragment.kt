@@ -123,8 +123,10 @@ class CollectionFragment
             inventoryItem.quantity -= 1
             appDb.userInventoryDao().update(inventoryItem)
 
-            // Tambah EXP, cek naik level (bisa lompat lebih dari 1 level kalau EXP-nya banyak)
-            var exp = pokemon.exp + FEED_EXP_GAIN
+            // Tambah EXP berdasarkan harga makanan, cek naik level (bisa lompat lebih dari
+            // 1 level kalau EXP-nya banyak)
+            val expGain = calculateExpGain(food.price)
+            var exp = pokemon.exp + expGain
             var level = pokemon.level
             var leveledUp = false
 
@@ -141,7 +143,7 @@ class CollectionFragment
                 val message = if (leveledUp) {
                     "${pokemon.name} diberi makan ${food.title}! Naik ke Level $level!"
                 } else {
-                    "${pokemon.name} diberi makan ${food.title}! +$FEED_EXP_GAIN EXP"
+                    "${pokemon.name} diberi makan ${food.title}! +$expGain EXP"
                 }
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 loadPokemon() // refresh biar level & HP di UI ke-update
@@ -149,9 +151,17 @@ class CollectionFragment
         }
     }
 
+    /** EXP sebanding sama harga makanan: harga / EXP_DIVISOR, dibatasi MIN..MAX biar gak ekstrem. */
+    private fun calculateExpGain(price: Double): Int {
+        val raw = (price / EXP_DIVISOR).toInt()
+        return raw.coerceIn(MIN_EXP_GAIN, MAX_EXP_GAIN)
+    }
+
     private fun expThreshold(level: Int): Int = level * 20
 
     companion object {
-        private const val FEED_EXP_GAIN = 15
+        private const val EXP_DIVISOR = 5.0
+        private const val MIN_EXP_GAIN = 5
+        private const val MAX_EXP_GAIN = 100
     }
 }
