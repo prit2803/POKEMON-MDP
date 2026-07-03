@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
@@ -32,6 +33,7 @@ import com.example.proyek_mdp.R
 import com.example.proyek_mdp.UI.Database.PokemonDatabase
 import com.example.proyek_mdp.UI.Database.PokemonEntity
 import com.example.proyek_mdp.UI.Network.RetrofitClient
+import com.example.proyek_mdp.auth.SessionManager
 
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -77,6 +79,9 @@ class CameraFragment :
 
     private var currentPokemonName =
         ""
+
+    private var currentPokemonId =
+        0 // nomor Pokedex dari API, dipakai buat speciesId (Pokedex feature)
 
     private var currentPokemonHp =
         0
@@ -459,6 +464,9 @@ class CameraFragment :
                     currentPokemonName =
                         pokemon?.name ?: ""
 
+                    currentPokemonId =
+                        pokemon?.id ?: 0
+
                     currentPokemonImage =
                         pokemon?.sprites
                             ?.front_default
@@ -536,6 +544,20 @@ class CameraFragment :
             return
         }
 
+        val userId =
+            SessionManager(requireContext()).getUserId()
+
+        if (userId == -1) {
+
+            Toast.makeText(
+                requireContext(),
+                "Sesi login gak ketemu, coba login ulang",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
         lifecycleScope.launch {
 
             val database =
@@ -546,6 +568,10 @@ class CameraFragment :
 
             val pokemon =
                 PokemonEntity(
+
+                    userId = userId,
+
+                    speciesId = currentPokemonId,
 
                     name = currentPokemonName,
 
@@ -570,6 +596,8 @@ class CameraFragment :
     private fun clearPokemon() {
 
         currentPokemonName = ""
+
+        currentPokemonId = 0
 
         currentPokemonHp = 0
 

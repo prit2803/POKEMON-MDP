@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
  */
 class StarterSelectionActivity : AppCompatActivity() {
 
-    private data class Starter(val name: String, val hp: Int, val imageUrl: String)
+    private data class Starter(val speciesId: Int, val name: String, val hp: Int, val imageUrl: String)
 
     private val starters = listOf(
-        Starter("Bulbasaur", 45, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"),
-        Starter("Charmander", 39, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"),
-        Starter("Squirtle", 44, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png")
+        Starter(1, "Bulbasaur", 45, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"),
+        Starter(4, "Charmander", 39, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"),
+        Starter(7, "Squirtle", 44, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +55,7 @@ class StarterSelectionActivity : AppCompatActivity() {
             pokemonDb.pokemonDao().insertPokemon(
                 PokemonEntity(
                     userId = userId,
+                    speciesId = starter.speciesId,
                     name = starter.name,
                     hp = starter.hp,
                     imageUrl = starter.imageUrl,

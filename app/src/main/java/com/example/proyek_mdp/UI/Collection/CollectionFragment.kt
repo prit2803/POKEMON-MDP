@@ -45,6 +45,10 @@ class CollectionFragment
             confirmDeleteAll()
         }
 
+        view.findViewById<android.widget.Button>(R.id.btnOpenPokedex).setOnClickListener {
+            PokedexDialogFragment().show(childFragmentManager, "pokedex")
+        }
+
         loadPokemon()
     }
 

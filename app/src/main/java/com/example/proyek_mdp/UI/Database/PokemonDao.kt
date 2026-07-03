@@ -13,7 +13,6 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon_table")
     suspend fun getAllPokemon(): List<PokemonEntity>
 
-    // Koleksi milik satu user aja
     @Query("SELECT * FROM pokemon_table WHERE userId = :userId")
     suspend fun getPokemonByUser(userId: Int): List<PokemonEntity>
 
@@ -23,7 +22,15 @@ interface PokemonDao {
     @Delete
     suspend fun deletePokemon(pokemon: PokemonEntity)
 
-    // Hapus semua pokemon milik user KECUALI yang lagi di-lock
     @Query("DELETE FROM pokemon_table WHERE userId = :userId AND isLocked = 0")
     suspend fun deleteAllUnlockedByUser(userId: Int)
+
+    // Buat Pokedex: per spesies yang dimiliki user, ambil level tertinggi & tanggal pertama tangkap
+    @Query("""
+        SELECT speciesId, MAX(level) AS highestLevel, MIN(caughtAt) AS firstCaughtAt
+        FROM pokemon_table
+        WHERE userId = :userId AND speciesId != 0
+        GROUP BY speciesId
+    """)
+    suspend fun getOwnedSpeciesSummary(userId: Int): List<OwnedSpeciesSummary>
 }

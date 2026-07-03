@@ -1,8 +1,8 @@
 package com.example.proyek_mdp.UI.Model
 
-
-
 data class PokemonResponse(
+
+    val id: Int, // nomor Pokedex nasional, dipakai buat Pokedex & speciesId
 
     val name: String,
 
