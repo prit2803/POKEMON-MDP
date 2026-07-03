@@ -8,8 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.UI.Adapter.HomeInfoAdapter
+import com.example.proyek_mdp.UI.Database.PokemonDatabase
 import com.example.proyek_mdp.UI.Shop.ShopDialogFragment
 import com.example.proyek_mdp.auth.SessionManager
 import com.example.proyek_mdp.database.AppDatabase
@@ -23,6 +26,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var rvInfoLainnya: RecyclerView
     private lateinit var tvEmptyTerbaru: TextView
     private lateinit var tvEmptyLainnya: TextView
+    private lateinit var layoutStarterCard: View
+    private lateinit var imgStarter: ImageView
+    private lateinit var tvStarterName: TextView
+    private lateinit var tvStarterLevel: TextView
 
     private lateinit var terbaruAdapter: HomeInfoAdapter
     private lateinit var lainnyaAdapter: HomeInfoAdapter
@@ -35,6 +42,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         rvInfoLainnya = view.findViewById(R.id.rvInfoLainnya)
         tvEmptyTerbaru = view.findViewById(R.id.tvEmptyTerbaru)
         tvEmptyLainnya = view.findViewById(R.id.tvEmptyLainnya)
+        layoutStarterCard = view.findViewById(R.id.layoutStarterCard)
+        imgStarter = view.findViewById(R.id.imgStarter)
+        tvStarterName = view.findViewById(R.id.tvStarterName)
+        tvStarterLevel = view.findViewById(R.id.tvStarterLevel)
 
         val onCardClick: (Post) -> Unit = { post ->
             ShopDialogFragment.newInstance(post.id).show(childFragmentManager, "shop")
@@ -55,11 +66,33 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         setupGreeting()
         loadInfoSections()
+        loadStarter()
     }
 
     private fun setupGreeting() {
         val username = SessionManager(requireContext()).getUsername()
         tvGreeting.text = if (!username.isNullOrEmpty()) "Halo, $username!" else "Halo, Trainer!"
+    }
+
+    private fun loadStarter() {
+        val userId = SessionManager(requireContext()).getUserId()
+        if (userId == -1) return
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val pokemonDb = PokemonDatabase.getDatabase(requireContext())
+            val starter = pokemonDb.pokemonDao().getStarter(userId)
+
+            if (!isAdded) return@launch
+
+            if (starter != null) {
+                layoutStarterCard.visibility = View.VISIBLE
+                tvStarterName.text = starter.name
+                tvStarterLevel.text = "Level ${starter.level}"
+                Glide.with(requireContext()).load(starter.imageUrl).into(imgStarter)
+            } else {
+                layoutStarterCard.visibility = View.GONE
+            }
+        }
     }
 
     private fun loadInfoSections() {

@@ -45,6 +45,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".auth.StarterSelectionActivity" />
 
         <meta-data
             android:name="com.google.ar.core"

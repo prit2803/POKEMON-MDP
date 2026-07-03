@@ -23,6 +23,11 @@ interface PostDao {
     @Query("SELECT COUNT(*) FROM posts")
     suspend fun getTotalPosts(): Int
 
+    @Query("SELECT * FROM posts WHERE id = :postId LIMIT 1")
+    suspend fun getPostById(postId: Int): Post?
+
+    // Kurangi stok 1 hanya kalau stok masih > 0. Return jumlah baris ter-update:
+    // 1 = berhasil, 0 = stok memang sudah habis (dicek atomik di level SQL)
     @Query("UPDATE posts SET stock = stock - 1 WHERE id = :postId AND stock > 0")
     suspend fun decreaseStock(postId: Int): Int
 }
