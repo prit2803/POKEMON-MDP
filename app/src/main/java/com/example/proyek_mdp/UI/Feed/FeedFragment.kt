@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
+import com.example.proyek_mdp.UI.Shop.ShopDialogFragment
 import com.example.proyek_mdp.admin.PostAdapter
 import com.example.proyek_mdp.database.AppDatabase
 import com.example.proyek_mdp.database.Post
@@ -25,8 +26,15 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         rvFeed = view.findViewById(R.id.rvFeed)
         rvFeed.layoutManager = LinearLayoutManager(requireContext())
 
-        // User tidak bisa hapus post, jadi callback dikosongkan
-        adapter = PostAdapter(onItemLongClick = {})
+        // User tidak bisa hapus post (onItemLongClick kosong).
+        // Klik post -> buka popup Shop, langsung fokus ke item itu.
+        adapter = PostAdapter(
+            onItemLongClick = {},
+            onItemClick = { post ->
+                ShopDialogFragment.newInstance(post.id)
+                    .show(childFragmentManager, "shop")
+            }
+        )
         rvFeed.adapter = adapter
 
         val db = AppDatabase.getDatabase(requireContext())

@@ -10,8 +10,9 @@ data class Post(
     var title: String,
     var description: String,
     var price: Double,
-    var category: String,          // "Kartu Pokemon" | "Makanan" | "Lainnya"
-    var imagePath: String? = null, // path file lokal (bukan content:// URI)
-    var isActive: Int = 1,         // 1 = tampil di feed, 0 = disembunyikan admin
+    var category: String,
+    var imagePath: String? = null,
+    var isActive: Int = 1,
+    var stock: Int = 0,
     var createdAt: Long = System.currentTimeMillis()
 )

@@ -13,39 +13,52 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.UI.Adapter.FoodAdapter
+import com.example.proyek_mdp.UI.Adapter.ShopAdapter
 import com.example.proyek_mdp.auth.SessionManager
 import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.Food
+import com.example.proyek_mdp.database.Post
 import com.example.proyek_mdp.database.User
-import com.example.proyek_mdp.database.UserFood
+import com.example.proyek_mdp.database.UserInventory
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 /**
- * Popup shop makanan. Dipanggil dari HomeFragment lewat:
- *   ShopDialogFragment().show(childFragmentManager, "shop")
+ * Popup Shop. Isinya diambil langsung dari Post (postDao.getActivePosts()) yang
+ * dibuat admin — jadi item shop selalu sama dengan yang admin post, bukan katalog tetap.
  *
- * Stok makanan bersifat GLOBAL (bukan per-user) — kalau user lain beli duluan,
- * stok berkurang untuk semua orang. Dicek ulang di level database (decreaseStock)
- * supaya tidak bisa minus walau ada beberapa user beli hampir bersamaan.
+ * Dipanggil dari HomeFragment (tanpa highlight):
+ *   ShopDialogFragment.newInstance().show(childFragmentManager, "shop")
+ *
+ * Dipanggil dari FeedFragment (klik promo, langsung fokus ke item itu):
+ *   ShopDialogFragment.newInstance(post.id).show(childFragmentManager, "shop")
+ *
+ * Pakai Flow, jadi stok ke-update REAL-TIME otomatis ke semua yang lagi buka
+ * popup ini, tanpa perlu refresh manual, karena Room otomatis re-emit query
+ * setiap tabel posts berubah.
  */
 class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
 
     private lateinit var tvCoinBalance: TextView
     private lateinit var tvStreakInfo: TextView
     private lateinit var btnClaimDaily: Button
-    private lateinit var rvFoodList: RecyclerView
+    private lateinit var rvShop: RecyclerView
 
     private lateinit var sessionManager: SessionManager
+    private lateinit var shopAdapter: ShopAdapter
     private var currentUser: User? = null
-    private var foodAdapter: FoodAdapter? = null
+
+    private var highlightPostId: Int = -1
+    private var hasScrolledToHighlight = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        highlightPostId = arguments?.getInt(ARG_HIGHLIGHT_POST_ID, -1) ?: -1
+    }
 
     override fun onStart() {
         super.onStart()
-        // Bikin dialog selebar layar, tinggi menyesuaikan isi, background transparan
         dialog?.window?.apply {
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -60,43 +73,45 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
         tvCoinBalance = view.findViewById(R.id.tvCoinBalance)
         tvStreakInfo = view.findViewById(R.id.tvStreakInfo)
         btnClaimDaily = view.findViewById(R.id.btnClaimDaily)
-        rvFoodList = view.findViewById(R.id.rvFoodList)
+        rvShop = view.findViewById(R.id.rvFoodList) // id lama di fragment_shop.xml, tetap dipakai
 
-        rvFoodList.layoutManager = LinearLayoutManager(requireContext())
+        shopAdapter = ShopAdapter(highlightPostId) { post -> handleBuy(post) }
+        rvShop.layoutManager = LinearLayoutManager(requireContext())
+        rvShop.adapter = shopAdapter
 
-        btnClaimDaily.setOnClickListener {
-            handleClaimDaily()
-        }
+        btnClaimDaily.setOnClickListener { handleClaimDaily() }
 
-        loadData()
+        loadUser()
+        observePosts()
     }
 
-    private fun loadData() {
+    private fun loadUser() {
         val userId = sessionManager.getUserId()
         if (userId == -1) return
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
-
-            val user = db.userDao().getUserById(userId)
-            val foods = db.foodDao().getAllFood()
-
-            currentUser = user
-
-            if (isAdded) {
-                updateCoinDisplay()
-                foodAdapter = FoodAdapter(foods) { food -> handleBuyFood(food) }
-                rvFoodList.adapter = foodAdapter
-            }
+            currentUser = db.userDao().getUserById(userId)
+            if (isAdded) updateCoinDisplay()
         }
     }
 
-    private fun refreshFoodList() {
-        lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val foods = db.foodDao().getAllFood()
-            if (isAdded) {
-                foodAdapter?.updateData(foods)
+    private fun observePosts() {
+        val db = AppDatabase.getDatabase(requireContext())
+        viewLifecycleOwner.lifecycleScope.launch {
+            db.postDao().getActivePosts().collect { posts ->
+                if (!isAdded) return@collect
+
+                shopAdapter.submitList(posts) {
+                    // Dijalankan setelah RecyclerView selesai update, biar posisi index-nya valid
+                    if (!hasScrolledToHighlight && highlightPostId != -1) {
+                        val index = posts.indexOfFirst { it.id == highlightPostId }
+                        if (index != -1) {
+                            rvShop.scrollToPosition(index)
+                            hasScrolledToHighlight = true
+                        }
+                    }
+                }
             }
         }
     }
@@ -129,7 +144,7 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
         user.streakCount = newStreak
         user.lastClaimDate = today
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
             db.userDao().update(user)
 
@@ -144,48 +159,46 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
         }
     }
 
-    private fun handleBuyFood(food: Food) {
+    private fun handleBuy(post: Post) {
         val user = currentUser ?: return
 
-        if (food.stock <= 0) {
-            Toast.makeText(requireContext(), "Stok ${food.name} sudah habis", Toast.LENGTH_SHORT).show()
+        if (post.stock <= 0) {
+            Toast.makeText(requireContext(), "Stok ${post.title} sudah habis", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (user.coins < food.price) {
+        if (user.coins < post.price) {
             Toast.makeText(requireContext(), "Koin kamu tidak cukup", Toast.LENGTH_SHORT).show()
             return
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
 
             // Kurangi stok global dulu, dicek atomik di level SQL (aman kalau ada user lain beli bersamaan)
-            val rowsUpdated = db.foodDao().decreaseStock(food.id)
+            val rowsUpdated = db.postDao().decreaseStock(post.id)
 
             if (rowsUpdated == 0) {
                 if (isAdded) {
-                    Toast.makeText(requireContext(), "Stok ${food.name} baru saja habis", Toast.LENGTH_SHORT).show()
-                    refreshFoodList()
+                    Toast.makeText(requireContext(), "Stok ${post.title} baru saja habis", Toast.LENGTH_SHORT).show()
                 }
                 return@launch
             }
 
-            user.coins -= food.price
+            user.coins -= post.price.toInt()
             db.userDao().update(user)
 
-            val existing = db.userFoodDao().getUserFoodItem(user.id, food.id)
+            val existing = db.userInventoryDao().getItem(user.id, post.id)
             if (existing != null) {
                 existing.quantity += 1
-                db.userFoodDao().update(existing)
+                db.userInventoryDao().update(existing)
             } else {
-                db.userFoodDao().insert(UserFood(userId = user.id, foodId = food.id, quantity = 1))
+                db.userInventoryDao().insert(UserInventory(userId = user.id, postId = post.id, quantity = 1))
             }
 
             if (isAdded) {
                 updateCoinDisplay()
-                refreshFoodList()
-                Toast.makeText(requireContext(), "Berhasil beli ${food.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Berhasil beli ${post.title}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -201,5 +214,19 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
         val d2 = sdf.parse(dateStr2) ?: return -1
         val diff = d2.time - d1.time
         return diff / (1000 * 60 * 60 * 24)
+    }
+
+    companion object {
+        private const val ARG_HIGHLIGHT_POST_ID = "highlight_post_id"
+
+        fun newInstance(highlightPostId: Int? = null): ShopDialogFragment {
+            val fragment = ShopDialogFragment()
+            if (highlightPostId != null) {
+                fragment.arguments = Bundle().apply {
+                    putInt(ARG_HIGHLIGHT_POST_ID, highlightPostId)
+                }
+            }
+            return fragment
+        }
     }
 }

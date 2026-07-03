@@ -14,7 +14,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         val btnOpenShop = view.findViewById<Button>(R.id.btnOpenShop)
         btnOpenShop.setOnClickListener {
-            ShopDialogFragment().show(childFragmentManager, "shop")
+            ShopDialogFragment.newInstance().show(childFragmentManager, "shop")
         }
     }
 }
