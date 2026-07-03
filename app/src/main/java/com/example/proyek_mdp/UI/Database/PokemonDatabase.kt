@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [PokemonEntity::class],
-    version = 2, // naik dari 1 -> 2 karena tambah userId, level, exp, isStarter
+    version = 3, // naik dari 2 -> 3 karena tambah isLocked
     exportSchema = false
 )
 abstract class PokemonDatabase : RoomDatabase() {

@@ -22,4 +22,8 @@ interface PokemonDao {
 
     @Delete
     suspend fun deletePokemon(pokemon: PokemonEntity)
+
+    // Hapus semua pokemon milik user KECUALI yang lagi di-lock
+    @Query("DELETE FROM pokemon_table WHERE userId = :userId AND isLocked = 0")
+    suspend fun deleteAllUnlockedByUser(userId: Int)
 }

@@ -21,5 +21,7 @@ data class PokemonEntity(
 
     var exp: Int = 0,
 
-    val isStarter: Int = 0 // 1 = ini pokemon starter yang dipilih pas awal
+    val isStarter: Int = 0, // 1 = ini pokemon starter yang dipilih pas awal
+
+    var isLocked: Int = 0 // 1 = terkunci, gak bisa dihapus (satuan maupun Hapus Semua)
 )

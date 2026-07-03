@@ -5,18 +5,48 @@
     android:orientation="vertical"
     android:background="#F5F5F5">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Koleksi Pokémon"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="#212121" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Koleksi Pokémon"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#212121" />
+
+        <Button
+            android:id="@+id/btnDeleteAll"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hapus Semua"
+            android:textColor="#FF5252"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp"
+        android:text="Tap-tahan pokemon untuk lock/unlock. Pokemon terkunci gak akan ke-hapus."
+        android:textSize="12sp"
+        android:textColor="#9E9E9E" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPokemon"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

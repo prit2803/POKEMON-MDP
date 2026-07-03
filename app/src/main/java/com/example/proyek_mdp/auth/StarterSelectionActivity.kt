@@ -60,7 +60,8 @@ class StarterSelectionActivity : AppCompatActivity() {
                     imageUrl = starter.imageUrl,
                     level = 1,
                     exp = 0,
-                    isStarter = 1
+                    isStarter = 1,
+                    isLocked = 1 // starter otomatis terkunci, gak bisa kehapus gak sengaja
                 )
             )
 

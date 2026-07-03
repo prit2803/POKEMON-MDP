@@ -40,7 +40,69 @@ class CollectionFragment
         recyclerView.layoutManager =
             LinearLayoutManager(requireContext())
 
+        view.findViewById<android.widget.Button>(R.id.btnDeleteAll).setOnClickListener {
+            confirmDeleteAll()
+        }
+
         loadPokemon()
+    }
+
+    private fun confirmDeleteAll() {
+        val userId = sessionManager.getUserId()
+        if (userId == -1) return
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Hapus Semua Pokemon")
+            .setMessage("Semua pokemon yang TIDAK terkunci akan dihapus. Pokemon yang di-lock akan tetap aman. Lanjutkan?")
+            .setPositiveButton("Hapus Semua") { _, _ ->
+                lifecycleScope.launch {
+                    val database = PokemonDatabase.getDatabase(requireContext())
+                    database.pokemonDao().deleteAllUnlockedByUser(userId)
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Pokemon yang tidak terkunci berhasil dihapus", Toast.LENGTH_SHORT).show()
+                        loadPokemon()
+                    }
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun toggleLock(pokemon: PokemonEntity) {
+        lifecycleScope.launch {
+            val database = PokemonDatabase.getDatabase(requireContext())
+            val newLockState = if (pokemon.isLocked == 1) 0 else 1
+            database.pokemonDao().updatePokemon(pokemon.copy(isLocked = newLockState))
+
+            if (isAdded) {
+                val message = if (newLockState == 1) "${pokemon.name} dikunci" else "${pokemon.name} dibuka kuncinya"
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                loadPokemon()
+            }
+        }
+    }
+
+    private fun confirmDeleteSingle(pokemon: PokemonEntity) {
+        if (pokemon.isLocked == 1) {
+            Toast.makeText(requireContext(), "${pokemon.name} terkunci, gak bisa dihapus", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Hapus Pokemon")
+            .setMessage("Hapus ${pokemon.name}?")
+            .setPositiveButton("Hapus") { _, _ ->
+                lifecycleScope.launch {
+                    val database = PokemonDatabase.getDatabase(requireContext())
+                    database.pokemonDao().deletePokemon(pokemon)
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "${pokemon.name} dihapus", Toast.LENGTH_SHORT).show()
+                        loadPokemon()
+                    }
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     private fun loadPokemon() {
@@ -64,8 +126,9 @@ class CollectionFragment
             } else {
                 adapter = PokemonAdapter(
                     pokemonList,
-                    onDeleteClick = { /* fitur hapus menyusul */ },
-                    onItemClick = { pokemon -> showFeedDialog(pokemon) }
+                    onDeleteClick = { pokemon -> confirmDeleteSingle(pokemon) },
+                    onItemClick = { pokemon -> showFeedDialog(pokemon) },
+                    onItemLongClick = { pokemon -> toggleLock(pokemon) }
                 )
                 recyclerView.adapter = adapter
             }
