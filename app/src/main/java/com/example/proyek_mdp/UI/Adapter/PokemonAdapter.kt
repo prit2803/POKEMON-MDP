@@ -14,11 +14,13 @@ import com.example.proyek_mdp.UI.Database.PokemonEntity
 class PokemonAdapter(
     private var pokemonList: List<PokemonEntity>,
     private val onDeleteClick: (PokemonEntity) -> Unit = {},
-    private val onItemClick: (PokemonEntity) -> Unit = {} // klik kartu -> buka opsi (mis. Beri Makan)
+    private val onItemClick: (PokemonEntity) -> Unit = {},      // tap -> buka opsi (mis. Beri Makan)
+    private val onItemLongClick: (PokemonEntity) -> Unit = {}   // tap-tahan -> toggle lock/unlock
 ) : RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder>() {
 
     class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgPokemon: ImageView = itemView.findViewById(R.id.imgPokemon)
+        val ivLock: ImageView = itemView.findViewById(R.id.ivLock)
         val tvPokemonName: TextView = itemView.findViewById(R.id.tvPokemonName)
         val tvPokemonLevel: TextView = itemView.findViewById(R.id.tvPokemonLevel)
         val tvPokemonHp: TextView = itemView.findViewById(R.id.tvPokemonHp)
@@ -40,8 +42,17 @@ class PokemonAdapter(
             .load(pokemon.imageUrl)
             .into(holder.imgPokemon)
 
+        val locked = pokemon.isLocked == 1
+        holder.ivLock.visibility = if (locked) View.VISIBLE else View.GONE
+        // Pokemon terkunci gak bisa dihapus sama sekali, tombolnya disembunyikan
+        holder.btnDelete.visibility = if (locked) View.GONE else View.VISIBLE
+
         holder.btnDelete.setOnClickListener { onDeleteClick(pokemon) }
         holder.itemView.setOnClickListener { onItemClick(pokemon) }
+        holder.itemView.setOnLongClickListener {
+            onItemLongClick(pokemon)
+            true
+        }
     }
 
     override fun getItemCount(): Int = pokemonList.size

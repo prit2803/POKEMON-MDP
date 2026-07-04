@@ -16,13 +16,29 @@
         android:padding="12dp"
         android:gravity="center_vertical">
 
-        <!-- Gambar Pokemon -->
-        <ImageView
-            android:id="@+id/imgPokemon"
+        <!-- Gambar Pokemon + badge lock -->
+        <FrameLayout
             android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:scaleType="centerInside"
-            android:src="@android:drawable/ic_menu_gallery" />
+            android:layout_height="70dp">
+
+            <ImageView
+                android:id="@+id/imgPokemon"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:scaleType="centerInside"
+                android:src="@android:drawable/ic_menu_gallery" />
+
+            <ImageView
+                android:id="@+id/ivLock"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="top|end"
+                android:src="@android:drawable/ic_lock_lock"
+                android:background="#FFFFFF"
+                android:padding="2dp"
+                android:visibility="gone"
+                android:contentDescription="Terkunci" />
+        </FrameLayout>
 
         <!-- Info Pokemon (Nama, Level & HP) -->
         <LinearLayout

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@android:color/white"
+    android:layout_margin="4dp"
+    android:padding="8dp"
+    android:elevation="2dp">
+
+    <TextView
+        android:id="@+id/tvPokedexNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="#001"
+        android:textSize="10sp"
+        android:textColor="#9E9E9E" />
+
+    <ImageView
+        android:id="@+id/ivPokedexImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/tvPokedexName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Bulbasaur"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp">
+
+        <TextView
+            android:id="@+id/tvPokedexType1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GRASS"
+            android:textSize="8sp"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="1dp"
+            android:layout_marginEnd="2dp" />
+
+        <TextView
+            android:id="@+id/tvPokedexType2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="POISON"
+            android:textSize="8sp"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="1dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvPokedexInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:text="Lv. 5 • 01 Jan 2026"
+        android:textSize="9sp"
+        android:textColor="#757575" />
+
+</LinearLayout>

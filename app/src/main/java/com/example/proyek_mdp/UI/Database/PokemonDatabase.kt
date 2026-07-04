@@ -6,13 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [PokemonEntity::class],
-    version = 2, // naik dari 1 -> 2 karena tambah userId, level, exp, isStarter
+    entities = [PokemonEntity::class, PokedexSpecies::class],
+    version = 4, // naik dari 3 -> 4: tambah speciesId/caughtAt di PokemonEntity + tabel cache Pokedex baru
     exportSchema = false
 )
 abstract class PokemonDatabase : RoomDatabase() {
 
     abstract fun pokemonDao(): PokemonDao
+    abstract fun pokedexSpeciesDao(): PokedexSpeciesDao
 
     companion object {
 
@@ -31,7 +32,7 @@ abstract class PokemonDatabase : RoomDatabase() {
                         PokemonDatabase::class.java,
                         "pokemon_database"
                     )
-                        .fallbackToDestructiveMigration() // biar gak crash pas versi naik
+                        .fallbackToDestructiveMigration()
                         .build()
 
                 INSTANCE = instance
