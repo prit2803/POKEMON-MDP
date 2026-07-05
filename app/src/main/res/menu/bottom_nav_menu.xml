@@ -1,20 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/homeFragment"
         android:icon="@android:drawable/ic_menu_view"
-        android:title="Home" />
+        android:title="Home"/>
 
     <item
         android:id="@+id/cameraFragment"
         android:icon="@android:drawable/ic_menu_camera"
-        android:title="Camera" />
+        android:title="Camera"/>
 
     <item
         android:id="@+id/collectionFragment"
         android:icon="@android:drawable/ic_menu_gallery"
-        android:title="Koleksi" />
+        android:title="Koleksi"/>
 
     <item
         android:id="@+id/cameraXRFragment"
@@ -24,6 +23,6 @@
     <item
         android:id="@+id/profileFragment"
         android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Profile" />
+        android:title="Profile"/>
 
 </menu>

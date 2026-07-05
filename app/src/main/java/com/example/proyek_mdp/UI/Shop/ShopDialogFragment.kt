@@ -189,11 +189,18 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
             db.userDao().update(user)
 
             val existing = db.userInventoryDao().getItem(user.id, post.id)
+
             if (existing != null) {
                 existing.quantity += 1
                 db.userInventoryDao().update(existing)
             } else {
-                db.userInventoryDao().insert(UserInventory(userId = user.id, postId = post.id, quantity = 1))
+                db.userInventoryDao().insert(
+                    UserInventory(
+                        userId = user.id,
+                        postId = post.id,
+                        quantity = 1
+                    )
+                )
             }
 
             if (isAdded) {

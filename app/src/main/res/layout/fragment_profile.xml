@@ -16,10 +16,10 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_gravity="center_horizontal"
-            android:src="@android:drawable/sym_def_app_icon"
-            android:scaleType="centerCrop"
             android:background="@android:color/white"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/sym_def_app_icon" />
 
         <!-- Nama Trainer -->
         <TextView
@@ -28,10 +28,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:text="Ash Ketchum"
+            android:text="Trainer"
+            android:textColor="#212121"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#212121" />
+            android:textStyle="bold" />
 
         <!-- Level -->
         <TextView
@@ -40,98 +40,138 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="4dp"
-            android:text="Level 25 Trainer"
-            android:textSize="16sp"
-            android:textColor="#757575" />
+            android:text="Level 1 Trainer"
+            android:textColor="#757575"
+            android:textSize="16sp" />
 
-        <!-- Card Statistik -->
+        <!-- Statistik -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:orientation="vertical"
             android:background="@android:color/white"
-            android:padding="20dp"
-            android:elevation="4dp">
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Statistik"
+                android:textColor="#212121"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#212121" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPokemonCaught"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Pokémon Ditangkap: 128"
-                android:textSize="16sp"
-                android:textColor="#424242" />
+                android:text="Pokemon Ditangkap : 0"
+                android:textColor="#424242"
+                android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tvBattleWon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Battle Menang: 34"
-                android:textSize="16sp"
-                android:textColor="#424242" />
+                android:text="Battle Menang : 0"
+                android:textColor="#424242"
+                android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tvDistance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Jarak Tempuh: 56.7 km"
-                android:textSize="16sp"
-                android:textColor="#424242" />
+                android:text="Jarak Tempuh : 0.0 km"
+                android:textColor="#424242"
+                android:textSize="16sp" />
+
         </LinearLayout>
 
-        <!-- Card Tim -->
+        <!-- Tim -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="vertical"
             android:background="@android:color/white"
-            android:padding="20dp"
-            android:elevation="4dp">
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tim"
+                android:textColor="#212121"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#212121" />
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="Team Mystic 🔵"
-                android:textSize="16sp"
-                android:textColor="#1E88E5" />
+                android:textColor="#1E88E5"
+                android:textSize="16sp" />
         </LinearLayout>
 
-        <!-- Card Ganti Password -->
+        <!-- Card Inventory -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="vertical"
             android:background="@android:color/white"
-            android:padding="20dp"
-            android:elevation="4dp">
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inventory"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#212121"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Lihat semua item yang telah kamu beli."
+                android:textSize="14sp"
+                android:textColor="#757575"/>
+
+            <Button
+                android:id="@+id/btnInventory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#4CAF50"
+                android:text="Lihat Inventory"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <!-- Ganti Password -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ganti Password"
+                android:textColor="#212121"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#212121" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etOldPassword"
@@ -139,7 +179,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Password Lama"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="#000000"
+                android:textColorHint="#757575" />
 
             <EditText
                 android:id="@+id/etNewPassword"
@@ -147,7 +189,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:hint="Password Baru"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="#000000"
+                android:textColorHint="#757575" />
 
             <EditText
                 android:id="@+id/etConfirmPassword"
@@ -155,7 +199,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:hint="Konfirmasi Password Baru"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="#000000"
+                android:textColorHint="#757575" />
 
             <Button
                 android:id="@+id/btnChangePassword"
@@ -165,7 +211,7 @@
                 android:text="Simpan Password Baru" />
         </LinearLayout>
 
-        <!-- Tombol Logout -->
+        <!-- Logout -->
         <Button
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
@@ -176,4 +222,5 @@
             android:textColor="@android:color/white" />
 
     </LinearLayout>
+
 </ScrollView>

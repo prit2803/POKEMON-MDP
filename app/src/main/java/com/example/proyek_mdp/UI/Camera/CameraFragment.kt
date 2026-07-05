@@ -34,6 +34,7 @@ import com.example.proyek_mdp.UI.Database.PokemonDatabase
 import com.example.proyek_mdp.UI.Database.PokemonEntity
 import com.example.proyek_mdp.UI.Network.RetrofitClient
 import com.example.proyek_mdp.auth.SessionManager
+import com.example.proyek_mdp.database.AppDatabase
 
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -534,18 +535,13 @@ class CameraFragment :
 
     private fun savePokemon() {
 
-        if (
-            currentPokemonName.isEmpty()
-        ) {
+        if (currentPokemonName.isEmpty()) {
 
-            tvResult.text =
-                "Belum ada pokemon"
-
+            tvResult.text = "Belum ada pokemon"
             return
         }
 
-        val userId =
-            SessionManager(requireContext()).getUserId()
+        val userId = SessionManager(requireContext()).getUserId()
 
         if (userId == -1) {
 
@@ -560,11 +556,8 @@ class CameraFragment :
 
         lifecycleScope.launch {
 
-            val database =
-                PokemonDatabase
-                    .getDatabase(
-                        requireContext()
-                    )
+            val pokemonDatabase =
+                PokemonDatabase.getDatabase(requireContext())
 
             val pokemon =
                 PokemonEntity(
@@ -580,9 +573,34 @@ class CameraFragment :
                     imageUrl = currentPokemonImage
                 )
 
-            database
+            // Simpan pokemon
+            pokemonDatabase
                 .pokemonDao()
                 .insertPokemon(pokemon)
+
+            val appDatabase =
+                AppDatabase.getDatabase(requireContext())
+
+            // Tambah statistik user
+            val user = appDatabase
+                .userDao()
+                .getUserById(userId)
+
+            if (user != null) {
+
+                // Tambah jumlah pokemon
+                user.pokemonCaught += 1
+
+                // Level Trainer
+                // Naik 1 level setiap mendapatkan 5 pokemon
+                user.trainerLevel =
+                    (user.pokemonCaught / 5) + 1
+
+                // Tambah jarak tempuh
+                user.distance += 0.1
+
+                appDatabase.userDao().update(user)
+            }
 
             tvResult.text =
                 "$currentPokemonName berhasil disimpan!"

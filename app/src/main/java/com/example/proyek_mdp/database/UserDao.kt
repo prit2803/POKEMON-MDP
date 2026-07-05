@@ -37,4 +37,53 @@ interface UserDao {
 
     @Query("UPDATE users SET isBanned = :status WHERE id = :userId")
     suspend fun updateBannedStatus(userId: Int, status: Int)
+
+    // Statistik User
+
+    @Query("""
+    UPDATE users
+    SET pokemonCaught = :pokemon,
+        trainerLevel = :level,
+        battleWon = :battle,
+        distance = :distance
+    WHERE id = :userId
+    """)
+    suspend fun updateStats(
+        userId: Int,
+        pokemon: Int,
+        level: Int,
+        battle: Int,
+        distance: Double
+    )
+
+    @Query("""
+    SELECT pokemonCaught
+    FROM users
+    WHERE id = :userId
+    """)
+    suspend fun getPokemonCaught(userId: Int): Int
+
+
+    @Query("""
+    SELECT trainerLevel
+    FROM users
+    WHERE id = :userId
+    """)
+    suspend fun getTrainerLevel(userId: Int): Int
+
+
+    @Query("""
+    SELECT battleWon
+    FROM users
+    WHERE id = :userId
+    """)
+    suspend fun getBattleWon(userId: Int): Int
+
+
+    @Query("""
+    SELECT distance
+    FROM users
+    WHERE id = :userId
+    """)
+    suspend fun getDistance(userId: Int): Double
 }

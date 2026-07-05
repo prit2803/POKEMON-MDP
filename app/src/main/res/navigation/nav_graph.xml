@@ -33,4 +33,8 @@
         android:name="com.example.proyek_mdp.UI.Feed.FeedFragment"
         android:label="Feed" />
 
+    <fragment
+        android:id="@+id/inventoryFragment"
+        android:name="com.example.proyek_mdp.UI.Inventory.InventoryFragment"
+        android:label="Inventory"/>
 </navigation>

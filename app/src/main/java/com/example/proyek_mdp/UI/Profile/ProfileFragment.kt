@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.auth.LoginActivity
 import com.example.proyek_mdp.auth.SessionManager
@@ -18,7 +19,14 @@ import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
+
     private lateinit var tvTrainerName: TextView
+    private lateinit var tvLevel: TextView
+    private lateinit var tvPokemonCaught: TextView
+    private lateinit var tvBattleWon: TextView
+    private lateinit var tvDistance: TextView
+
+    private lateinit var btnInventory: Button
 
     private lateinit var etOldPassword: EditText
     private lateinit var etNewPassword: EditText
@@ -35,11 +43,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         sessionManager = SessionManager(requireContext())
 
         tvTrainerName = view.findViewById(R.id.tvTrainerName)
+        tvLevel = view.findViewById(R.id.tvLevel)
+        tvPokemonCaught = view.findViewById(R.id.tvPokemonCaught)
+        tvBattleWon = view.findViewById(R.id.tvBattleWon)
+        tvDistance = view.findViewById(R.id.tvDistance)
+
         etOldPassword = view.findViewById(R.id.etOldPassword)
         etNewPassword = view.findViewById(R.id.etNewPassword)
         etConfirmPassword = view.findViewById(R.id.etConfirmPassword)
+
         btnChangePassword = view.findViewById(R.id.btnChangePassword)
         btnLogout = view.findViewById(R.id.btnLogout)
+        btnInventory = view.findViewById(R.id.btnInventory)
 
         // Kalau session kosong (misal habis clear data), lempar balik ke login
         if (!sessionManager.isLoggedIn()) {
@@ -53,6 +68,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             handleChangePassword()
         }
 
+        btnInventory.setOnClickListener {
+            findNavController().navigate(R.id.inventoryFragment)
+        }
+
         btnLogout.setOnClickListener {
             sessionManager.clearSession()
             goToLogin()
@@ -60,20 +79,34 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun loadUserData() {
-        val username = sessionManager.getUsername() ?: return
+
+        val userId = sessionManager.getUserId()
+
+        if (userId == -1) return
 
         lifecycleScope.launch {
+
             val db = AppDatabase.getDatabase(requireContext())
-            val user = db.userDao().getUserByUsername(username)
+
+            val user =
+                db.userDao().getUserById(userId)
 
             currentUser = user
 
-            if (isAdded && user != null) {
-                tvTrainerName.text = user.username
-            }
+            if (!isAdded || user == null)
+                return@launch
+
+            tvTrainerName.text = user.username
+
+            tvLevel.text = "Level ${user.trainerLevel} Trainer"
+
+            tvPokemonCaught.text = "Pokemon Ditangkap : ${user.pokemonCaught}"
+
+            tvBattleWon.text = "Battle Menang : ${user.battleWon}"
+
+            tvDistance.text = "Jarak Tempuh : ${user.distance} km"
         }
     }
-
     private fun handleChangePassword() {
         val user = currentUser
         if (user == null) {
@@ -125,4 +158,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         startActivity(intent)
         requireActivity().finish()
     }
+
+
 }
