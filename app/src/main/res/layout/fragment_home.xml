@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    android:background="#FFFFFF">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,38 +14,82 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="88dp">
+            android:paddingBottom="96dp">
 
-            <!-- Greeting -->
-            <TextView
-                android:id="@+id/tvGreeting"
+            <!-- Header / Greeting -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:paddingBottom="8dp"
-                android:text="Halo, Trainer!"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#212121" />
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvGreeting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Halo, Trainer!"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F2A4D" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Selamat datang kembali"
+                    android:textSize="13sp"
+                    android:textColor="#6B7280" />
+            </LinearLayout>
+
+            <!-- Banner Carousel (geser pakai jari, swipe langsung) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBanner"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:clipToPadding="false" />
+
+            <!-- Dot indicator -->
+            <LinearLayout
+                android:id="@+id/dotsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:id="@+id/tvEmptyBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="Belum ada promo"
+                android:textSize="13sp"
+                android:textColor="#9CA3AF"
+                android:visibility="gone" />
 
             <!-- Starter Kamu -->
             <LinearLayout
                 android:id="@+id/layoutStarterCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="20dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="@android:color/white"
-                android:padding="16dp"
-                android:elevation="4dp"
+                android:background="@drawable/bg_card_border"
+                android:padding="14dp"
                 android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/imgStarter"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:scaleType="centerInside" />
 
                 <LinearLayout
@@ -57,9 +102,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Starter Kamu"
-                        android:textSize="12sp"
-                        android:textColor="#9E9E9E" />
+                        android:text="STARTER KAMU"
+                        android:textSize="10sp"
+                        android:textColor="#9CA3AF"
+                        android:letterSpacing="0.05" />
 
                     <TextView
                         android:id="@+id/tvStarterName"
@@ -68,7 +114,7 @@
                         android:text="Bulbasaur"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="#212121" />
+                        android:textColor="#111827" />
 
                     <TextView
                         android:id="@+id/tvStarterLevel"
@@ -76,110 +122,116 @@
                         android:layout_height="wrap_content"
                         android:text="Level 1"
                         android:textSize="13sp"
-                        android:textColor="#757575" />
+                        android:textColor="#0F2A4D" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Hero banner -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="20dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="#3F51B5"
-                android:elevation="4dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚡ Pokemon MDP"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Tangkap, rawat, dan koleksi Pokemon favoritmu"
-                    android:textSize="13sp"
-                    android:textColor="#E8EAF6" />
-
-            </LinearLayout>
-
-            <!-- Section: Info Terbaru -->
+            <!-- Filter kategori (gabungan dari Feed lama) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="Info Terbaru"
-                android:textSize="18sp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="Info &amp; Promo"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="#212121" />
+                android:textColor="#111827" />
 
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="8dp"
+                android:layout_marginBottom="12dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btnFilterAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pill_navy"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:text="Semua"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/btnFilterKartu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pill_outline_navy"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:text="Kartu Pokemon"
+                        android:textColor="#0F2A4D"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/btnFilterMakanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pill_outline_navy"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:text="Makanan"
+                        android:textColor="#0F2A4D"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/btnFilterLainnya"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pill_outline_navy"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:text="Lainnya"
+                        android:textColor="#0F2A4D"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- List feed (vertikal, bisa difilter) -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvInfoTerbaru"
+                android:id="@+id/rvHomeFeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="4dp"
-                android:clipToPadding="false"
-                android:layout_marginBottom="8dp" />
+                android:nestedScrollingEnabled="false" />
 
             <TextView
-                android:id="@+id/tvEmptyTerbaru"
+                android:id="@+id/tvEmptyFeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="20dp"
-                android:text="Belum ada info terbaru"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="8dp"
+                android:text="Belum ada info di kategori ini"
                 android:textSize="13sp"
-                android:textColor="#9E9E9E"
-                android:visibility="gone" />
-
-            <!-- Section: Info Lainnya -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="Info Lainnya"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#212121" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvInfoLainnya"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="4dp"
-                android:clipToPadding="false" />
-
-            <TextView
-                android:id="@+id/tvEmptyLainnya"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Belum ada info lainnya"
-                android:textSize="13sp"
-                android:textColor="#9E9E9E"
+                android:textColor="#9CA3AF"
                 android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <TextView
         android:id="@+id/btnOpenShop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="24dp"
-        android:text="🛒 Shop" />
+        android:background="@drawable/bg_pill_navy"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="14dp"
+        android:text="🛒  Shop"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
 
 </FrameLayout>

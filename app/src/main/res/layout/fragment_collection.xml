@@ -3,59 +3,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp">
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Koleksi Pokémon"
-            android:textSize="24sp"
+            android:text="Koleksi Pokemon"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#212121" />
+            android:textColor="#0F2A4D" />
 
-        <Button
-            android:id="@+id/btnOpenPokedex"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="📖 Pokedex"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="14dp"
+            android:text="Tap untuk beri makan, tap-tahan untuk kunci/hapus"
             android:textSize="12sp"
-            android:layout_marginEnd="8dp" />
+            android:textColor="#6B7280" />
 
-        <Button
-            android:id="@+id/btnDeleteAll"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hapus Semua"
-            android:textColor="#FF5252"
-            android:textSize="12sp" />
-    </LinearLayout>
+            android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="8dp"
-        android:text="Tap-tahan pokemon untuk lock/unlock. Pokemon terkunci gak akan ke-hapus."
-        android:textSize="12sp"
-        android:textColor="#9E9E9E" />
+            <TextView
+                android:id="@+id/btnOpenPokedex"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_pill_outline_navy"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="📖 Pokedex"
+                android:textColor="#0F2A4D"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnDeleteAll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_pill_outline_red"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="🗑️ Hapus Semua"
+                android:textColor="#E53935"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPokemon"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:paddingHorizontal="14dp"
+        android:clipToPadding="false" />
 
 </LinearLayout>

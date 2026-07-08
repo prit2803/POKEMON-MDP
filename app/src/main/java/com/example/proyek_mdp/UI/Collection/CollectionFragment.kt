@@ -7,7 +7,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.widget.TextView
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.UI.Adapter.PokemonAdapter
 import com.example.proyek_mdp.UI.Database.PokemonDatabase
@@ -39,13 +41,13 @@ class CollectionFragment
             view.findViewById(R.id.recyclerViewPokemon)
 
         recyclerView.layoutManager =
-            LinearLayoutManager(requireContext())
+            GridLayoutManager(requireContext(), 2)
 
-        view.findViewById<android.widget.Button>(R.id.btnDeleteAll).setOnClickListener {
+        view.findViewById<TextView>(R.id.btnDeleteAll).setOnClickListener {
             confirmDeleteAll()
         }
 
-        view.findViewById<android.widget.Button>(R.id.btnOpenPokedex).setOnClickListener {
+        view.findViewById<TextView>(R.id.btnOpenPokedex).setOnClickListener {
             PokedexDialogFragment().show(childFragmentManager, "pokedex")
         }
 
@@ -131,13 +133,38 @@ class CollectionFragment
             } else {
                 adapter = PokemonAdapter(
                     pokemonList,
-                    onDeleteClick = { pokemon -> confirmDeleteSingle(pokemon) },
                     onItemClick = { pokemon -> showFeedDialog(pokemon) },
-                    onItemLongClick = { pokemon -> toggleLock(pokemon) }
+                    onItemLongClick = { pokemon -> showActionMenu(pokemon) }
                 )
                 recyclerView.adapter = adapter
             }
         }
+    }
+
+    /** Menu tap-tahan: Lock/Unlock, dan Hapus (cuma muncul kalau gak lagi di-lock). */
+    private fun showActionMenu(pokemon: PokemonEntity) {
+        val locked = pokemon.isLocked == 1
+
+        val options = if (locked) {
+            arrayOf("🔓 Buka Kunci")
+        } else {
+            arrayOf("🔒 Kunci", "🗑️ Hapus")
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(pokemon.name)
+            .setItems(options) { _, index ->
+                if (locked) {
+                    toggleLock(pokemon) // satu-satunya opsi: buka kunci
+                } else {
+                    when (index) {
+                        0 -> toggleLock(pokemon)
+                        1 -> confirmDeleteSingle(pokemon)
+                    }
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     /** Tampilkan daftar makanan yang dipunya user (dibeli dari Shop) buat dipilih. */
