@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.UI.Database.PokemonEntity
+import com.example.proyek_mdp.Data.local.entity.PokemonEntity
 
 class PokemonAdapter(
     private var pokemonList: List<PokemonEntity>,

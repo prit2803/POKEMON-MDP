@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.Post
+import com.example.proyek_mdp.Data.local.entity.Post
 import java.text.NumberFormat
 import java.util.Locale
 

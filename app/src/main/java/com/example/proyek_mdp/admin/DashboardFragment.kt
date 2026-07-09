@@ -5,12 +5,17 @@ import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.AppDatabase
-import kotlinx.coroutines.launch
+import com.example.proyek_mdp.viewmodel.DashboardViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 
 class DashboardFragment : Fragment() {
+
+    private val viewModel: DashboardViewModel by viewModels {
+        ViewModelFactory(requireContext())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -22,19 +27,22 @@ class DashboardFragment : Fragment() {
         val btnAddPost = view.findViewById<Button>(R.id.btnAddPost)
         val btnManagePosts = view.findViewById<Button>(R.id.btnManagePosts)
 
-        val db = AppDatabase.getDatabase(requireContext())
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                tvTotal.text = "Total Users: ${db.userDao().getTotalUsers()}"
-                tvBanned.text = "Banned Users: ${db.userDao().getBannedUsersCount()}"
-                tvTotalPosts.text = "Total Post/Promo: ${db.postDao().getTotalPosts()}"
-            } catch (e: Exception) {
-                tvTotal.text = "Total Users: —"
-                tvBanned.text = "Banned Users: —"
-                tvTotalPosts.text = "Total Post/Promo: —"
-            }
+        viewModel.totalUsers.observe(viewLifecycleOwner) {
+            tvTotal.text = "Total Users: $it"
         }
+        viewModel.bannedUsers.observe(viewLifecycleOwner) {
+            tvBanned.text = "Banned Users: $it"
+        }
+        viewModel.totalPosts.observe(viewLifecycleOwner) {
+            tvTotalPosts.text = "Total Post/Promo: $it"
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            tvTotal.text = "Total Users: —"
+            tvBanned.text = "Banned Users: —"
+            tvTotalPosts.text = "Total Post/Promo: —"
+        }
+
+        viewModel.loadDashboardStats()
 
         btnAddPost.setOnClickListener {
             (activity as? AdminActivity)?.loadFragment(UploadPostFragment())

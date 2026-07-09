@@ -7,14 +7,20 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.Post
+import com.example.proyek_mdp.Data.local.entity.Post
+import com.example.proyek_mdp.viewmodel.UploadPostViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
 class UploadPostFragment : Fragment() {
+
+    private val viewModel: UploadPostViewModel by viewModels {
+        ViewModelFactory(requireContext())
+    }
 
     private val categories = listOf("Kartu Pokemon", "Makanan", "Lainnya")
     private var pickedImagePath: String? = null
@@ -80,15 +86,19 @@ class UploadPostFragment : Fragment() {
                 stock = stock
             )
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    val db = AppDatabase.getDatabase(requireContext())
-                    db.postDao().insertPost(post)
-                    Toast.makeText(requireContext(), "Post berhasil disimpan", Toast.LENGTH_SHORT).show()
-                    (activity as? AdminActivity)?.loadFragment(ManagePostsFragment())
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+            viewModel.savePost(post)
+        }
+        
+        viewModel.saveSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Post berhasil disimpan", Toast.LENGTH_SHORT).show()
+                (activity as? AdminActivity)?.loadFragment(ManagePostsFragment())
+            }
+        }
+        
+        viewModel.saveError.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                Toast.makeText(requireContext(), "Gagal menyimpan: $errorMessage", Toast.LENGTH_SHORT).show()
             }
         }
 

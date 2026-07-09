@@ -30,11 +30,11 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.UI.Database.PokemonDatabase
-import com.example.proyek_mdp.UI.Database.PokemonEntity
-import com.example.proyek_mdp.UI.Network.RetrofitClient
 import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
+import androidx.fragment.app.viewModels
+import com.example.proyek_mdp.Data.remote.api.RetrofitClient
+import com.example.proyek_mdp.viewmodel.CameraViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -93,6 +93,10 @@ class CameraFragment :
     // Prevent duplicate OCR spam
     private var isScanning =
         false
+        
+    private val viewModel: CameraViewModel by viewModels {
+        ViewModelFactory(requireContext())
+    }
 
     // ===============================
     // CAMERA PERMISSION
@@ -177,6 +181,19 @@ class CameraFragment :
         btnClear.setOnClickListener {
 
             clearPokemon()
+        }
+        
+        // OBSERVE VIEWMODEL
+        viewModel.catchSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                tvResult.text = "$currentPokemonName berhasil disimpan!"
+            }
+        }
+        
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                tvResult.text = "Error: $errorMessage"
+            }
         }
     }
 
@@ -554,57 +571,13 @@ class CameraFragment :
             return
         }
 
-        lifecycleScope.launch {
-
-            val pokemonDatabase =
-                PokemonDatabase.getDatabase(requireContext())
-
-            val pokemon =
-                PokemonEntity(
-
-                    userId = userId,
-
-                    speciesId = currentPokemonId,
-
-                    name = currentPokemonName,
-
-                    hp = currentPokemonHp,
-
-                    imageUrl = currentPokemonImage
-                )
-
-            // Simpan pokemon
-            pokemonDatabase
-                .pokemonDao()
-                .insertPokemon(pokemon)
-
-            val appDatabase =
-                AppDatabase.getDatabase(requireContext())
-
-            // Tambah statistik user
-            val user = appDatabase
-                .userDao()
-                .getUserById(userId)
-
-            if (user != null) {
-
-                // Tambah jumlah pokemon
-                user.pokemonCaught += 1
-
-                // Level Trainer
-                // Naik 1 level setiap mendapatkan 5 pokemon
-                user.trainerLevel =
-                    (user.pokemonCaught / 5) + 1
-
-                // Tambah jarak tempuh
-                user.distance += 0.1
-
-                appDatabase.userDao().update(user)
-            }
-
-            tvResult.text =
-                "$currentPokemonName berhasil disimpan!"
-        }
+        viewModel.catchPokemon(
+            userId = userId,
+            speciesId = currentPokemonId,
+            name = currentPokemonName,
+            hp = currentPokemonHp,
+            imageUrl = currentPokemonImage
+        )
     }
 
     // ===============================

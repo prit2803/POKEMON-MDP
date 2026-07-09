@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.UI.Adapter.ShopAdapter
 import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.Post
-import com.example.proyek_mdp.database.PurchaseHistory
-import com.example.proyek_mdp.database.User
-import com.example.proyek_mdp.database.UserInventory
+import com.example.proyek_mdp.Data.local.database.AppDatabase
+import com.example.proyek_mdp.Data.local.entity.Post
+import com.example.proyek_mdp.Data.local.entity.PurchaseHistory
+import com.example.proyek_mdp.Data.local.entity.User
+import com.example.proyek_mdp.Data.local.entity.UserInventory
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date

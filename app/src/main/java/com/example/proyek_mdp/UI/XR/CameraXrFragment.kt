@@ -1,10 +1,10 @@
 package com.example.proyek_mdp.UI.XR
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -15,18 +15,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.UI.Adapter.PokemonSelectionAdapter
-import com.example.proyek_mdp.UI.Database.PokemonDatabase
-import com.example.proyek_mdp.UI.Database.PokemonEntity
+import androidx.fragment.app.viewModels
+import com.example.proyek_mdp.viewmodel.CameraViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
+import com.example.proyek_mdp.Data.local.entity.PokemonEntity
 import com.example.proyek_mdp.auth.SessionManager
+import com.google.ar.core.Config
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.node.ModelNode
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
+    // ===== VIEWS =====
     private lateinit var sceneView: ARSceneView
     private lateinit var btnSelectPokemon: Button
     private lateinit var btnRotate: Button
@@ -41,56 +45,59 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     private lateinit var tvSelectedPokemon: TextView
     private lateinit var tvModelCount: TextView
 
+    // ===== VARIABLES =====
     private lateinit var sessionManager: SessionManager
     private var selectionAdapter: PokemonSelectionAdapter? = null
 
-    // MENYIMPAN BANYAK MODEL NODE
+    // Model nodes
     private val modelNodes = mutableListOf<ModelNode>()
-    private var pokeballNode: ModelNode? = null
+
+    // SIMPAN ROTASI PER MODEL
+    private val modelRotationAngles = mutableMapOf<ModelNode, Float>()
 
     // Scale settings
     private var currentScale = 0.15f
-    private var minScale = 0.05f
-    private var maxScale = 2.0f
+    private val minScale = 0.05f
+    private val maxScale = 2.0f
 
     private var selectedPokemon: PokemonEntity? = null
-    private var spawnCounter = 0  // Untuk posisi spawn bergantian
+    private var spawnCounter = 0
 
-    // Pokeball drag variables
-    private var isPokeballVisible = false
-    private var pokeballInitialY = 0f
-    private var dragStartY = 0f
-    private var isDragging = false
-    private var pokeballRotationAngle = 0f
+    // Track coroutine job
+    private var loadPokemonJob: Job? = null
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Initialize SessionManager
-        sessionManager = SessionManager(requireContext())
-
-        // Initialize views
-        initViews(view)
-
-        // Setup RecyclerView
-        setupRecyclerView()
-
-        // Setup AR Scene
-        setupARScene()
-
-        // Setup listeners
-        setupListeners()
-
-        // Setup Pokeball interaction
-        setupPokeball3DInteraction()
-
-        // Initial state
-        updateUIState()
+    private val viewModel: CameraViewModel by viewModels {
+        ViewModelFactory(requireContext())
     }
 
+    // ===== LIFECYCLE =====
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        sessionManager = SessionManager(requireContext())
+        initViews(view)
+        setupRecyclerView()
+        setupARScene()
+        setupListeners()
+        updateUIState()
+        
+        viewModel.pokemonList.observe(viewLifecycleOwner) { pokemonList ->
+            if (pokemonList.isEmpty()) {
+                Toast.makeText(requireContext(), "Koleksi Pokemon kosong!", Toast.LENGTH_SHORT).show()
+            } else {
+                selectionAdapter?.updateData(pokemonList)
+                pokemonSelectionPanel.visibility = View.VISIBLE
+            }
+        }
+        
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                Toast.makeText(requireContext(), "Error: $errorMessage", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // ===== INIT VIEWS =====
     private fun initViews(view: View) {
         sceneView = view.findViewById(R.id.sceneView)
         btnSelectPokemon = view.findViewById(R.id.btnSelectPokemon)
@@ -107,6 +114,7 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         tvModelCount = view.findViewById(R.id.tvModelCount)
     }
 
+    // ===== RECYCLER VIEW =====
     private fun setupRecyclerView() {
         recyclerViewPokemonSelection.layoutManager = LinearLayoutManager(requireContext())
         selectionAdapter = PokemonSelectionAdapter(emptyList()) { pokemon ->
@@ -115,28 +123,25 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         recyclerViewPokemonSelection.adapter = selectionAdapter
     }
 
+    // ===== AR SCENE =====
     private fun setupARScene() {
-        sceneView.planeRenderer.isEnabled = true
-        sceneView.planeRenderer.isShadowReceiver = true
-        sceneView.planeRenderer.isVisible = false
-
         try {
+            sceneView.planeRenderer.isEnabled = true
+            sceneView.planeRenderer.isShadowReceiver = true
+            sceneView.planeRenderer.isVisible = false
+
             sceneView.configureSession { session, config ->
-                config.lightEstimationMode =
-                    com.google.ar.core.Config.LightEstimationMode.ENVIRONMENTAL_HDR
-                config.planeFindingMode =
-                    com.google.ar.core.Config.PlaneFindingMode.HORIZONTAL
-                config.updateMode =
-                    com.google.ar.core.Config.UpdateMode.LATEST_CAMERA_IMAGE
+                config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+                config.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL
+                config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
             }
         } catch (e: Exception) {
             Log.e("CameraXRFragment", "Error configuring session", e)
         }
     }
 
+    // ===== LISTENERS =====
     private fun setupListeners() {
-
-        // Select Pokemon - selalu bisa meskipun sudah ada model
         btnSelectPokemon.setOnClickListener {
             showPokemonSelectionPanel()
         }
@@ -146,20 +151,7 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         }
 
         btnRotate.setOnClickListener {
-            // Rotate semua model
-            if (modelNodes.isNotEmpty()) {
-                modelNodes.forEach { node ->
-                    val currentRotation = node.rotation
-                    node.rotation = Rotation(
-                        x = currentRotation.x,
-                        y = currentRotation.y + 45f,
-                        z = currentRotation.z
-                    )
-                }
-                Toast.makeText(requireContext(), "All rotated 45°", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "No models!", Toast.LENGTH_SHORT).show()
-            }
+            rotateAllModels()
         }
 
         btnScaleUp.setOnClickListener {
@@ -169,6 +161,8 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                     node.scale = Position(currentScale, currentScale, currentScale)
                 }
                 Toast.makeText(requireContext(), "Scale: ${"%.2f".format(currentScale)}", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "No models!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -179,6 +173,8 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                     node.scale = Position(currentScale, currentScale, currentScale)
                 }
                 Toast.makeText(requireContext(), "Scale: ${"%.2f".format(currentScale)}", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "No models!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -195,168 +191,45 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         }
     }
 
-    /**
-     * Setup interaksi 3D Pokeball dengan touch screen
-     */
-    private fun setupPokeball3DInteraction() {
-        sceneView.setOnTouchListener { view, event ->
-            if (!isPokeballVisible || pokeballNode == null) {
-                return@setOnTouchListener false
-            }
+    // ===== ROTATE FUNCTION =====
+    private fun rotateAllModels() {
+        Log.d("XR_Rotate", "=== ROTATE BUTTON PRESSED ===")
+        Log.d("XR_Rotate", "Model count: ${modelNodes.size}")
 
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    dragStartY = event.rawY
-                    pokeballInitialY = pokeballNode?.worldPosition?.y ?: 0f
-                    isDragging = true
-
-                    // Scale up sedikit saat di-touch
-                    pokeballNode?.scale = Position(0.18f, 0.18f, 0.18f)
-
-                    true
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    if (isDragging && pokeballNode != null) {
-                        val deltaY = dragStartY - event.rawY
-
-                        val newY = pokeballInitialY + (deltaY / 500f)
-                        pokeballNode?.worldPosition = Position(
-                            x = pokeballNode?.worldPosition?.x ?: 0f,
-                            y = newY.coerceIn(-1f, 0f),
-                            z = pokeballNode?.worldPosition?.z ?: -0.8f
-                        )
-
-                        pokeballRotationAngle += deltaY * 0.5f
-                        pokeballNode?.rotation = Rotation(
-                            x = pokeballRotationAngle,
-                            y = 0f,
-                            z = 0f
-                        )
-
-                        // Jika di-swipe ke atas cukup jauh, summon Pokemon
-                        if (deltaY > 150) {
-                            isDragging = false
-                            summonPokemonWithAnimation()
-                            true
-                        }
-                    }
-                    true
-                }
-
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    if (isDragging) {
-                        isDragging = false
-
-                        // Kembalikan Pokeball ke posisi awal
-                        pokeballNode?.let { node ->
-                            val animator = android.animation.ValueAnimator.ofFloat(
-                                node.worldPosition.y,
-                                pokeballInitialY
-                            )
-                            animator.duration = 300
-                            animator.interpolator = AccelerateDecelerateInterpolator()
-                            animator.addUpdateListener { animation ->
-                                node.worldPosition = Position(
-                                    x = node.worldPosition.x,
-                                    y = animation.animatedValue as Float,
-                                    z = node.worldPosition.z
-                                )
-                            }
-                            animator.start()
-                        }
-
-                        // Kembalikan scale
-                        pokeballNode?.scale = Position(0.15f, 0.15f, 0.15f)
-                    }
-                    true
-                }
-
-                else -> false
-            }
+        if (modelNodes.isEmpty()) {
+            Toast.makeText(requireContext(), "No models to rotate!", Toast.LENGTH_SHORT).show()
+            return
         }
-    }
 
-    /**
-     * Animasi melempar Pokeball 3D dan mensummon Pokemon
-     */
-    private fun summonPokemonWithAnimation() {
-        pokeballNode?.let { node ->
-            val animator = android.animation.ValueAnimator.ofFloat(0f, 1f)
-            animator.duration = 800
-            animator.addUpdateListener { animation ->
-                val progress = animation.animatedValue as Float
+        try {
+            modelNodes.forEachIndexed { index, node ->
+                Log.d("XR_Rotate", "--- Rotating model $index ---")
 
-                val currentY = pokeballInitialY + (progress * 2f)
-                node.worldPosition = Position(
-                    x = node.worldPosition.x,
-                    y = currentY,
-                    z = node.worldPosition.z - (progress * 2f)
-                )
+                val currentAngle = modelRotationAngles[node] ?: 0f
+                val newAngle = currentAngle + 45f
+                modelRotationAngles[node] = newAngle
+
+                Log.d("XR_Rotate", "Current angle: $currentAngle -> New angle: $newAngle")
 
                 node.rotation = Rotation(
-                    x = pokeballRotationAngle + (progress * 720f),
-                    y = progress * 360f,
-                    z = progress * 180f
-                )
-
-                val scale = 0.15f * (1f - progress)
-                node.scale = Position(scale, scale, scale)
-            }
-
-            animator.addListener(object : android.animation.Animator.AnimatorListener {
-                override fun onAnimationStart(animation: android.animation.Animator) {}
-
-                override fun onAnimationEnd(animation: android.animation.Animator) {
-                    // Jangan hapus Pokeball, biarkan tetap ada untuk summon lagi
-                    resetPokeballPosition()
-
-                    // Spawn Pokemon baru
-                    spawnPokemon()
-                }
-
-                override fun onAnimationCancel(animation: android.animation.Animator) {}
-                override fun onAnimationRepeat(animation: android.animation.Animator) {}
-            })
-
-            animator.start()
-        }
-    }
-
-    /**
-     * Reset posisi Pokeball untuk siap digunakan lagi
-     */
-    private fun resetPokeballPosition() {
-        pokeballNode?.let { node ->
-            node.worldPosition = Position(
-                x = 0f,
-                y = -0.8f,
-                z = -0.8f
-            )
-            node.rotation = Rotation(x = 0f, y = 0f, z = 0f)
-            node.scale = Position(0.15f, 0.15f, 0.15f)
-
-            // Animasi bounce ringan lagi
-            val bounceAnimator = android.animation.ValueAnimator.ofFloat(-0.8f, -0.75f, -0.8f)
-            bounceAnimator.duration = 1000
-            bounceAnimator.repeatCount = android.animation.ValueAnimator.INFINITE
-            bounceAnimator.repeatMode = android.animation.ValueAnimator.REVERSE
-            bounceAnimator.addUpdateListener { animation ->
-                pokeballNode?.worldPosition = Position(
                     x = 0f,
-                    y = animation.animatedValue as Float,
-                    z = -0.8f
+                    y = newAngle,
+                    z = 0f
                 )
             }
-            bounceAnimator.start()
 
-            tvSelectedPokemon.text = "⬆️ Swipe up to summon another ${selectedPokemon?.name}!"
+            Toast.makeText(requireContext(), "🔄 Rotated 45°", Toast.LENGTH_SHORT).show()
+            sceneView.invalidate()
+
+            Log.d("XR_Rotate", "=== ROTATE COMPLETE ===")
+
+        } catch (e: Exception) {
+            Log.e("XR_Rotate", "Error during rotation", e)
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
-    /**
-     * Spawn Pokemon baru (bisa multiple)
-     */
+    // ===== SPAWN POKEMON =====
     private fun spawnPokemon() {
         try {
             val modelPath = getModelPath()
@@ -369,21 +242,20 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                 assetFileLocation = modelPath
             )
 
-            Log.d("XR", "Model loaded. Material count = ${modelInstance.materialInstances.size}")
-
-            // Posisi spawn bergantian (kiri, tengah, kanan)
             spawnCounter++
-            val xOffset = when (spawnCounter % 3) {
-                0 -> 0.3f   // Kanan
-                1 -> 0f     // Tengah
-                else -> -0.3f // Kiri
-            }
 
-            val zOffset = (spawnCounter / 3) * 0.3f  // Mundur setiap 3 spawn
+            val xOffset = when (spawnCounter % 3) {
+                0 -> 0.3f
+                1 -> 0f
+                else -> -0.3f
+            }
+            val zOffset = (spawnCounter / 3) * 0.3f
+
+            val initialYRotation = 0f
 
             val newNode = ModelNode(
                 modelInstance = modelInstance,
-                scaleToUnits = 0.01f, // Mulai dari sangat kecil untuk pop effect
+                scaleToUnits = 0.01f,
                 centerOrigin = Position(y = -0.5f)
             ).apply {
                 worldPosition = Position(
@@ -391,24 +263,25 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                     y = -0.3f,
                     z = -0.5f - zOffset
                 )
-
                 rotation = Rotation(
                     x = 0f,
-                    y = (spawnCounter * 30f) % 360f, // Rotasi sedikit berbeda
+                    y = initialYRotation,
                     z = 0f
                 )
-
-                isShadowCaster = true
-                isShadowReceiver = true
+                isShadowCaster = false
+                isShadowReceiver = false
             }
 
             sceneView.addChildNode(newNode)
-            modelNodes.add(newNode)  // TAMBAHKAN KE LIST
+            modelNodes.add(newNode)
+            modelRotationAngles[newNode] = initialYRotation
 
-            // Animasi pop effect
-            val scaleAnimator = android.animation.ValueAnimator.ofFloat(0.01f, currentScale)
+            Log.d("XR", "Model added. Total: ${modelNodes.size}")
+            Log.d("XR", "Initial rotation: ${newNode.rotation}")
+
+            val scaleAnimator = ValueAnimator.ofFloat(0.01f, currentScale)
             scaleAnimator.duration = 500
-            scaleAnimator.interpolator = android.view.animation.OvershootInterpolator(1.5f)
+            scaleAnimator.interpolator = OvershootInterpolator(1.5f)
             scaleAnimator.addUpdateListener { animation ->
                 val scale = animation.animatedValue as Float
                 newNode.scale = Position(scale, scale, scale)
@@ -417,7 +290,6 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
             updateUIState()
 
-            Log.d("XR", "MODEL LOADED SUCCESSFULLY (Total: ${modelNodes.size})")
             Toast.makeText(
                 requireContext(),
                 "✅ $pokemonName appears! (${modelNodes.size} total)",
@@ -455,11 +327,11 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
                 sceneView.addChildNode(newNode)
                 modelNodes.add(newNode)
+                modelRotationAngles[newNode] = 0f
 
-                // Pop effect
-                val scaleAnimator = android.animation.ValueAnimator.ofFloat(0.01f, currentScale)
+                val scaleAnimator = ValueAnimator.ofFloat(0.01f, currentScale)
                 scaleAnimator.duration = 500
-                scaleAnimator.interpolator = android.view.animation.OvershootInterpolator(1.5f)
+                scaleAnimator.interpolator = OvershootInterpolator(1.5f)
                 scaleAnimator.addUpdateListener { animation ->
                     val scale = animation.animatedValue as Float
                     newNode.scale = Position(scale, scale, scale)
@@ -477,12 +349,11 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         }
     }
 
-    /**
-     * Hapus model terakhir
-     */
+    // ===== REMOVE FUNCTIONS =====
     private fun removeLastModel() {
         if (modelNodes.isNotEmpty()) {
             val lastNode = modelNodes.removeAt(modelNodes.size - 1)
+            modelRotationAngles.remove(lastNode)
             sceneView.removeChildNode(lastNode)
             spawnCounter--
             updateUIState()
@@ -492,44 +363,37 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         }
     }
 
-    /**
-     * Hapus semua model
-     */
     private fun removeAllModels() {
         modelNodes.forEach { node ->
             sceneView.removeChildNode(node)
         }
         modelNodes.clear()
+        modelRotationAngles.clear()
         spawnCounter = 0
-
-        // Hapus juga Pokeball
-        pokeballNode?.let {
-            sceneView.removeChildNode(it)
-            pokeballNode = null
-        }
 
         selectedPokemon = null
         currentScale = 0.15f
-        isPokeballVisible = false
         tvSelectedPokemon.visibility = View.GONE
 
         updateUIState()
         Toast.makeText(requireContext(), "All models removed", Toast.LENGTH_SHORT).show()
     }
 
-    /**
-     * Reset semua model ke ukuran awal
-     */
     private fun resetAllModels() {
         if (modelNodes.isNotEmpty()) {
             currentScale = 0.15f
             modelNodes.forEach { node ->
                 node.scale = Position(currentScale, currentScale, currentScale)
+                node.rotation = Rotation(x = 0f, y = 0f, z = 0f)
+                modelRotationAngles[node] = 0f
             }
-            Toast.makeText(requireContext(), "All reset to default size", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "All reset to default", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "No models!", Toast.LENGTH_SHORT).show()
         }
     }
 
+    // ===== SELECTION PANEL =====
     private fun showPokemonSelectionPanel() {
         val userId = sessionManager.getUserId()
         if (userId == -1) {
@@ -537,116 +401,33 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
             return
         }
 
-        lifecycleScope.launch {
-            try {
-                val database = PokemonDatabase.getDatabase(requireContext())
-                val pokemonList = database.pokemonDao().getPokemonByUser(userId)
+        // Cancel previous job if exists
+        loadPokemonJob?.cancel()
 
-                if (!isAdded) return@launch
-
-                if (pokemonList.isEmpty()) {
-                    Toast.makeText(requireContext(), "Koleksi Pokemon kosong!", Toast.LENGTH_SHORT).show()
-                    return@launch
-                }
-
-                selectionAdapter?.updateData(pokemonList)
-                pokemonSelectionPanel.visibility = View.VISIBLE
-
-            } catch (e: Exception) {
-                Log.e("CameraXR", "Error loading pokemon list", e)
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
+        viewModel.loadPokemon(userId)
     }
 
     private fun onPokemonSelected(pokemon: PokemonEntity) {
-        // Tutup panel selection
         pokemonSelectionPanel.visibility = View.GONE
-
-        // Simpan pokemon yang dipilih
         selectedPokemon = pokemon
 
-        // Hapus Pokeball lama jika ada dan buat baru
-        pokeballNode?.let {
-            sceneView.removeChildNode(it)
-            pokeballNode = null
-        }
+        spawnPokemon()
 
-        // Spawn 3D Pokeball baru
-        spawn3DPokeball(pokemon)
-
-        // Update UI
         btnSelectPokemon.text = "📱 Pilih Pokemon Lain"
+        tvSelectedPokemon.text = "✅ ${pokemon.name} summoned!"
+        tvSelectedPokemon.visibility = View.VISIBLE
 
-        Toast.makeText(requireContext(), "${pokemon.name} ready! Swipe Pokeball up to spawn!", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "${pokemon.name} summoned! Click again to add more!", Toast.LENGTH_SHORT).show()
     }
 
-    /**
-     * Spawn 3D Pokeball di scene
-     */
-    private fun spawn3DPokeball(pokemon: PokemonEntity) {
-        try {
-            val pokeballModel = sceneView.modelLoader.createModelInstance(
-                assetFileLocation = "models/pokeball.glb"
-            )
-
-            pokeballNode = ModelNode(
-                modelInstance = pokeballModel,
-                scaleToUnits = 0.15f,
-                centerOrigin = Position(y = 0f)
-            ).apply {
-                worldPosition = Position(
-                    x = 0f,
-                    y = -0.8f,
-                    z = -0.8f
-                )
-
-                rotation = Rotation(x = 0f, y = 0f, z = 0f)
-                isShadowCaster = true
-                isShadowReceiver = true
-            }
-
-            sceneView.addChildNode(pokeballNode!!)
-            isPokeballVisible = true
-
-            // Tampilkan instruksi
-            tvSelectedPokemon.text = "⬆️ Swipe Pokeball to summon ${pokemon.name}!"
-            tvSelectedPokemon.visibility = View.VISIBLE
-            tvSelectedPokemon.alpha = 1f
-
-            // Animasi bounce
-            val bounceAnimator = android.animation.ValueAnimator.ofFloat(-0.8f, -0.75f, -0.8f)
-            bounceAnimator.duration = 1000
-            bounceAnimator.repeatCount = android.animation.ValueAnimator.INFINITE
-            bounceAnimator.repeatMode = android.animation.ValueAnimator.REVERSE
-            bounceAnimator.addUpdateListener { animation ->
-                pokeballNode?.worldPosition = Position(
-                    x = 0f,
-                    y = animation.animatedValue as Float,
-                    z = -0.8f
-                )
-            }
-            bounceAnimator.start()
-
-        } catch (e: Exception) {
-            Log.e("Pokeball", "Failed to load 3D Pokeball", e)
-            Toast.makeText(requireContext(), "Pokeball model not found, direct spawn mode", Toast.LENGTH_SHORT).show()
-            // Langsung spawn Pokemon tanpa Pokeball
-            spawnPokemon()
-        }
-    }
-
+    // ===== HELPERS =====
     private fun getModelPath(): String {
         val pokemon = selectedPokemon
         if (pokemon == null) return "models/pikachu.glb"
-
         val pokemonName = pokemon.name.lowercase().trim()
         return "models/$pokemonName.glb"
     }
 
-    /**
-     * Update UI state berdasarkan jumlah model
-     */
     private fun updateUIState() {
         val hasModels = modelNodes.isNotEmpty()
 
@@ -657,7 +438,6 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         btnRemove.isEnabled = hasModels
         btnRemoveAll.isEnabled = hasModels
 
-        // Update counter text
         if (hasModels) {
             tvModelCount.text = "🦖 ${modelNodes.size} Pokemon(s)"
             tvModelCount.visibility = View.VISIBLE
@@ -666,11 +446,49 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         }
     }
 
+    // ===== FIXED LIFECYCLE METHODS =====
+
+    override fun onPause() {
+        super.onPause()
+        // Pause AR session when fragment is paused
+        try {
+            // Try to pause the session if available
+            sceneView.session?.pause()
+        } catch (e: Exception) {
+            Log.e("CameraXRFragment", "Error pausing session", e)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Resume AR session when fragment is resumed
+        try {
+            // Try to resume the session if available
+            sceneView.session?.resume()
+        } catch (e: Exception) {
+            Log.e("CameraXRFragment", "Error resuming session", e)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        // Cleanup semua model
-        modelNodes.forEach { sceneView.removeChildNode(it) }
-        modelNodes.clear()
-        pokeballNode?.let { sceneView.removeChildNode(it) }
+
+        // Cancel any pending coroutines
+        loadPokemonJob?.cancel()
+        loadPokemonJob = null
+
+        // Remove all models first
+        try {
+            modelNodes.forEach { node ->
+                sceneView.removeChildNode(node)
+            }
+            modelNodes.clear()
+            modelRotationAngles.clear()
+        } catch (e: Exception) {
+            Log.e("CameraXRFragment", "Error removing models", e)
+        }
+
+        // Clear adapter reference
+        selectionAdapter = null
     }
 }

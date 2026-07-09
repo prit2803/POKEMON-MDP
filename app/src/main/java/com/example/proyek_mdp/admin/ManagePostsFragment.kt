@@ -8,11 +8,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.viewModels
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.AppDatabase
+import com.example.proyek_mdp.viewmodel.ManagePostsViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 
 class ManagePostsFragment : Fragment() {
+
+    private val viewModel: ManagePostsViewModel by viewModels {
+        ViewModelFactory(requireContext())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -21,26 +28,23 @@ class ManagePostsFragment : Fragment() {
         val btnAddPost = view.findViewById<Button>(R.id.btnAddPostTop)
         rv.layoutManager = LinearLayoutManager(requireContext())
 
-        val db = AppDatabase.getDatabase(requireContext())
         val adapter = PostAdapter(onItemLongClick = { post ->
             AlertDialog.Builder(requireContext())
                 .setTitle("Hapus Post")
                 .setMessage("Hapus \"${post.title}\"?")
                 .setPositiveButton("Hapus") { _, _ ->
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        db.postDao().deletePost(post)
-                    }
+                    viewModel.deletePost(post)
                 }
                 .setNegativeButton("Batal", null)
                 .show()
         })
         rv.adapter = adapter
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            db.postDao().getAllPosts().collect { posts ->
-                adapter.submitList(posts)
-            }
+        viewModel.postsList.observe(viewLifecycleOwner) { posts ->
+            adapter.submitList(posts)
         }
+        
+        viewModel.loadPosts()
 
         btnAddPost.setOnClickListener {
             (activity as? AdminActivity)?.loadFragment(UploadPostFragment())

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.PaymentHistory
+import com.example.proyek_mdp.Data.local.entity.PaymentHistory
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date

@@ -9,9 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.proyek_mdp.MainActivity
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.UI.Database.PokemonDatabase
-import com.example.proyek_mdp.UI.Database.PokemonEntity
-import com.example.proyek_mdp.database.AppDatabase
+import com.example.proyek_mdp.Data.local.database.PokemonDatabase
+import com.example.proyek_mdp.Data.local.entity.PokemonEntity
+import com.example.proyek_mdp.Data.local.database.AppDatabase
 import kotlinx.coroutines.launch
 
 /**

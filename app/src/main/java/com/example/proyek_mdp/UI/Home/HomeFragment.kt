@@ -16,15 +16,18 @@ import com.example.proyek_mdp.R
 import com.example.proyek_mdp.UI.Adapter.BannerDisplayItem
 import com.example.proyek_mdp.UI.Adapter.HomeBannerAdapter
 import com.example.proyek_mdp.UI.Adapter.HomeFeedAdapter
-import com.example.proyek_mdp.UI.Database.PokemonDatabase
+import com.example.proyek_mdp.Data.local.database.PokemonDatabase
 import com.example.proyek_mdp.UI.Shop.ShopDialogFragment
 import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.Post
+import com.example.proyek_mdp.Data.local.database.AppDatabase
+import com.example.proyek_mdp.Data.local.entity.Post
 import com.example.proyek_mdp.UI.TopUp.TopUpActivity
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.fragment.app.viewModels
+import com.example.proyek_mdp.viewmodel.HomeViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -57,6 +60,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var btnFilterLainnya: TextView
     private var allActivePosts: List<Post> = emptyList()
     private var currentCategory: String? = null // null = "Semua"
+    private val viewModel: HomeViewModel by viewModels {
+        ViewModelFactory(requireContext())
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -129,11 +135,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         setupGreeting()
 
-        loadCoins()
+        val userId = SessionManager(requireContext()).getUserId()
 
-        loadFeed()
+        if (userId != -1) {
 
-        loadStarter()
+            viewModel.loadCoins(userId)
+
+            viewModel.loadStarter(userId)
+
+        }
+
+        viewModel.loadFeed()
+
+        observeViewModel()
 
         btnTopUp.setOnClickListener {
 
@@ -145,98 +159,34 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
     override fun onResume() {
+
         super.onResume()
-        loadCoins()
+
+        val userId = SessionManager(requireContext()).getUserId()
+
+        if (userId != -1) {
+
+            viewModel.loadCoins(userId)
+
+        }
+
     }
     private fun setupGreeting() {
         val username = SessionManager(requireContext()).getUsername()
         tvGreeting.text = if (!username.isNullOrEmpty()) "Halo, $username!" else "Halo, Trainer!"
     }
-    fun loadCoins() {
 
-        val userId = SessionManager(requireContext()).getUserId()
 
-        if (userId == -1) return
 
-        viewLifecycleOwner.lifecycleScope.launch {
-
-            val db = AppDatabase.getDatabase(requireContext())
-
-            val user = db.userDao().getUserById(userId)
-
-            if (!isAdded || user == null) return@launch
-
-            tvCoins.text = NumberFormat
-                .getNumberInstance(Locale("in", "ID"))
-                .format(user.coins)
-        }
-    }
-
-    private fun loadStarter() {
-        val userId = SessionManager(requireContext()).getUserId()
-        if (userId == -1) return
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            val pokemonDb = PokemonDatabase.getDatabase(requireContext())
-            val starter = pokemonDb.pokemonDao().getStarter(userId)
-
-            if (!isAdded) return@launch
-
-            if (starter != null) {
-                layoutStarterCard.visibility = View.VISIBLE
-                tvStarterName.text = starter.name
-                tvStarterLevel.text = "Level ${starter.level}"
-                Glide.with(requireContext()).load(starter.imageUrl).into(imgStarter)
-            } else {
-                layoutStarterCard.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun loadFeed() {
-        val db = AppDatabase.getDatabase(requireContext())
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            db.postDao().getActivePosts().collect { posts ->
-                if (!isAdded) return@collect
-
-                allActivePosts = posts
-
-                // Banner: gambar featured statis (Pikachu, dll) duluan, disusul promo post admin (maks 8)
-                val postBanners = posts.take(8).map { post ->
-                    BannerDisplayItem(
-                        imageUrl = post.imagePath ?: "",
-                        title = post.title,
-                        subtitle = NumberFormat.getCurrencyInstance(Locale("in", "ID")).format(post.price),
-                        postId = post.id
-                    )
-                }
-                val combinedBanners = FEATURED_BANNERS + postBanners
-
-                bannerAdapter.updateData(combinedBanners)
-                setupDots(combinedBanners.size)
-                tvEmptyBanner.visibility = View.GONE // selalu ada isi karena FEATURED_BANNERS gak pernah kosong
-                rvBanner.visibility = View.VISIBLE
-
-                // Terapkan ulang filter yang lagi aktif ke data terbaru
-                applyFilter(currentCategory)
-            }
-        }
-    }
 
     private fun applyFilter(category: String?) {
+
         currentCategory = category
 
-        val filtered = if (category == null) {
-            allActivePosts
-        } else {
-            allActivePosts.filter { it.category == category }
-        }
-
-        feedAdapter.submitList(filtered)
-        tvEmptyFeed.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
+        viewModel.applyFilter(category)
 
         updateFilterButtonStyles()
+
     }
 
     private fun updateFilterButtonStyles() {
@@ -274,7 +224,59 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             dotsContainer.addView(dot)
         }
     }
+    private fun observeViewModel() {
 
+        viewModel.coins.observe(viewLifecycleOwner) {
+
+            tvCoins.text = it
+
+        }
+
+        viewModel.starter.observe(viewLifecycleOwner) { starter ->
+
+            if (starter == null) {
+
+                layoutStarterCard.visibility = View.GONE
+
+            } else {
+
+                layoutStarterCard.visibility = View.VISIBLE
+
+                tvStarterName.text = starter.name
+
+                tvStarterLevel.text = "Level ${starter.level}"
+
+                Glide.with(requireContext())
+                    .load(starter.imageUrl)
+                    .into(imgStarter)
+
+            }
+
+        }
+
+        viewModel.banner.observe(viewLifecycleOwner) { banners ->
+
+            bannerAdapter.updateData(banners)
+
+            setupDots(banners.size)
+
+            rvBanner.visibility = View.VISIBLE
+
+            tvEmptyBanner.visibility = View.GONE
+
+        }
+
+        viewModel.filteredFeed.observe(viewLifecycleOwner) { posts ->
+
+            feedAdapter.submitList(posts)
+
+            tvEmptyFeed.visibility =
+                if (posts.isEmpty()) View.VISIBLE
+                else View.GONE
+
+        }
+
+    }
     private fun updateDots() {
         for (i in 0 until dotsContainer.childCount) {
             val dot = dotsContainer.getChildAt(i)

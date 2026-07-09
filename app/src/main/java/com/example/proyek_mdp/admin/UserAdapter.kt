@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.User
+import com.example.proyek_mdp.Data.local.entity.User
 
 class UserAdapter(
     private var users: List<User>,

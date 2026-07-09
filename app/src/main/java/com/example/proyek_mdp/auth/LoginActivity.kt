@@ -6,12 +6,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.MainActivity
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.admin.AdminActivity
-import com.example.proyek_mdp.database.AppDatabase
+import com.example.proyek_mdp.viewmodel.LoginViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -20,6 +22,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
     private lateinit var tvRegister: TextView
+
+    private val viewModel: LoginViewModel by viewModels {
+        ViewModelFactory(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,17 +42,15 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString().trim()
 
             if (username.isEmpty() || password.isEmpty()) {
-
                 Toast.makeText(
                     this,
                     "Username dan Password harus diisi",
                     Toast.LENGTH_SHORT
                 ).show()
-
                 return@setOnClickListener
             }
 
-            // LOGIN ADMIN
+            // Login Admin
             if (username == "admin" && password == "admin") {
 
                 Toast.makeText(
@@ -66,65 +70,57 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // LOGIN USER
+            // Login User
             lifecycleScope.launch {
 
-                val db =
-                    AppDatabase.getDatabase(
-                        this@LoginActivity
-                    )
+                val user = viewModel.login(
+                    username,
+                    password
+                )
 
-                val user =
-                    db.userDao().login(
-                        username,
-                        password
-                    )
+                if (user != null) {
 
-                runOnUiThread {
+                    SessionManager(this@LoginActivity)
+                        .saveSession(
+                            user.id,
+                            user.username
+                        )
 
-                    if (user != null) {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Login Berhasil",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                        // Simpan session user yang berhasil login
-                        SessionManager(this@LoginActivity)
-                            .saveSession(user.id, user.username)
-
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Login Berhasil",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // Belum pernah pilih starter -> wajib pilih dulu sebelum masuk Home
-                        val targetActivity = if (user.hasSelectedStarter == 0) {
+                    val targetActivity =
+                        if (user.hasSelectedStarter == 0) {
                             StarterSelectionActivity::class.java
                         } else {
                             MainActivity::class.java
                         }
 
-                        startActivity(
-                            Intent(
-                                this@LoginActivity,
-                                targetActivity
-                            )
-                        )
-
-                        finish()
-
-                    } else {
-
-                        Toast.makeText(
+                    startActivity(
+                        Intent(
                             this@LoginActivity,
-                            "Username atau Password salah",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            targetActivity
+                        )
+                    )
 
-                    }
+                    finish()
+
+                } else {
+
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Username atau Password salah",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                 }
             }
         }
 
         tvRegister.setOnClickListener {
-
             startActivity(
                 Intent(
                     this,

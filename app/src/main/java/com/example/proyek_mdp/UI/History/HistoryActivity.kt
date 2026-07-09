@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
+import com.example.proyek_mdp.Data.local.database.AppDatabase
 import kotlinx.coroutines.launch
 
 class HistoryActivity : AppCompatActivity() {

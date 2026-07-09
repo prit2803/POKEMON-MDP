@@ -8,8 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.MainActivity
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.PaymentHistory
+import com.example.proyek_mdp.Data.local.database.AppDatabase
+import com.example.proyek_mdp.Data.local.entity.PaymentHistory
 import kotlinx.coroutines.launch
 
 class PaymentSuccessActivity : AppCompatActivity() {

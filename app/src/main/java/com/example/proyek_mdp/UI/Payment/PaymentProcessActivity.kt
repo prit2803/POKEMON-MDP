@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
+import com.example.proyek_mdp.Data.local.database.AppDatabase
 import kotlinx.coroutines.launch
 import com.example.proyek_mdp.R
 

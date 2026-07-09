@@ -15,8 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.auth.LoginActivity
 import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.User
+import com.example.proyek_mdp.Data.local.database.AppDatabase
+import com.example.proyek_mdp.Data.local.entity.User
 import kotlinx.coroutines.launch
 
 /**

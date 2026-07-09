@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.UI.Adapter.PokedexAdapter
 import com.example.proyek_mdp.UI.Adapter.PokedexItem
-import com.example.proyek_mdp.UI.Database.PokedexSpecies
-import com.example.proyek_mdp.UI.Database.PokemonDatabase
-import com.example.proyek_mdp.UI.Network.RetrofitClient
+import com.example.proyek_mdp.Data.local.entity.PokedexSpecies
+import com.example.proyek_mdp.Data.local.database.PokemonDatabase
+import com.example.proyek_mdp.Data.remote.api.RetrofitClient
 import com.example.proyek_mdp.auth.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

@@ -5,26 +5,33 @@ import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.User
-import kotlinx.coroutines.launch
+import com.example.proyek_mdp.Data.local.entity.User
+import com.example.proyek_mdp.viewmodel.UserManagementViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 
 class UserManagementFragment : Fragment() {
 
     private lateinit var rvUsers: RecyclerView
     private lateinit var adapter: UserAdapter
-    private lateinit var db: AppDatabase
+
+    private val viewModel: UserManagementViewModel by viewModels {
+        ViewModelFactory(requireContext())
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_management, container, false)
         rvUsers = view.findViewById(R.id.rvUsers)
-        db = AppDatabase.getDatabase(requireContext())
 
         setupRecyclerView()
+
+        viewModel.usersList.observe(viewLifecycleOwner) { list ->
+            adapter.updateData(list)
+        }
+
         loadUsers()
         return view
     }
@@ -40,25 +47,15 @@ class UserManagementFragment : Fragment() {
     }
 
     private fun loadUsers() {
-        lifecycleScope.launch {
-            val list = db.userDao().getAllUsers()
-            adapter.updateData(list)
-        }
+        viewModel.loadUsers()
     }
 
     private fun toggleBan(user: User) {
-        lifecycleScope.launch {
-            val newStatus = if (user.isBanned == 1) 0 else 1
-            db.userDao().updateBannedStatus(user.id, newStatus)
-            loadUsers()
-        }
+        viewModel.toggleBan(user)
     }
 
     private fun deleteUser(user: User) {
-        lifecycleScope.launch {
-            db.userDao().delete(user)
-            loadUsers()
-        }
+        viewModel.deleteUser(user)
     }
 
     private fun showEditDialog(user: User) {
@@ -68,11 +65,7 @@ class UserManagementFragment : Fragment() {
             .setTitle("Edit Username")
             .setView(et)
             .setPositiveButton("Simpan") { _, _ ->
-                user.username = et.text.toString()
-                lifecycleScope.launch {
-                    db.userDao().update(user)
-                    loadUsers()
-                }
+                viewModel.updateUsername(user, et.text.toString())
             }.show()
     }
 }

@@ -6,11 +6,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.database.AppDatabase
-import com.example.proyek_mdp.database.User
+import com.example.proyek_mdp.Data.local.entity.User
+import com.example.proyek_mdp.viewmodel.RegisterViewModel
+import com.example.proyek_mdp.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
@@ -21,6 +23,10 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var etConfirmPassword: EditText
     private lateinit var btnRegister: Button
     private lateinit var tvLogin: TextView
+
+    private val viewModel: RegisterViewModel by viewModels {
+        ViewModelFactory(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,26 +108,20 @@ class RegisterActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
 
-                val db = AppDatabase.getDatabase(this@RegisterActivity)
-
-                val exists =
-                    db.userDao().isUsernameExists(username)
+                val exists = viewModel.isUsernameExists(username)
 
                 if (exists > 0) {
 
-                    runOnUiThread {
-
-                        Toast.makeText(
-                            this@RegisterActivity,
-                            "Username sudah digunakan",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Username sudah digunakan",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     return@launch
                 }
 
-                db.userDao().insert(
+                viewModel.register(
                     User(
                         username = username,
                         email = email,
@@ -129,16 +129,13 @@ class RegisterActivity : AppCompatActivity() {
                     )
                 )
 
-                runOnUiThread {
+                Toast.makeText(
+                    this@RegisterActivity,
+                    "Registrasi berhasil",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                    Toast.makeText(
-                        this@RegisterActivity,
-                        "Registrasi berhasil",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    finish()
-                }
+                finish()
             }
         }
 
