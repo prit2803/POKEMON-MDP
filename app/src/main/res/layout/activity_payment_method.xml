@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_media_previous"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pilih Metode Pembayaran"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutBCA"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="💳 BCA Virtual Account"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutMandiri"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="💳 Mandiri Virtual Account"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutBNI"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="💳 BNI Virtual Account"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutBRI"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="💳 BRI Virtual Account"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutOVO"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="🟣 OVO"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutGopay"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="🔵 GoPay"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutDana"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="🔷 DANA"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutShopee"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:text="🟠 ShopeePay"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

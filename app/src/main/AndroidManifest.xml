@@ -25,6 +25,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyek_MDP">
         <activity
+            android:name=".UI.History.HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentPageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentPageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentProcessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentProcessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentMethodActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Payment.PaymentMethodActivity"
+            android:exported="false" />
+        <activity
             android:name=".UI.TopUp.TopUpActivity"
             android:exported="false" />
         <activity
@@ -49,6 +76,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity android:name=".auth.StarterSelectionActivity" />
+
         <meta-data
             android:name="com.google.ar.core"
             android:value="required"

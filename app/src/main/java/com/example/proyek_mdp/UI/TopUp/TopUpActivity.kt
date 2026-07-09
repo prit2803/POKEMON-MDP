@@ -1,17 +1,16 @@
 package com.example.proyek_mdp.UI.TopUp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import androidx.cardview.widget.CardView
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.database.AppDatabase
-import kotlinx.coroutines.launch
+import com.example.proyek_mdp.UI.Payment.PaymentMethodActivity
 
 class TopUpActivity : AppCompatActivity() {
 
@@ -30,14 +29,9 @@ class TopUpActivity : AppCompatActivity() {
     private lateinit var etNominal: EditText
     private lateinit var btnTopUp: Button
 
-    private lateinit var sessionManager: SessionManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_top_up)
-
-        sessionManager = SessionManager(this)
 
         btnBack = findViewById(R.id.btnBack)
 
@@ -54,104 +48,94 @@ class TopUpActivity : AppCompatActivity() {
         etNominal = findViewById(R.id.etNominal)
         btnTopUp = findViewById(R.id.btnTopUp)
 
-        //--------------------------------
-        // Back
-        //--------------------------------
+        //----------------------------------
+        // BACK
+        //----------------------------------
 
         btnBack.setOnClickListener {
             finish()
         }
 
-        //--------------------------------
+        //----------------------------------
         // TAB INSTAN
-        //--------------------------------
+        //----------------------------------
 
         btnTabInstant.setOnClickListener {
 
-            layoutInstant.visibility = android.view.View.VISIBLE
-            layoutNominal.visibility = android.view.View.GONE
+            layoutInstant.visibility = LinearLayout.VISIBLE
+            layoutNominal.visibility = LinearLayout.GONE
 
             btnTabInstant.setBackgroundResource(R.drawable.bg_topup_selected)
             btnTabNominal.setBackgroundResource(R.drawable.bg_topup_unselected)
 
         }
 
-        //--------------------------------
+        //----------------------------------
         // TAB NOMINAL
-        //--------------------------------
+        //----------------------------------
 
         btnTabNominal.setOnClickListener {
 
-            layoutInstant.visibility = android.view.View.GONE
-            layoutNominal.visibility = android.view.View.VISIBLE
+            layoutInstant.visibility = LinearLayout.GONE
+            layoutNominal.visibility = LinearLayout.VISIBLE
 
             btnTabInstant.setBackgroundResource(R.drawable.bg_topup_unselected)
             btnTabNominal.setBackgroundResource(R.drawable.bg_topup_selected)
 
         }
 
-        //--------------------------------
-        // CARD
-        //--------------------------------
+        //----------------------------------
+        // CARD INSTAN
+        //----------------------------------
 
         card100.setOnClickListener {
-
-            topUpCoins(100)
-
+            openPayment(100)
         }
 
         card500.setOnClickListener {
-
-            topUpCoins(500)
-
+            openPayment(500)
         }
 
         card1000.setOnClickListener {
-
-            topUpCoins(1000)
-
+            openPayment(1000)
         }
 
-        //--------------------------------
+        //----------------------------------
         // TOPUP MANUAL
-        //--------------------------------
+        //----------------------------------
 
         btnTopUp.setOnClickListener {
 
-            val jumlah = etNominal.text.toString()
+            val nominal = etNominal.text.toString()
 
-            if (jumlah.isEmpty())
+            if (nominal.isEmpty()) {
+                Toast.makeText(this, "Masukkan jumlah coin", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
+            }
 
-            topUpCoins(jumlah.toInt())
+            val coin = nominal.toInt()
+
+            if (coin <= 0) {
+                Toast.makeText(this, "Nominal harus lebih dari 0", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            openPayment(coin)
 
         }
 
     }
 
-    //-------------------------------------------------
+    /**
+     * Membuka halaman pemilihan metode pembayaran
+     */
+    private fun openPayment(coin: Int) {
 
-    private fun topUpCoins(amount: Int) {
+        val intent = Intent(this, PaymentMethodActivity::class.java)
 
-        val userId = sessionManager.getUserId()
+        intent.putExtra("coin_amount", coin)
 
-        lifecycleScope.launch {
-
-            val db = AppDatabase.getDatabase(this@TopUpActivity)
-
-            val user = db.userDao().getUserById(userId)
-
-            if (user != null) {
-
-                user.coins += amount
-
-                db.userDao().update(user)
-
-            }
-
-            finish()
-
-        }
+        startActivity(intent)
 
     }
 

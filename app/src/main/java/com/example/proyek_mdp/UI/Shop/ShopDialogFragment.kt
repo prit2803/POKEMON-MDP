@@ -17,6 +17,7 @@ import com.example.proyek_mdp.UI.Adapter.ShopAdapter
 import com.example.proyek_mdp.auth.SessionManager
 import com.example.proyek_mdp.database.AppDatabase
 import com.example.proyek_mdp.database.Post
+import com.example.proyek_mdp.database.PurchaseHistory
 import com.example.proyek_mdp.database.User
 import com.example.proyek_mdp.database.UserInventory
 import kotlinx.coroutines.launch
@@ -84,18 +85,33 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
         loadUser()
         observePosts()
     }
+    override fun onResume() {
+        super.onResume()
+        loadUser()
+    }
 
     private fun loadUser() {
+
         val userId = sessionManager.getUserId()
+
         if (userId == -1) return
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            currentUser = db.userDao().getUserById(userId)
-            if (isAdded) updateCoinDisplay()
-        }
-    }
 
+            val db = AppDatabase.getDatabase(requireContext())
+
+            currentUser = db.userDao().getUserById(userId)
+
+            if (!isAdded) return@launch
+
+            updateCoinDisplay()
+
+            // refresh adapter supaya callback beli memakai currentUser terbaru
+            shopAdapter.notifyDataSetChanged()
+
+        }
+
+    }
     private fun observePosts() {
         val db = AppDatabase.getDatabase(requireContext())
         viewLifecycleOwner.lifecycleScope.launch {
@@ -168,8 +184,23 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
         }
 
         if (user.coins < post.price) {
-            Toast.makeText(requireContext(), "Koin kamu tidak cukup", Toast.LENGTH_SHORT).show()
+
+            CoinNotEnoughDialog(
+
+                user.coins,
+
+                post.price.toInt()
+
+            ).show(
+
+                childFragmentManager,
+
+                "coin_dialog"
+
+            )
+
             return
+
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -187,6 +218,24 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
 
             user.coins -= post.price.toInt()
             db.userDao().update(user)
+            db.purchaseHistoryDao().insert(
+
+                PurchaseHistory(
+
+                    userId = user.id,
+
+                    postId = post.id,
+
+                    itemName = post.title,
+
+                    price = post.price.toInt(),
+
+                    quantity = 1
+
+                )
+
+            )
+            currentUser = db.userDao().getUserById(user.id)
 
             val existing = db.userInventoryDao().getItem(user.id, post.id)
 

@@ -4,15 +4,25 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.proyek_mdp.database.PaymentHistory
+import com.example.proyek_mdp.database.PaymentHistoryDao
 
 @Database(
-    entities = [User::class, Post::class, UserInventory::class],
-    version = 7, // naik dari 6 -> 7: User tambah kolom nickname & team
+    entities = [
+        User::class,
+        Post::class,
+        UserInventory::class,
+        PaymentHistory::class,
+        PurchaseHistory::class
+    ],
+    version = 9,
     exportSchema = false
 )
 
 abstract class AppDatabase : RoomDatabase() {
 
+    abstract fun paymentHistoryDao(): PaymentHistoryDao
+    abstract fun purchaseHistoryDao(): PurchaseHistoryDao
     abstract fun userDao(): UserDao
     abstract fun postDao(): PostDao
     abstract fun userInventoryDao(): UserInventoryDao

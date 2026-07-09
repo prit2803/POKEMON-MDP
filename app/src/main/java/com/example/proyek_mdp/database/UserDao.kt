@@ -86,4 +86,7 @@ interface UserDao {
     WHERE id = :userId
     """)
     suspend fun getDistance(userId: Int): Double
+
+    @Query("UPDATE users SET coins = :coin WHERE id = :id")
+    suspend fun updateCoin(id:Int, coin:Int)
 }
