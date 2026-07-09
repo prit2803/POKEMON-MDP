@@ -68,7 +68,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="2dp"
-            android:text="@username"
             android:textColor="#6B7280"
             android:textSize="13sp"
             android:visibility="gone" />
