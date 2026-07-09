@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FFFFFF"
     tools:context=".admin.AdminActivity">
 
     <FrameLayout
@@ -18,6 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        app:itemIconTint="@color/bottom_nav_color_admin"
+        app:itemTextColor="@color/bottom_nav_color_admin"
         app:menu="@menu/menu_admin" />
 
 </LinearLayout>
