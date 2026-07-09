@@ -3,14 +3,12 @@ package com.example.proyek_mdp.UI.Profile
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.proyek_mdp.R
+import com.example.proyek_mdp.UI.Database.PokemonDatabase
 import com.example.proyek_mdp.auth.LoginActivity
 import com.example.proyek_mdp.auth.SessionManager
 import com.example.proyek_mdp.database.AppDatabase
@@ -19,20 +17,15 @@ import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
-
     private lateinit var tvTrainerName: TextView
-    private lateinit var tvLevel: TextView
-    private lateinit var tvPokemonCaught: TextView
+    private lateinit var tvUsernameHandle: TextView
+    private lateinit var tvStatPokemonCount: TextView
+    private lateinit var tvStatCoins: TextView
+    private lateinit var tvStatTeam: TextView
     private lateinit var tvBattleWon: TextView
     private lateinit var tvDistance: TextView
-
-    private lateinit var btnInventory: Button
-
-    private lateinit var etOldPassword: EditText
-    private lateinit var etNewPassword: EditText
-    private lateinit var etConfirmPassword: EditText
-    private lateinit var btnChangePassword: Button
-    private lateinit var btnLogout: Button
+    private lateinit var btnInventory: TextView
+    private lateinit var btnSettings: TextView
 
     private lateinit var sessionManager: SessionManager
     private var currentUser: User? = null
@@ -43,18 +36,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         sessionManager = SessionManager(requireContext())
 
         tvTrainerName = view.findViewById(R.id.tvTrainerName)
-        tvLevel = view.findViewById(R.id.tvLevel)
-        tvPokemonCaught = view.findViewById(R.id.tvPokemonCaught)
+        tvUsernameHandle = view.findViewById(R.id.tvUsernameHandle)
+        tvStatPokemonCount = view.findViewById(R.id.tvStatPokemonCount)
+        tvStatCoins = view.findViewById(R.id.tvStatCoins)
+        tvStatTeam = view.findViewById(R.id.tvStatTeam)
         tvBattleWon = view.findViewById(R.id.tvBattleWon)
         tvDistance = view.findViewById(R.id.tvDistance)
-
-        etOldPassword = view.findViewById(R.id.etOldPassword)
-        etNewPassword = view.findViewById(R.id.etNewPassword)
-        etConfirmPassword = view.findViewById(R.id.etConfirmPassword)
-
-        btnChangePassword = view.findViewById(R.id.btnChangePassword)
-        btnLogout = view.findViewById(R.id.btnLogout)
         btnInventory = view.findViewById(R.id.btnInventory)
+        btnSettings = view.findViewById(R.id.btnSettings)
 
         // Kalau session kosong (misal habis clear data), lempar balik ke login
         if (!sessionManager.isLoggedIn()) {
@@ -62,93 +51,55 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             return
         }
 
-        loadUserData()
+        // Dengerin sinyal dari SettingsDialogFragment kalau ada data yang berubah
+        // (nickname/password/tim), biar Profile auto-refresh pas dialognya ditutup.
+        childFragmentManager.setFragmentResultListener("profile_updated", viewLifecycleOwner) { _, _ ->
+            loadUserData()
+        }
 
-        btnChangePassword.setOnClickListener {
-            handleChangePassword()
+        btnSettings.setOnClickListener {
+            SettingsDialogFragment().show(childFragmentManager, "settings")
         }
 
         btnInventory.setOnClickListener {
             findNavController().navigate(R.id.inventoryFragment)
         }
 
-        btnLogout.setOnClickListener {
-            sessionManager.clearSession()
-            goToLogin()
-        }
+        loadUserData()
     }
 
     private fun loadUserData() {
-
         val userId = sessionManager.getUserId()
-
         if (userId == -1) return
 
         lifecycleScope.launch {
-
             val db = AppDatabase.getDatabase(requireContext())
-
-            val user =
-                db.userDao().getUserById(userId)
-
+            val user = db.userDao().getUserById(userId)
             currentUser = user
 
-            if (!isAdded || user == null)
-                return@launch
+            // Jumlah pokemon diambil LANGSUNG dari database pokemon (real-time),
+            // bukan dari angka statis, biar selalu akurat.
+            val pokemonDb = PokemonDatabase.getDatabase(requireContext())
+            val pokemonCount = pokemonDb.pokemonDao().getPokemonByUser(userId).size
 
-            tvTrainerName.text = user.username
+            if (!isAdded || user == null) return@launch
 
-            tvLevel.text = "Level ${user.trainerLevel} Trainer"
+            val displayName = user.nickname?.takeIf { it.isNotBlank() } ?: user.username
+            tvTrainerName.text = displayName
 
-            tvPokemonCaught.text = "Pokemon Ditangkap : ${user.pokemonCaught}"
-
-            tvBattleWon.text = "Battle Menang : ${user.battleWon}"
-
-            tvDistance.text = "Jarak Tempuh : ${user.distance} km"
-        }
-    }
-    private fun handleChangePassword() {
-        val user = currentUser
-        if (user == null) {
-            Toast.makeText(requireContext(), "Data user belum siap, coba lagi", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val oldPassword = etOldPassword.text.toString().trim()
-        val newPassword = etNewPassword.text.toString().trim()
-        val confirmPassword = etConfirmPassword.text.toString().trim()
-
-        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(requireContext(), "Semua field password harus diisi", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (oldPassword != user.password) {
-            Toast.makeText(requireContext(), "Password lama salah", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (newPassword.length < 6) {
-            Toast.makeText(requireContext(), "Password baru minimal 6 karakter", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (newPassword != confirmPassword) {
-            Toast.makeText(requireContext(), "Konfirmasi password tidak cocok", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            user.password = newPassword
-            db.userDao().update(user)
-
-            if (isAdded) {
-                Toast.makeText(requireContext(), "Password berhasil diubah", Toast.LENGTH_SHORT).show()
-                etOldPassword.text.clear()
-                etNewPassword.text.clear()
-                etConfirmPassword.text.clear()
+            if (!user.nickname.isNullOrBlank()) {
+                tvUsernameHandle.text = "@${user.username}"
+                tvUsernameHandle.visibility = View.VISIBLE
+            } else {
+                tvUsernameHandle.visibility = View.GONE
             }
+
+            tvStatPokemonCount.text = pokemonCount.toString()
+            tvStatCoins.text = user.coins.toString()
+            tvStatTeam.text = user.team ?: "-"
+
+            tvBattleWon.text = "Battle Menang: ${user.battleWon}"
+            tvDistance.text = "Jarak Tempuh: ${user.distance} km"
         }
     }
 
@@ -158,6 +109,4 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         startActivity(intent)
         requireActivity().finish()
     }
-
-
 }

@@ -21,9 +21,13 @@ data class User(
     var streakCount: Int = 0,
     var hasSelectedStarter: Int = 0,
 
-    // ===== Statistik =====
+    // ===== Statistik (dibiarkan apa adanya dulu, belum diutak-atik) =====
     var pokemonCaught: Int = 0,
     var battleWon: Int = 0,
     var trainerLevel: Int = 1,
-    var distance: Double = 0.0
+    var distance: Double = 0.0,
+
+    // ===== Profile settings =====
+    var nickname: String? = null, // null = belum di-set, pakai username
+    var team: String? = null      // "Mystic" | "Valor" | "Instinct", null = belum pilih
 )

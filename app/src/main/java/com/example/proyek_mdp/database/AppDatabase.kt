@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [User::class, Post::class, UserInventory::class],
-    version = 6,
+    version = 7, // naik dari 6 -> 7: User tambah kolom nickname & team
     exportSchema = false
 )
 
