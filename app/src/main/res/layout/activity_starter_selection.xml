@@ -3,187 +3,264 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
+
+        <!-- Logo kecil -->
+        <TextView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_circle_navy"
+            android:gravity="center"
+            android:text="⚡"
+            android:textSize="28sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
             android:text="Pilih Starter Pokemon Kamu"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#212121"
-            android:gravity="center"
-            android:layout_marginBottom="4dp" />
+            android:textColor="#0F2A4D"
+            android:textSize="21sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pilihan ini cuma bisa dilakukan sekali!"
-            android:textSize="13sp"
-            android:textColor="#757575"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="28dp"
             android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:text="Pilihan ini cuma bisa dilakukan sekali, pilih dengan bijak!"
+            android:textColor="#6B7280"
+            android:textSize="13sp" />
 
         <!-- Bulbasaur -->
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_card_border"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <ImageView
+                android:id="@+id/imgBulbasaur"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_circle_light_gray"
+                android:padding="8dp"
+                android:scaleType="centerInside" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imgBulbasaur"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:scaleType="centerInside" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bulbasaur"
+                    android:textColor="#111827"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bulbasaur"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#212121" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tipe Rumput/Racun • HP 45"
-                        android:textSize="13sp"
-                        android:textColor="#757575" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btnPickBulbasaur"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pilih" />
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#4CAF50"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:text="GRASS"
+                        android:textColor="@android:color/white"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:background="#9C27B0"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:text="POISON"
+                        android:textColor="@android:color/white"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="HP 45"
+                    android:textColor="#6B7280"
+                    android:textSize="12sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnPickBulbasaur"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:backgroundTint="#0F2A4D"
+                android:paddingHorizontal="20dp"
+                android:text="Pilih"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:cornerRadius="22dp" />
+        </LinearLayout>
 
         <!-- Charmander -->
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_card_border"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <ImageView
+                android:id="@+id/imgCharmander"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_circle_light_gray"
+                android:padding="8dp"
+                android:scaleType="centerInside" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imgCharmander"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:scaleType="centerInside" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical">
+                    android:text="Charmander"
+                    android:textColor="#111827"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Charmander"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#212121" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tipe Api • HP 39"
-                        android:textSize="13sp"
-                        android:textColor="#757575" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btnPickCharmander"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pilih" />
+                    android:layout_marginTop="4dp"
+                    android:background="#FF5722"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:text="FIRE"
+                    android:textColor="@android:color/white"
+                    android:textSize="9sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="HP 39"
+                    android:textColor="#6B7280"
+                    android:textSize="12sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnPickCharmander"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:backgroundTint="#0F2A4D"
+                android:paddingHorizontal="20dp"
+                android:text="Pilih"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:cornerRadius="22dp" />
+        </LinearLayout>
 
         <!-- Squirtle -->
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:background="@drawable/bg_card_border"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <ImageView
+                android:id="@+id/imgSquirtle"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_circle_light_gray"
+                android:padding="8dp"
+                android:scaleType="centerInside" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imgSquirtle"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:scaleType="centerInside" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical">
+                    android:text="Squirtle"
+                    android:textColor="#111827"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Squirtle"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#212121" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tipe Air • HP 44"
-                        android:textSize="13sp"
-                        android:textColor="#757575" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btnPickSquirtle"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pilih" />
+                    android:layout_marginTop="4dp"
+                    android:background="#2196F3"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:text="WATER"
+                    android:textColor="@android:color/white"
+                    android:textSize="9sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="HP 44"
+                    android:textColor="#6B7280"
+                    android:textSize="12sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnPickSquirtle"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:backgroundTint="#0F2A4D"
+                android:paddingHorizontal="20dp"
+                android:text="Pilih"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:cornerRadius="22dp" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
