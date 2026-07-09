@@ -16,34 +16,78 @@
             android:orientation="vertical"
             android:paddingBottom="96dp">
 
-            <!-- Header / Greeting -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingHorizontal="20dp"
                 android:paddingTop="24dp"
                 android:paddingBottom="16dp">
 
-                <TextView
-                    android:id="@+id/tvGreeting"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Halo, Trainer!"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="#0F2A4D" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvGreeting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Halo, Trainer!"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#0F2A4D" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Selamat datang kembali"
+                        android:textSize="13sp"
+                        android:textColor="#6B7280" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnCoin"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Selamat datang kembali"
-                    android:textSize="13sp"
-                    android:textColor="#6B7280" />
+                    android:background="@drawable/bg_pill_outline_navy"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🪙"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvCoins"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="0"
+                        android:textColor="#F9A825"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="+"
+                        android:textColor="#0F2A4D"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Banner Carousel (geser pakai jari, swipe langsung) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvBanner"
                 android:layout_width="match_parent"
@@ -52,7 +96,6 @@
                 android:paddingEnd="20dp"
                 android:clipToPadding="false" />
 
-            <!-- Dot indicator -->
             <LinearLayout
                 android:id="@+id/dotsContainer"
                 android:layout_width="wrap_content"
@@ -73,7 +116,6 @@
                 android:textColor="#9CA3AF"
                 android:visibility="gone" />
 
-            <!-- Starter Kamu -->
             <LinearLayout
                 android:id="@+id/layoutStarterCard"
                 android:layout_width="match_parent"
@@ -126,7 +168,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Filter kategori (gabungan dari Feed lama) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -200,7 +241,6 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- List feed (vertikal, bisa difilter) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvHomeFeed"
                 android:layout_width="match_parent"

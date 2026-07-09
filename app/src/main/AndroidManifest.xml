@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyek_MDP">
         <activity
+            android:name=".UI.TopUp.TopUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".ItemUserActivity"
             android:exported="false" />
         <activity
@@ -45,9 +48,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-        <activity
-            android:name=".auth.StarterSelectionActivity" />
-
+        <activity android:name=".auth.StarterSelectionActivity" />
         <meta-data
             android:name="com.google.ar.core"
             android:value="required"

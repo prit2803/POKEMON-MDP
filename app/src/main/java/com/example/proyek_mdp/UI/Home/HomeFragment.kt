@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ import com.example.proyek_mdp.UI.Shop.ShopDialogFragment
 import com.example.proyek_mdp.auth.SessionManager
 import com.example.proyek_mdp.database.AppDatabase
 import com.example.proyek_mdp.database.Post
+import com.example.proyek_mdp.UI.TopUp.TopUpActivity
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
@@ -27,6 +29,9 @@ import java.util.Locale
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var tvGreeting: TextView
+
+    private lateinit var tvCoins: TextView
+    private lateinit var btnTopUp: LinearLayout
 
     // Banner carousel
     private lateinit var rvBanner: RecyclerView
@@ -56,6 +61,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        tvCoins = view.findViewById(R.id.tvCoins)
+        btnTopUp = view.findViewById(R.id.btnCoin)
         tvGreeting = view.findViewById(R.id.tvGreeting)
         layoutStarterCard = view.findViewById(R.id.layoutStarterCard)
         imgStarter = view.findViewById(R.id.imgStarter)
@@ -73,6 +80,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 ShopDialogFragment.newInstance(banner.postId).show(childFragmentManager, "shop")
             }
         }
+
 
         // ===== Banner carousel =====
         rvBanner = view.findViewById(R.id.rvBanner)
@@ -98,6 +106,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         })
 
+
         // ===== Feed + filter kategori =====
         rvHomeFeed = view.findViewById(R.id.rvHomeFeed)
         tvEmptyFeed = view.findViewById(R.id.tvEmptyFeed)
@@ -105,7 +114,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         btnFilterKartu = view.findViewById(R.id.btnFilterKartu)
         btnFilterMakanan = view.findViewById(R.id.btnFilterMakanan)
         btnFilterLainnya = view.findViewById(R.id.btnFilterLainnya)
-
         feedAdapter = HomeFeedAdapter(onCardClick)
         rvHomeFeed.layoutManager = LinearLayoutManager(requireContext())
         rvHomeFeed.adapter = feedAdapter
@@ -120,13 +128,48 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         setupGreeting()
-        loadFeed()
-        loadStarter()
-    }
 
+        loadCoins()
+
+        loadFeed()
+
+        loadStarter()
+
+        btnTopUp.setOnClickListener {
+
+            val intent =
+                Intent(requireContext(), TopUpActivity::class.java)
+
+            startActivity(intent)
+
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        loadCoins()
+    }
     private fun setupGreeting() {
         val username = SessionManager(requireContext()).getUsername()
         tvGreeting.text = if (!username.isNullOrEmpty()) "Halo, $username!" else "Halo, Trainer!"
+    }
+    fun loadCoins() {
+
+        val userId = SessionManager(requireContext()).getUserId()
+
+        if (userId == -1) return
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            val db = AppDatabase.getDatabase(requireContext())
+
+            val user = db.userDao().getUserById(userId)
+
+            if (!isAdded || user == null) return@launch
+
+            tvCoins.text = NumberFormat
+                .getNumberInstance(Locale("in", "ID"))
+                .format(user.coins)
+        }
     }
 
     private fun loadStarter() {
