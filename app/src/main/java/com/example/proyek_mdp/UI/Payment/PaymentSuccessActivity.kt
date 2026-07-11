@@ -3,98 +3,39 @@ package com.example.proyek_mdp.UI.Payment
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.MainActivity
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.auth.SessionManager
-import com.example.proyek_mdp.Data.local.database.AppDatabase
-import com.example.proyek_mdp.Data.local.entity.PaymentHistory
-import kotlinx.coroutines.launch
 
+/**
+ * PAYMENT SUCCESS ACTIVITY
+ * ========================
+ * PENTING: koin & PaymentHistory udah di-simpan di PaymentWebViewActivity
+ * (SETELAH status transaksi diverifikasi beneran "settlement" ke Midtrans).
+ * Activity ini CUMA nampilin ringkasan -- gak boleh nyimpen/nambah koin lagi
+ * di sini, soalnya kalau ditambah lagi bakal DOBEL KREDIT (ini bug yang ada
+ * di versi sebelumnya, sekarang udah dihapus).
+ */
 class PaymentSuccessActivity : AppCompatActivity() {
-
-    private lateinit var btnFinish: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_payment_success)
 
-        btnFinish = findViewById(R.id.btnFinish)
+        // Key ini HARUS SAMA PERSIS kayak yang dikirim dari PaymentWebViewActivity:
+        // intent.putExtra("coin_amount", coinAmount) dan intent.putExtra("method", ...)
+        val coinAmount = intent.getIntExtra("coin_amount", 0)
+        val method = intent.getStringExtra("method") ?: "Midtrans"
 
-        val coin = intent.getIntExtra("coin",0)
-        val price = intent.getIntExtra("price",0)
-        val method = intent.getStringExtra("method") ?: ""
+        findViewById<TextView>(R.id.tvSuccessCoin).text = "+$coinAmount Coin"
+        findViewById<TextView>(R.id.tvSuccessMethod).text = "via $method"
 
-        saveTransaction(coin,price,method)
-
-        btnFinish.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    MainActivity::class.java
-                )
-            )
-
-            finishAffinity()
-
+        findViewById<Button>(R.id.btnFinish).setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
         }
-
     }
-
-    private fun saveTransaction(
-
-        coin:Int,
-
-        price:Int,
-
-        method:String
-
-    ){
-
-        lifecycleScope.launch {
-
-            val db = AppDatabase.getDatabase(this@PaymentSuccessActivity)
-
-            val userId =
-                SessionManager(this@PaymentSuccessActivity)
-                    .getUserId()
-
-            val user =
-                db.userDao().getUserById(userId)
-
-            if(user!=null){
-
-                user.coins += coin
-
-                db.userDao().update(user)
-
-                db.paymentHistoryDao().insert(
-
-                    PaymentHistory(
-
-                        userId=user.id,
-
-                        paymentMethod=method,
-
-                        coinAmount=coin,
-
-                        totalPrice=price,
-
-                        status="SUCCESS",
-
-                        transactionDate=System.currentTimeMillis()
-
-                    )
-
-                )
-
-            }
-
-        }
-
-    }
-
 }

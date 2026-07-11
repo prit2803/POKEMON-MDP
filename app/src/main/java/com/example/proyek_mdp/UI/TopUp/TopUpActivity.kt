@@ -9,8 +9,17 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.R
-import com.example.proyek_mdp.UI.Payment.PaymentMethodActivity
+import com.example.proyek_mdp.UI.Network.Midtrans.CustomerDetails
+import com.example.proyek_mdp.UI.Network.Midtrans.ItemDetail
+import com.example.proyek_mdp.UI.Network.Midtrans.MidtransClient
+import com.example.proyek_mdp.UI.Network.Midtrans.MidtransConfig
+import com.example.proyek_mdp.UI.Network.Midtrans.SnapTransactionRequest
+import com.example.proyek_mdp.UI.Network.Midtrans.TransactionDetails
+import com.example.proyek_mdp.UI.Payment.PaymentWebViewActivity
+import com.example.proyek_mdp.auth.SessionManager
+import kotlinx.coroutines.launch
 
 class TopUpActivity : AppCompatActivity() {
 
@@ -89,15 +98,15 @@ class TopUpActivity : AppCompatActivity() {
         //----------------------------------
 
         card100.setOnClickListener {
-            openPayment(100)
+            startMidtransPayment(100)
         }
 
         card500.setOnClickListener {
-            openPayment(500)
+            startMidtransPayment(500)
         }
 
         card1000.setOnClickListener {
-            openPayment(1000)
+            startMidtransPayment(1000)
         }
 
         //----------------------------------
@@ -120,23 +129,71 @@ class TopUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            openPayment(coin)
+            startMidtransPayment(coin)
 
         }
 
     }
 
     /**
-     * Membuka halaman pemilihan metode pembayaran
+     * DIGANTI dari openPayment() (yang tadinya buka PaymentMethodActivity buatan sendiri)
+     * jadi langsung panggil Midtrans Snap API asli. Alur PaymentMethodActivity /
+     * PaymentPageActivity / PaymentProcessActivity gak dipakai lagi di jalur ini,
+     * soalnya Midtrans Snap sendiri udah nyediain halaman pilih metode + nomor VA/QR.
      */
-    private fun openPayment(coin: Int) {
+    private fun startMidtransPayment(coin: Int) {
+        val sessionManager = SessionManager(this)
+        val userId = sessionManager.getUserId()
 
-        val intent = Intent(this, PaymentMethodActivity::class.java)
+        if (userId == -1) {
+            Toast.makeText(this, "Sesi login gak ketemu, coba login ulang", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        intent.putExtra("coin_amount", coin)
+        val priceRupiah = (coin * MidtransConfig.RUPIAH_PER_COIN).toLong()
+        val orderId = "TOPUP-$userId-${System.currentTimeMillis()}"
+        val username = sessionManager.getUsername() ?: "Trainer"
 
-        startActivity(intent)
+        val request = SnapTransactionRequest(
+            transaction_details = TransactionDetails(
+                order_id = orderId,
+                gross_amount = priceRupiah
+            ),
+            item_details = listOf(
+                ItemDetail(
+                    id = "coin_$coin",
+                    price = priceRupiah,
+                    quantity = 1,
+                    name = "Top Up $coin Coin"
+                )
+            ),
+            customer_details = CustomerDetails(first_name = username)
+        )
 
+        lifecycleScope.launch {
+            try {
+                val response = MidtransClient.snapApi.createTransaction(request)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val snapResult = response.body()!!
+
+                    val intent = Intent(this@TopUpActivity, PaymentWebViewActivity::class.java)
+                    intent.putExtra("redirect_url", snapResult.redirect_url)
+                    intent.putExtra("order_id", orderId)
+                    intent.putExtra("coin_amount", coin)
+                    intent.putExtra("price_rupiah", priceRupiah)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(
+                        this@TopUpActivity,
+                        "Gagal membuat transaksi (${response.code()}). Cek Server Key di MidtransConfig.kt.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@TopUpActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
 }
