@@ -27,7 +27,9 @@ data class PokemonEntity(
 
     var isLocked: Int = 0,
 
-    val caughtAt: Long = System.currentTimeMillis() // buat ditampilin di Pokedex
+    val caughtAt: Long = System.currentTimeMillis(), // buat ditampilin di Pokedex
+
+    var isSynced: Int = 1
 )
 
 /** Hasil agregat: per spesies, level tertinggi & tanggal pertama kali ditangkap milik 1 user. */

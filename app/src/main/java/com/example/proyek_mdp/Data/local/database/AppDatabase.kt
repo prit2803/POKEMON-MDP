@@ -1,16 +1,30 @@
 package com.example.proyek_mdp.Data.local.database
 
 import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.proyek_mdp.Data.local.dao.*
-import com.example.proyek_mdp.Data.remote.dao.*
+import com.example.proyek_mdp.Data.local.entity.*
 
-class AppDatabase private constructor(context: Context) {
+@Database(
+    entities = [
+        User::class,
+        Post::class,
+        UserInventory::class,
+        PaymentHistory::class,
+        PurchaseHistory::class
+    ],
+    version = 1,
+    exportSchema = false
+)
+abstract class AppDatabase : RoomDatabase() {
 
-    fun paymentHistoryDao(): PaymentHistoryDao = ApiPaymentHistoryDao()
-    fun purchaseHistoryDao(): PurchaseHistoryDao = ApiPurchaseHistoryDao()
-    fun userDao(): UserDao = ApiUserDao()
-    fun postDao(): PostDao = ApiPostDao()
-    fun userInventoryDao(): UserInventoryDao = ApiUserInventoryDao()
+    abstract fun paymentHistoryDao(): PaymentHistoryDao
+    abstract fun purchaseHistoryDao(): PurchaseHistoryDao
+    abstract fun userDao(): UserDao
+    abstract fun postDao(): PostDao
+    abstract fun userInventoryDao(): UserInventoryDao
 
     companion object {
         @Volatile
@@ -18,10 +32,16 @@ class AppDatabase private constructor(context: Context) {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = AppDatabase(context.applicationContext)
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "app_database"
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }
         }
     }
-}
+}

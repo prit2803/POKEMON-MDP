@@ -14,5 +14,6 @@ data class Post(
     var imagePath: String? = null,
     var isActive: Int = 1,
     var stock: Int = 0,
-    var createdAt: Long = System.currentTimeMillis()
+    var createdAt: Long = System.currentTimeMillis(),
+    var isSynced: Int = 1
 )

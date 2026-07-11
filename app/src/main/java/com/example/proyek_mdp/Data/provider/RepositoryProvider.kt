@@ -25,7 +25,8 @@ object RepositoryProvider {
 
         return PokemonRepository(
             local,
-            remote
+            remote,
+            context
         )
 
     }

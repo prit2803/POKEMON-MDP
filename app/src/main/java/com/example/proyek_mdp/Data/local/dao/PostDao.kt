@@ -31,4 +31,7 @@ interface PostDao {
     // 1 = berhasil, 0 = stok memang sudah habis (dicek atomik di level SQL)
     @Query("UPDATE posts SET stock = stock - 1 WHERE id = :postId AND stock > 0")
     suspend fun decreaseStock(postId: Int): Int
+
+    @Query("SELECT * FROM posts WHERE isSynced = 0")
+    suspend fun getUnsyncedPosts(): List<Post>
 }

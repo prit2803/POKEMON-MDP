@@ -128,6 +128,10 @@ class ApiUserDao : UserDao {
     override suspend fun updateCoin(id: Int, coin: Int) {
         api.updateCoin(id, mapOf("coins" to coin))
     }
+
+    override suspend fun getUnsyncedUsers(): List<User> {
+        return emptyList()
+    }
 }
 
 class ApiPostDao : PostDao {
@@ -187,6 +191,10 @@ class ApiPostDao : PostDao {
         } catch (e: Exception) {
             0
         }
+    }
+
+    override suspend fun getUnsyncedPosts(): List<Post> {
+        return emptyList()
     }
 }
 
@@ -303,6 +311,10 @@ class ApiPokemonDao : PokemonDao {
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    override suspend fun getUnsyncedPokemon(): List<PokemonEntity> {
+        return emptyList()
     }
 }
 

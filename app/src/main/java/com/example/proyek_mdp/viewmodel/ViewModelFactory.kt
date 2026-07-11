@@ -29,7 +29,8 @@ class ViewModelFactory(
         val userRepository = UserRepository(
             UserLocalDataSource(
                 appDb.userDao()
-            )
+            ),
+            context
         )
 
         val pokemonRepository = PokemonRepository(
@@ -38,19 +39,22 @@ class ViewModelFactory(
             ),
             PokemonRemoteDataSource(
                 RetrofitClient.api
-            )
+            ),
+            context
         )
 
         val inventoryRepository = InventoryRepository(
             InventoryLocalDataSource(
                 appDb.userInventoryDao()
-            )
+            ),
+            context
         )
 
         val postRepository = PostRepository(
             PostLocalDataSource(
                 appDb.postDao()
-            )
+            ),
+            context
         )
 
 

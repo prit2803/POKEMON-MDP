@@ -193,6 +193,40 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- MODE SWITCH -->
+    <LinearLayout
+        android:id="@+id/modeSwitchContainer"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="100dp"
+        android:background="#80000000"
+        android:padding="2dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnModePlace"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="Place"
+            android:textSize="12sp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white"
+            android:padding="0dp" />
+
+        <Button
+            android:id="@+id/btnModeCapture"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="Capture"
+            android:textSize="12sp"
+            android:backgroundTint="#80000000"
+            android:textColor="@android:color/white"
+            android:padding="0dp" />
+    </LinearLayout>
+
     <!-- BOTTOM CONTROLS -->
     <LinearLayout
         android:id="@+id/bottomControls"
@@ -226,5 +260,23 @@
             android:textColor="@android:color/white"
             android:backgroundTint="#607D8B" />
     </LinearLayout>
+
+    <!-- CAPTURE BUTTON CONTAINER (hidden by default) -->
+    <FrameLayout
+        android:id="@+id/captureContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="32dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btnCapture"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:background="@drawable/shutter_button"
+            android:elevation="4dp" />
+    </FrameLayout>
 
 </FrameLayout>

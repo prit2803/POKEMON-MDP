@@ -32,7 +32,6 @@ interface PokemonDao {
     @Query("DELETE FROM pokemon_table WHERE userId = :userId AND isLocked = 0")
     suspend fun deleteAllUnlockedByUser(userId: Int)
 
-    // Buat Pokedex: per spesies yang dimiliki user, ambil level tertinggi & tanggal pertama tangkap
     @Query("""
         SELECT speciesId, MAX(level) AS highestLevel, MIN(caughtAt) AS firstCaughtAt
         FROM pokemon_table
@@ -40,4 +39,7 @@ interface PokemonDao {
         GROUP BY speciesId
     """)
     suspend fun getOwnedSpeciesSummary(userId: Int): List<OwnedSpeciesSummary>
+
+    @Query("SELECT * FROM pokemon_table WHERE isSynced = 0")
+    suspend fun getUnsyncedPokemon(): List<PokemonEntity>
 }

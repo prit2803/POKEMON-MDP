@@ -90,4 +90,7 @@ interface UserDao {
 
     @Query("UPDATE users SET coins = :coin WHERE id = :id")
     suspend fun updateCoin(id:Int, coin:Int)
+
+    @Query("SELECT * FROM users WHERE isSynced = 0")
+    suspend fun getUnsyncedUsers(): List<User>
 }

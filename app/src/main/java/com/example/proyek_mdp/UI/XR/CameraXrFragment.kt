@@ -1,14 +1,27 @@
 package com.example.proyek_mdp.UI.XR
 
 import android.animation.ValueAnimator
+import android.content.ContentValues
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
+import android.view.PixelCopy
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +57,15 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     private lateinit var recyclerViewPokemonSelection: RecyclerView
     private lateinit var tvSelectedPokemon: TextView
     private lateinit var tvModelCount: TextView
+
+    // Mode & Capture UI
+    private lateinit var btnModePlace: Button
+    private lateinit var btnModeCapture: Button
+    private lateinit var btnCapture: Button
+    private lateinit var topControls: LinearLayout
+    private lateinit var bottomControls: LinearLayout
+    private lateinit var captureContainer: FrameLayout
+    private var isCaptureMode = false
 
     // ===== VARIABLES =====
     private lateinit var sessionManager: SessionManager
@@ -112,6 +134,13 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         recyclerViewPokemonSelection = view.findViewById(R.id.recyclerViewPokemonSelection)
         tvSelectedPokemon = view.findViewById(R.id.tvSelectedPokemon)
         tvModelCount = view.findViewById(R.id.tvModelCount)
+
+        btnModePlace = view.findViewById(R.id.btnModePlace)
+        btnModeCapture = view.findViewById(R.id.btnModeCapture)
+        btnCapture = view.findViewById(R.id.btnCapture)
+        topControls = view.findViewById(R.id.topControls)
+        bottomControls = view.findViewById(R.id.bottomControls)
+        captureContainer = view.findViewById(R.id.captureContainer)
     }
 
     // ===== RECYCLER VIEW =====
@@ -188,6 +217,91 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
         btnRemoveAll.setOnClickListener {
             removeAllModels()
+        }
+
+        // Mode Toggles
+        btnModePlace.setOnClickListener {
+            switchMode(false)
+        }
+
+        btnModeCapture.setOnClickListener {
+            switchMode(true)
+        }
+
+        btnCapture.setOnClickListener {
+            captureScreenshot()
+        }
+    }
+
+    private fun switchMode(toCaptureMode: Boolean) {
+        isCaptureMode = toCaptureMode
+        if (isCaptureMode) {
+            btnModeCapture.setBackgroundColor(resources.getColor(android.R.color.holo_green_dark, null))
+            btnModePlace.setBackgroundColor(resources.getColor(android.R.color.transparent, null))
+            topControls.visibility = View.GONE
+            bottomControls.visibility = View.GONE
+            captureContainer.visibility = View.VISIBLE
+            Toast.makeText(requireContext(), "Capture Mode Active", Toast.LENGTH_SHORT).show()
+        } else {
+            btnModePlace.setBackgroundColor(resources.getColor(android.R.color.holo_green_dark, null))
+            btnModeCapture.setBackgroundColor(resources.getColor(android.R.color.transparent, null))
+            topControls.visibility = View.VISIBLE
+            bottomControls.visibility = View.VISIBLE
+            captureContainer.visibility = View.GONE
+            Toast.makeText(requireContext(), "Placement Mode Active", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // ===== SCREENSHOT CAPTURE =====
+    private fun captureScreenshot() {
+        Toast.makeText(requireContext(), "Mengambil foto...", Toast.LENGTH_SHORT).show()
+        try {
+            val bitmap = Bitmap.createBitmap(
+                sceneView.width,
+                sceneView.height,
+                Bitmap.Config.ARGB_8888
+            )
+
+            PixelCopy.request(
+                sceneView,
+                bitmap,
+                { copyResult ->
+                    if (copyResult == PixelCopy.SUCCESS) {
+                        saveBitmapToGallery(bitmap)
+                    } else {
+                        Toast.makeText(requireContext(), "Gagal mengambil gambar", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                Handler(Looper.getMainLooper())
+            )
+        } catch (e: Exception) {
+            Log.e("CameraXRFragment", "Capture error", e)
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveBitmapToGallery(bitmap: Bitmap) {
+        val filename = "PokemonAR_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())}.jpg"
+        var fos: OutputStream? = null
+        val resolver = requireContext().contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        }
+
+        val imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        if (imageUri != null) {
+            try {
+                fos = resolver.openOutputStream(imageUri)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos!!)
+                fos.close()
+                Toast.makeText(requireContext(), "Foto disimpan ke Galeri!", Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Gagal menulis file", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(requireContext(), "Gagal menyimpan foto ke galeri", Toast.LENGTH_SHORT).show()
         }
     }
 

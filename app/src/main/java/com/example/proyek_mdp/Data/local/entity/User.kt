@@ -29,5 +29,6 @@ data class User(
 
     // ===== Profile settings =====
     var nickname: String? = null, // null = belum di-set, pakai username
-    var team: String? = null      // "Mystic" | "Valor" | "Instinct", null = belum pilih
+    var team: String? = null,      // "Mystic" | "Valor" | "Instinct", null = belum pilih
+    var isSynced: Int = 1
 )
