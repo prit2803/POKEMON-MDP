@@ -78,6 +78,8 @@
             android:exported="false" />
         <activity android:name=".auth.StarterSelectionActivity" />
 
+        <activity android:name=".UI.Payment.PaymentWebViewActivity" />
+
         <meta-data
             android:name="com.google.ar.core"
             android:value="required"
