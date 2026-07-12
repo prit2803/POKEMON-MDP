@@ -10,8 +10,8 @@ package com.example.proyek_mdp.UI.Network.Midtrans
  * WAJIB cuma ada di backend server, gak boleh ada di dalam APK sama sekali.
  */
 object MidtransConfig {
-    const val SERVER_KEY = "SB-Mid-server-GANTI_DENGAN_SERVER_KEY_KAMU"
-    const val CLIENT_KEY = "SB-Mid-client-GANTI_DENGAN_CLIENT_KEY_KAMU"
+    const val SERVER_KEY = "SB-Mid-server-ZjQWXuk8HxJnrzY9f5Ht5_HZ"
+    const val CLIENT_KEY = "SB-Mid-client-yvv0oP_RGqdDOZAa"
 
     // Base URL Sandbox. Kalau nanti udah siap ke production, ganti ke:
     // https://app.midtrans.com/snap/v1/  dan  https://api.midtrans.com/v2/

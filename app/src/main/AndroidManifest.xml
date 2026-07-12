@@ -23,8 +23,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.Proyek_MDP">
+        android:theme="@style/Theme.Proyek_MDP"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".UI.Payment.PaymentHistoryActivity"
+            android:exported="false" />
         <activity
             android:name=".UI.History.HistoryActivity"
             android:exported="false" />
@@ -77,7 +80,6 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity android:name=".auth.StarterSelectionActivity" />
-
         <activity android:name=".UI.Payment.PaymentWebViewActivity" />
 
         <meta-data

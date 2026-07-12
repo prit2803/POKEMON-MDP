@@ -11,12 +11,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import com.example.proyek_mdp.R
 import java.text.NumberFormat
 import java.util.Locale
 
 class PaymentPageActivity : AppCompatActivity() {
-
+    private val viewModel: PaymentViewModel by viewModels { PaymentViewModelFactory( MidtransRepository() ) }
     private lateinit var btnBack: ImageButton
 
     private lateinit var imgMethod: ImageView
@@ -122,18 +126,63 @@ class PaymentPageActivity : AppCompatActivity() {
 
         btnPaid.setOnClickListener {
 
-            val intent =
-                Intent(this, PaymentProcessActivity::class.java)
+            viewModel.createTransaction(
 
-            intent.putExtra("coin_amount", coin)
-            intent.putExtra("payment_method", method)
+                coin = coin,
 
-            startActivity(intent)
+                price = coin * 1000L
 
-            finish()
+            )
 
         }
+        lifecycleScope.launch {
 
+            viewModel.transaction.collectLatest { result ->
+
+                result?.onSuccess {
+
+                    val intent = Intent(
+                        this@PaymentPageActivity,
+                        PaymentWebViewActivity::class.java
+                    )
+
+                    intent.putExtra(
+                        "redirect_url",
+                        it.redirectUrl
+                    )
+
+                    intent.putExtra(
+                        "order_id",
+                        it.orderId
+                    )
+
+                    intent.putExtra(
+                        "coin_amount",
+                        coin
+                    )
+
+                    intent.putExtra(
+                        "price_rupiah",
+                        coin * 1000L
+                    )
+
+                    startActivity(intent)
+
+                }
+
+                result?.onFailure {
+
+                    Toast.makeText(
+                        this@PaymentPageActivity,
+                        it.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                }
+
+            }
+
+        }
     }
 
 }
