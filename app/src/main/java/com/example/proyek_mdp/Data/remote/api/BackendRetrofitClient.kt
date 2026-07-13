@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 object BackendRetrofitClient {
 
     // Gunakan IP WiFi PC (192.168.10.6) karena aplikasi dijalankan di HP fisik, bukan emulator
-    private const val BASE_URL = "http://100.90.187.68:3000/"
+    private const val BASE_URL = "https://photograph-constitute-mounts-mouse.trycloudflare.com/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(3, TimeUnit.SECONDS)

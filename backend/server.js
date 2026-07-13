@@ -1,17 +1,66 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// ==========================================
+// MIDDLEWARE
+// ==========================================
 app.use(cors());
 app.use(express.json());
-
-const PORT = process.env.PORT || 3000;
 
 // Log all incoming requests
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
+});
+
+// ==========================================
+// ROOT & HEALTH ENDPOINTS
+// ==========================================
+
+// Root endpoint
+app.get('/', (req, res) => {
+    res.json({
+        message: 'Pokemon Backend API is running! 🚀',
+        version: '1.0.0',
+        status: 'online',
+        endpoints: {
+            users: '/api/users',
+            posts: '/api/posts',
+            pokemon: '/api/pokemon',
+            inventory: '/api/inventory',
+            payments: '/api/payments',
+            purchases: '/api/purchases',
+            species: '/api/species',
+            health: '/health'
+        },
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Health check endpoint
+app.get('/health', async (req, res) => {
+    try {
+        // Test database connection
+        await db.query('SELECT 1');
+        res.status(200).json({
+            status: 'ok',
+            database: 'connected',
+            uptime: process.uptime(),
+            timestamp: new Date().toISOString()
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            database: 'disconnected',
+            error: err.message,
+            timestamp: new Date().toISOString()
+        });
+    }
 });
 
 // ==========================================
@@ -266,7 +315,7 @@ app.post('/api/posts', async (req, res) => {
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [p.title, p.description, p.price, p.category, p.imagePath || null, p.isActive !== undefined ? p.isActive : 1, p.stock || 0, p.createdAt || Date.now()]
         );
-        res.json(result.insertId); // return Long ID directly as it matches insertPost's return type
+        res.json(result.insertId);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
@@ -357,7 +406,7 @@ app.put('/api/posts/:id/decrease-stock', async (req, res) => {
             'UPDATE posts SET stock = stock - 1 WHERE id = ? AND stock > 0',
             [id]
         );
-        res.json(result.affectedRows); // returns 1 if stock decreased, 0 if out of stock
+        res.json(result.affectedRows);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
@@ -496,7 +545,6 @@ app.get('/api/purchases/:userId', async (req, res) => {
 app.post('/api/pokemon', async (req, res) => {
     try {
         const p = req.body;
-        // Upsert if id is given and greater than 0
         if (p.id && p.id > 0) {
             const [rows] = await db.query('SELECT id FROM pokemon_table WHERE id = ?', [p.id]);
             if (rows.length > 0) {
@@ -574,7 +622,7 @@ app.get('/api/pokemon/user/:userId/starter', async (req, res) => {
     }
 });
 
-// Delete Pokemon (by body, to match Room @Delete passing entity object)
+// Delete Pokemon
 app.delete('/api/pokemon', async (req, res) => {
     try {
         const p = req.body;
@@ -628,7 +676,6 @@ app.post('/api/species/batch', async (req, res) => {
             return res.json({ success: true });
         }
         
-        // Prepare bulk insert query
         const values = list.map(s => [s.speciesId, s.name, s.imageUrl, s.type1, s.type2 || null]);
         await db.query(
             'INSERT INTO pokedex_species_cache (speciesId, name, imageUrl, type1, type2) VALUES ? ON DUPLICATE KEY UPDATE name=VALUES(name), imageUrl=VALUES(imageUrl), type1=VALUES(type1), type2=VALUES(type2)',
@@ -656,13 +703,54 @@ app.get('/api/species/range', async (req, res) => {
     }
 });
 
+// ==========================================
+// 404 HANDLER (Route Not Found)
+// ==========================================
+app.use((req, res) => {
+    res.status(404).json({
+        error: 'Route not found',
+        path: req.originalUrl,
+        method: req.method,
+        timestamp: new Date().toISOString()
+    });
+});
 
-// Start server (hanya jalan jika dijalankan secara lokal, bukan di Vercel)
+// ==========================================
+// START SERVER
+// ==========================================
 if (require.main === module) {
     app.listen(PORT, '0.0.0.0', () => {
-        console.log(`Server is running on port ${PORT}`);
+        console.log(`✅ Server is running on port ${PORT}`);
+        console.log(`🌐 Health check: http://localhost:${PORT}/health`);
+        console.log(`📖 API Docs: http://localhost:${PORT}/`);
     });
 }
 
-// Export app untuk Vercel Serverless Function
+// ==========================================
+// GRACEFUL SHUTDOWN
+// ==========================================
+process.on('SIGINT', async () => {
+    console.log('🛑 Shutting down gracefully...');
+    try {
+        await db.end();
+        console.log('✅ Database connection closed');
+        process.exit(0);
+    } catch (err) {
+        console.error('❌ Error closing database:', err);
+        process.exit(1);
+    }
+});
+
+process.on('SIGTERM', async () => {
+    console.log('🛑 Shutting down gracefully...');
+    try {
+        await db.end();
+        console.log('✅ Database connection closed');
+        process.exit(0);
+    } catch (err) {
+        console.error('❌ Error closing database:', err);
+        process.exit(1);
+    }
+});
+
 module.exports = app;
