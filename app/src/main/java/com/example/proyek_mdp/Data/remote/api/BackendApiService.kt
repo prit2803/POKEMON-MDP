@@ -99,6 +99,12 @@ interface BackendApiService {
     @PUT("api/inventory")
     suspend fun updateInventory(@Body item: UserInventory): Map<String, Boolean>
 
+    @PUT("api/inventory/sync")
+    suspend fun syncInventory(@Body item: UserInventory): Map<String, Boolean>
+
+    @DELETE("api/inventory/{userId}/{postId}")
+    suspend fun deleteInventory(@Path("userId") userId: Int, @Path("postId") postId: Int): Map<String, Boolean>
+
     // Payment History
     @POST("api/payments")
     suspend fun insertPayment(@Body history: PaymentHistory): Map<String, Boolean>

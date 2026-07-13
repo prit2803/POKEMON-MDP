@@ -465,9 +465,45 @@ app.put('/api/inventory', async (req, res) => {
     try {
         const item = req.body;
         await db.query(
-            'UPDATE user_inventory SET userId=?, postId=?, quantity=? WHERE id=?',
-            [item.userId, item.postId, item.quantity, item.id]
+            'UPDATE user_inventory SET quantity=? WHERE userId=? AND postId=?',
+            [item.quantity, item.userId, item.postId]
         );
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete inventory item
+app.delete('/api/inventory/:userId/:postId', async (req, res) => {
+    try {
+        const { userId, postId } = req.params;
+        await db.query(
+            'DELETE FROM user_inventory WHERE userId=? AND postId=?',
+            [userId, postId]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Sync inventory (upsert)
+app.put('/api/inventory/sync', async (req, res) => {
+    try {
+        const item = req.body;
+        const [result] = await db.query(
+            'UPDATE user_inventory SET quantity=? WHERE userId=? AND postId=?',
+            [item.quantity, item.userId, item.postId]
+        );
+        if (result.affectedRows === 0) {
+            await db.query(
+                'INSERT INTO user_inventory (userId, postId, quantity) VALUES (?, ?, ?)',
+                [item.userId, item.postId, item.quantity]
+            );
+        }
         res.json({ success: true });
     } catch (err) {
         console.error(err);

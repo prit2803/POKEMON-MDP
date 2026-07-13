@@ -206,8 +206,11 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
         viewLifecycleOwner.lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
 
-            // Kurangi stok global dulu, dicek atomik di level SQL (aman kalau ada user lain beli bersamaan)
-            val rowsUpdated = db.postDao().decreaseStock(post.id)
+            val postRepo = com.example.proyek_mdp.Data.repository.PostRepository(
+                com.example.proyek_mdp.Data.local.datasource.PostLocalDataSource(db.postDao()),
+                requireContext()
+            )
+            val rowsUpdated = postRepo.decreaseStock(post.id)
 
             if (rowsUpdated == 0) {
                 if (isAdded) {
@@ -216,34 +219,35 @@ class ShopDialogFragment : DialogFragment(R.layout.fragment_shop) {
                 return@launch
             }
 
-            user.coins -= post.price.toInt()
-            db.userDao().update(user)
-            db.purchaseHistoryDao().insert(
-
-                PurchaseHistory(
-
-                    userId = user.id,
-
-                    postId = post.id,
-
-                    itemName = post.title,
-
-                    price = post.price.toInt(),
-
-                    quantity = 1
-
-                )
-
+            val userRepository = com.example.proyek_mdp.Data.repository.UserRepository(
+                com.example.proyek_mdp.Data.local.datasource.UserLocalDataSource(db.userDao()),
+                requireContext()
             )
-            currentUser = db.userDao().getUserById(user.id)
+            val inventoryRepo = com.example.proyek_mdp.Data.repository.InventoryRepository(
+                com.example.proyek_mdp.Data.local.datasource.InventoryLocalDataSource(db.userInventoryDao()),
+                requireContext()
+            )
+
+            user.coins -= post.price.toInt()
+            userRepository.update(user)
+            db.purchaseHistoryDao().insert(
+                PurchaseHistory(
+                    userId = user.id,
+                    postId = post.id,
+                    itemName = post.title,
+                    price = post.price.toInt(),
+                    quantity = 1
+                )
+            )
+            currentUser = user
 
             val existing = db.userInventoryDao().getItem(user.id, post.id)
 
             if (existing != null) {
                 existing.quantity += 1
-                db.userInventoryDao().update(existing)
+                inventoryRepo.update(existing)
             } else {
-                db.userInventoryDao().insert(
+                inventoryRepo.insert(
                     UserInventory(
                         userId = user.id,
                         postId = post.id,

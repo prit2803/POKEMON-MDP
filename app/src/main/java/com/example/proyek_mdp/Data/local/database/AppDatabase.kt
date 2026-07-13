@@ -15,7 +15,7 @@ import com.example.proyek_mdp.Data.local.entity.*
         PaymentHistory::class,
         PurchaseHistory::class
     ],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

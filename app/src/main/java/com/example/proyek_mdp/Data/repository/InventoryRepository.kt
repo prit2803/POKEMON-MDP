@@ -7,6 +7,10 @@ import com.example.proyek_mdp.Data.local.entity.UserInventory
 import com.example.proyek_mdp.Data.remote.api.BackendRetrofitClient
 import com.example.proyek_mdp.Utils.NetworkUtils
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 class InventoryRepository(
     private val localDataSource: InventoryLocalDataSource,
     private val context: Context
@@ -15,14 +19,19 @@ class InventoryRepository(
 
     suspend fun getUserInventory(userId: Int): List<UserInventory> {
         if (NetworkUtils.isOnline(context)) {
-            try {
-                val inventory = api.getUserInventory(userId)
-                for (item in inventory) {
-                    localDataSource.insert(item)
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val inventory = api.getUserInventory(userId)
+                    for (item in inventory) {
+                        val existing = localDataSource.getItem(userId, item.postId)
+                        if (existing == null || existing.isSynced == 1) {
+                            item.isSynced = 1
+                            localDataSource.insert(item)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("InventoryRepository", "API getUserInventory failed", e)
                 }
-                return inventory
-            } catch (e: Exception) {
-                Log.e("InventoryRepository", "API getUserInventory failed", e)
             }
         }
         return localDataSource.getUserInventory(userId)
@@ -33,8 +42,11 @@ class InventoryRepository(
             try {
                 val item = api.getItem(userId, postId)
                 if (item != null) {
-                    localDataSource.insert(item)
-                    return item
+                    val existing = localDataSource.getItem(userId, postId)
+                    if (existing == null || existing.isSynced == 1) {
+                        item.isSynced = 1
+                        localDataSource.insert(item)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("InventoryRepository", "API getItem failed", e)
@@ -44,24 +56,32 @@ class InventoryRepository(
     }
 
     suspend fun insert(item: UserInventory) {
-        localDataSource.insert(item)
         if (NetworkUtils.isOnline(context)) {
             try {
-                api.insertInventory(item)
+                api.syncInventory(item)
+                item.isSynced = 1
+                localDataSource.insert(item)
+                return
             } catch (e: Exception) {
-                Log.e("InventoryRepository", "API insertInventory failed", e)
+                Log.e("InventoryRepository", "API syncInventory failed", e)
             }
         }
+        item.isSynced = 0
+        localDataSource.insert(item)
     }
 
     suspend fun update(item: UserInventory) {
-        localDataSource.update(item)
         if (NetworkUtils.isOnline(context)) {
             try {
-                api.updateInventory(item)
+                api.syncInventory(item)
+                item.isSynced = 1
+                localDataSource.update(item)
+                return
             } catch (e: Exception) {
-                Log.e("InventoryRepository", "API updateInventory failed", e)
+                Log.e("InventoryRepository", "API syncInventory failed", e)
             }
         }
+        item.isSynced = 0
+        localDataSource.update(item)
     }
 }

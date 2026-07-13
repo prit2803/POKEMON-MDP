@@ -51,8 +51,8 @@ class StarterSelectionActivity : AppCompatActivity() {
         if (userId == -1) return
 
         lifecycleScope.launch {
-            val pokemonDb = PokemonDatabase.getDatabase(this@StarterSelectionActivity)
-            pokemonDb.pokemonDao().insertPokemon(
+            val pokemonRepository = com.example.proyek_mdp.Data.provider.RepositoryProvider.providePokemonRepository(this@StarterSelectionActivity)
+            pokemonRepository.insertPokemon(
                 PokemonEntity(
                     userId = userId,
                     speciesId = starter.speciesId,

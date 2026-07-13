@@ -91,6 +91,10 @@ class UserRepository(
     }
 
     suspend fun getUserById(id: Int): User? {
+        val localUser = localDataSource.getUserById(id)
+        if (localUser != null && localUser.isSynced == 0) {
+            return localUser
+        }
         if (NetworkUtils.isOnline(context)) {
             try {
                 val user = api.getUserById(id)
@@ -103,7 +107,7 @@ class UserRepository(
                 Log.e("UserRepository", "API getUserById failed, falling back to local", e)
             }
         }
-        return localDataSource.getUserById(id)
+        return localUser
     }
 
     suspend fun getUserByUsername(username: String): User? {

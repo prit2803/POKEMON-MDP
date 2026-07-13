@@ -224,6 +224,10 @@ class ApiUserInventoryDao : UserInventoryDao {
     override suspend fun update(item: UserInventory) {
         api.updateInventory(item)
     }
+
+    override suspend fun getUnsyncedInventory(): List<UserInventory> {
+        return emptyList()
+    }
 }
 
 class ApiPaymentHistoryDao : PaymentHistoryDao {

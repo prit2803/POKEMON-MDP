@@ -58,6 +58,18 @@ class SyncWorker(
                 }
             }
 
+            // 4. Sync Inventory
+            val unsyncedInventory = appDb.userInventoryDao().getUnsyncedInventory()
+            for (item in unsyncedInventory) {
+                try {
+                    api.syncInventory(item)
+                    item.isSynced = 1
+                    appDb.userInventoryDao().update(item)
+                } catch (e: Exception) {
+                    Log.e("SyncWorker", "Failed to sync inventory item: ${item.postId}", e)
+                }
+            }
+
             Result.success()
         } catch (e: Exception) {
             Log.e("SyncWorker", "Sync failed, will retry", e)

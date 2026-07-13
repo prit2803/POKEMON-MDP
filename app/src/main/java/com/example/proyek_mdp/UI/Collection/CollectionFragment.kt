@@ -163,45 +163,29 @@ class CollectionFragment
 
         if (userId == -1) return
 
-        viewModel.loadFood(userId)
-
-        viewModel.foodList.observe(viewLifecycleOwner) { foods ->
-
+        lifecycleScope.launch {
+            val foods = viewModel.getFoodList(userId)
             if (foods.isEmpty()) {
-
-
-
-                return@observe
-
+                Toast.makeText(requireContext(), "Tidak ada makanan. Silakan beli di Toko.", Toast.LENGTH_SHORT).show()
+                return@launch
             }
 
-            val labels =
-                foods.map {
-
-                    "${it.second.title} (x${it.first.quantity})"
-
-                }.toTypedArray()
+            val labels = foods.map {
+                "${it.second.title} (x${it.first.quantity})"
+            }.toTypedArray()
 
             AlertDialog.Builder(requireContext())
                 .setTitle("Beri makan ${pokemon.name}")
                 .setItems(labels) { _, index ->
-
-                    val (inventory, post) =
-                        foods[index]
-
+                    val (inventory, post) = foods[index]
                     viewModel.feedPokemon(
                         pokemon,
                         inventory,
                         post
                     )
-
                 }
-                .setNegativeButton(
-                    "Batal",
-                    null
-                )
+                .setNegativeButton("Batal", null)
                 .show()
-
         }
 
     }

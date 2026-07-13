@@ -11,6 +11,9 @@ import com.example.proyek_mdp.Data.remote.datasource.PokemonRemoteDataSource
 import com.example.proyek_mdp.Data.remote.response.PokemonResponse
 import com.example.proyek_mdp.Data.worker.SyncWorker
 import com.example.proyek_mdp.Utils.NetworkUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PokemonRepository(
     private val localDataSource: PokemonLocalDataSource,
@@ -18,6 +21,7 @@ class PokemonRepository(
     private val context: Context
 ) {
     private val api = BackendRetrofitClient.api
+    private val repositoryScope = CoroutineScope(Dispatchers.IO)
 
     private fun scheduleSync() {
         val constraints = Constraints.Builder()
@@ -36,16 +40,19 @@ class PokemonRepository(
     suspend fun insertPokemon(pokemon: PokemonEntity): Long {
         pokemon.isSynced = 0
         val localId = localDataSource.insertPokemon(pokemon)
+        var finalId = localId
         if (NetworkUtils.isOnline(context)) {
             try {
                 // If ID is 0, backend insert will auto generate.
                 // We send the pokemon to server:
                 val serverId = api.insertPokemon(pokemon)
                 if (serverId > 0) {
-                    // Update local pokemon with server's generated ID if it was new
-                    // Or keep the original local ID but mark it synced.
-                    pokemon.isSynced = 1
-                    localDataSource.updatePokemon(pokemon)
+                    // Hapus entry lokal sementara
+                    localDataSource.deletePokemon(pokemon.copy(id = localId.toInt()))
+                    // Masukkan entry baru dengan ID server dan tandai ter-sync
+                    val syncedPokemon = pokemon.copy(id = serverId.toInt(), isSynced = 1)
+                    localDataSource.insertPokemon(syncedPokemon)
+                    finalId = serverId
                 }
             } catch (e: Exception) {
                 Log.e("PokemonRepository", "API insertPokemon failed", e)
@@ -54,7 +61,7 @@ class PokemonRepository(
         } else {
             scheduleSync()
         }
-        return localId
+        return finalId
     }
 
     suspend fun updatePokemon(pokemon: PokemonEntity) {
@@ -92,15 +99,20 @@ class PokemonRepository(
 
     suspend fun getPokemonByUser(userId: Int): List<PokemonEntity> {
         if (NetworkUtils.isOnline(context)) {
-            try {
-                val pokemons = api.getPokemonByUser(userId)
-                for (pokemon in pokemons) {
-                    pokemon.isSynced = 1
-                    localDataSource.insertPokemon(pokemon)
+            repositoryScope.launch {
+                try {
+                    val pokemons = api.getPokemonByUser(userId)
+                    val localPokemons = localDataSource.getPokemonByUser(userId)
+                    for (pokemon in pokemons) {
+                        val existing = localPokemons.find { it.id == pokemon.id }
+                        if (existing == null || existing.isSynced == 1) {
+                            pokemon.isSynced = 1
+                            localDataSource.insertPokemon(pokemon)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("PokemonRepository", "API getPokemonByUser failed", e)
                 }
-                return pokemons
-            } catch (e: Exception) {
-                Log.e("PokemonRepository", "API getPokemonByUser failed", e)
             }
         }
         return localDataSource.getPokemonByUser(userId)

@@ -24,8 +24,6 @@ class CollectionViewModel(
 
     private val _pokemonList = MutableLiveData<List<PokemonEntity>>()
     val pokemonList: LiveData<List<PokemonEntity>> = _pokemonList
-    private val _foodList = MutableLiveData<List<Pair<UserInventory, Post>>>()
-    val foodList: LiveData<List<Pair<UserInventory, Post>>> = _foodList
     private val _toastMessage = MutableLiveData<String>()
     val toastMessage: LiveData<String> = _toastMessage
 
@@ -110,35 +108,17 @@ class CollectionViewModel(
         _toastMessage.value =
             "Pokemon yang tidak terkunci berhasil dihapus"
     }
-    fun loadFood(userId: Int) {
-
-        viewModelScope.launch {
-
-            val inventory =
-                inventoryRepository.getUserInventory(userId)
-
-            val foods =
-                mutableListOf<Pair<UserInventory, Post>>()
-
-            for (item in inventory) {
-
-                if (item.quantity <= 0) continue
-
-                val post =
-                    postRepository.getPostById(item.postId)
-
-                if (post != null && post.category == "Makanan") {
-
-                    foods.add(item to post)
-
-                }
-
+    suspend fun getFoodList(userId: Int): List<Pair<UserInventory, Post>> {
+        val inventory = inventoryRepository.getUserInventory(userId)
+        val foods = mutableListOf<Pair<UserInventory, Post>>()
+        for (item in inventory) {
+            if (item.quantity <= 0) continue
+            val post = postRepository.getPostById(item.postId)
+            if (post != null && post.category == "Makanan") {
+                foods.add(item to post)
             }
-
-            _foodList.value = foods
-
         }
-
+        return foods
     }
 
     fun feedPokemon(

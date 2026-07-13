@@ -59,6 +59,8 @@ dependencies {
 
     // ML Kit OCR
     implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.0")
+    implementation("com.google.mlkit:text-recognition-japanese:16.0.0")
 
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
