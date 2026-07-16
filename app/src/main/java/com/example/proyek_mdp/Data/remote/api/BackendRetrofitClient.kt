@@ -15,7 +15,7 @@ object BackendRetrofitClient {
         .connectTimeout(3, TimeUnit.SECONDS)
         .readTimeout(3, TimeUnit.SECONDS)
         .writeTimeout(3, TimeUnit.SECONDS)
-        .build()
+        .build()    
 
     val api: BackendApiService by lazy {
         Retrofit.Builder()

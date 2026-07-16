@@ -193,6 +193,51 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- QR Code Display Panel -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/qrCodePanel"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:cardBackgroundColor="#F0000000"
+        app:cardCornerRadius="16dp"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scan untuk Download"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <ImageView
+                android:id="@+id/ivQrCode"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@android:color/white"
+                android:padding="8dp" />
+
+            <Button
+                android:id="@+id/btnCloseQr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tutup"
+                android:backgroundTint="#F44336"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <!-- MODE SWITCH -->
     <LinearLayout
         android:id="@+id/modeSwitchContainer"

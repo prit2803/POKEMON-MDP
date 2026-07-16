@@ -34,12 +34,27 @@ import com.example.proyek_mdp.viewmodel.ViewModelFactory
 import com.example.proyek_mdp.Data.local.entity.PokemonEntity
 import com.example.proyek_mdp.auth.SessionManager
 import com.google.ar.core.Config
+import com.google.ar.core.HitResult
 import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.node.ModelNode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import android.graphics.Color
+import android.widget.ImageView
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import org.json.JSONObject
+import java.io.IOException
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
@@ -67,12 +82,18 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     private lateinit var captureContainer: FrameLayout
     private var isCaptureMode = false
 
+    // QR Code UI
+    private lateinit var qrCodePanel: CardView
+    private lateinit var ivQrCode: ImageView
+    private lateinit var btnCloseQr: Button
+
     // ===== VARIABLES =====
     private lateinit var sessionManager: SessionManager
     private var selectionAdapter: PokemonSelectionAdapter? = null
 
     // Model nodes
     private val modelNodes = mutableListOf<ModelNode>()
+    private val anchorNodes = mutableListOf<AnchorNode>()
 
     // SIMPAN ROTASI PER MODEL
     private val modelRotationAngles = mutableMapOf<ModelNode, Float>()
@@ -141,6 +162,10 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         topControls = view.findViewById(R.id.topControls)
         bottomControls = view.findViewById(R.id.bottomControls)
         captureContainer = view.findViewById(R.id.captureContainer)
+        
+        qrCodePanel = view.findViewById(R.id.qrCodePanel)
+        ivQrCode = view.findViewById(R.id.ivQrCode)
+        btnCloseQr = view.findViewById(R.id.btnCloseQr)
     }
 
     // ===== RECYCLER VIEW =====
@@ -157,12 +182,54 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         try {
             sceneView.planeRenderer.isEnabled = true
             sceneView.planeRenderer.isShadowReceiver = true
-            sceneView.planeRenderer.isVisible = false
+            sceneView.planeRenderer.isVisible = true // Tampilkan grid deteksi permukaan
 
             sceneView.configureSession { session, config ->
-                config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+                config.lightEstimationMode = Config.LightEstimationMode.DISABLED // Selalu terang
                 config.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL
                 config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
+            }
+            
+            // Membuat pencahayaan ambient (sekeliling) putih merata
+            val sh = FloatArray(27) { 0f }
+            sh[0] = 1f // R (Ambient dasar)
+            sh[1] = 1f // G
+            sh[2] = 1f // B
+            
+            val indirectLight = com.google.android.filament.IndirectLight.Builder()
+                .irradiance(3, sh)
+                .intensity(50000f) // Intensitas ambient
+                .build(sceneView.engine)
+                
+            sceneView.indirectLight = indirectLight
+
+            val gestureDetector = android.view.GestureDetector(requireContext(), object : android.view.GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapUp(e: android.view.MotionEvent): Boolean {
+                    val frame = sceneView.frame ?: return false
+                    
+                    val hitResults = frame.hitTest(e.x, e.y)
+                    val hitResult = hitResults.firstOrNull { hit ->
+                        val trackable = hit.trackable
+                        trackable is com.google.ar.core.Plane && trackable.isPoseInPolygon(hit.hitPose)
+                    }
+
+                    if (hitResult != null) {
+                        val pokemon = selectedPokemon
+                        if (pokemon != null) {
+                            spawnPokemonAtHitResult(hitResult)
+                        } else {
+                            Toast.makeText(requireContext(), "Pilih Pokemon terlebih dahulu!", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Arahkan kamera hingga muncul grid putih, lalu ketuk grid tersebut!", Toast.LENGTH_SHORT).show()
+                    }
+                    return true
+                }
+            })
+
+            sceneView.setOnTouchListener { _, event ->
+                gestureDetector.onTouchEvent(event)
+                false // Tetap return false agar fungsi kamera lain (seperti rotasi) tetap bekerja
             }
         } catch (e: Exception) {
             Log.e("CameraXRFragment", "Error configuring session", e)
@@ -231,6 +298,10 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         btnCapture.setOnClickListener {
             captureScreenshot()
         }
+
+        btnCloseQr.setOnClickListener {
+            qrCodePanel.visibility = View.GONE
+        }
     }
 
     private fun switchMode(toCaptureMode: Boolean) {
@@ -255,29 +326,41 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     // ===== SCREENSHOT CAPTURE =====
     private fun captureScreenshot() {
         Toast.makeText(requireContext(), "Mengambil foto...", Toast.LENGTH_SHORT).show()
-        try {
-            val bitmap = Bitmap.createBitmap(
-                sceneView.width,
-                sceneView.height,
-                Bitmap.Config.ARGB_8888
-            )
+        
+        // Simpan status awal dan sembunyikan grid
+        val wasGridVisible = sceneView.planeRenderer.isVisible
+        sceneView.planeRenderer.isVisible = false
 
-            PixelCopy.request(
-                sceneView,
-                bitmap,
-                { copyResult ->
-                    if (copyResult == PixelCopy.SUCCESS) {
-                        saveBitmapToGallery(bitmap)
-                    } else {
-                        Toast.makeText(requireContext(), "Gagal mengambil gambar", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                Handler(Looper.getMainLooper())
-            )
-        } catch (e: Exception) {
-            Log.e("CameraXRFragment", "Capture error", e)
-            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
+        // Beri jeda sejenak (100ms) agar layar sempat me-render frame tanpa titik-titik grid
+        Handler(Looper.getMainLooper()).postDelayed({
+            try {
+                val bitmap = Bitmap.createBitmap(
+                    sceneView.width,
+                    sceneView.height,
+                    Bitmap.Config.ARGB_8888
+                )
+
+                PixelCopy.request(
+                    sceneView,
+                    bitmap,
+                    { copyResult ->
+                        // Kembalikan status grid ke awal
+                        sceneView.planeRenderer.isVisible = wasGridVisible
+
+                        if (copyResult == PixelCopy.SUCCESS) {
+                            saveBitmapToGallery(bitmap)
+                        } else {
+                            Toast.makeText(requireContext(), "Gagal mengambil gambar", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    Handler(Looper.getMainLooper())
+                )
+            } catch (e: Exception) {
+                sceneView.planeRenderer.isVisible = wasGridVisible
+                Log.e("CameraXRFragment", "Capture error", e)
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }, 100)
     }
 
     private fun saveBitmapToGallery(bitmap: Bitmap) {
@@ -297,11 +380,87 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos!!)
                 fos.close()
                 Toast.makeText(requireContext(), "Foto disimpan ke Galeri!", Toast.LENGTH_LONG).show()
+
+                // Save temp file for upload
+                val cacheFile = java.io.File(requireContext().cacheDir, "temp_capture.jpg")
+                val fosCache = java.io.FileOutputStream(cacheFile)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fosCache)
+                fosCache.close()
+                
+                uploadToImgBB(cacheFile)
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Gagal menulis file", Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(requireContext(), "Gagal menyimpan foto ke galeri", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun uploadToImgBB(file: java.io.File) {
+        // TODO: DAFTAR DI IMGBB (https://api.imgbb.com/) DAN GANTI API KEY INI DENGAN API KEY ANDA SENDIRI!
+        // INI SANGAT MUDAH DAN GRATIS
+        val apiKey = "15573c730a5e07fafb939deb3575b7d4" // PLACEHOLDER API KEY
+        val client = OkHttpClient() 
+
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("image", file.name, file.asRequestBody("image/jpeg".toMediaTypeOrNull()))
+            .build()
+
+        val request = Request.Builder()
+            .url("https://api.imgbb.com/1/upload?key=$apiKey")
+            .post(requestBody)
+            .build()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Mengupload gambar ke server...", Toast.LENGTH_SHORT).show()
+                }
+
+                client.newCall(request).execute().use { response ->
+                    val responseData = response.body?.string() ?: ""
+                    
+                    if (!response.isSuccessful) {
+                        Log.e("ImgBBUpload", "Error: $responseData")
+                        throw IOException("Ganti API Key di CameraXrFragment.kt baris 373 terlebih dahulu!")
+                    }
+
+                    val jsonObject = JSONObject(responseData)
+                    val dataObj = jsonObject.getJSONObject("data")
+                    val imageUrl = dataObj.getString("url")
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Upload berhasil!", Toast.LENGTH_SHORT).show()
+                        showQrCode(imageUrl)
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.e("ImgBBUpload", "Failed to upload", e)
+                    Toast.makeText(requireContext(), "Gagal upload: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+    
+    private fun showQrCode(url: String) {
+        try {
+            val writer = QRCodeWriter()
+            val bitMatrix = writer.encode(url, BarcodeFormat.QR_CODE, 512, 512)
+            val width = bitMatrix.width
+            val height = bitMatrix.height
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
+                }
+            }
+            ivQrCode.setImageBitmap(bitmap)
+            qrCodePanel.visibility = View.VISIBLE
+        } catch (e: Exception) {
+            Log.e("CameraXRFragment", "QR Code Error", e)
+            Toast.makeText(requireContext(), "Gagal membuat QR Code: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -344,7 +503,7 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     }
 
     // ===== SPAWN POKEMON =====
-    private fun spawnPokemon() {
+    private fun spawnPokemonAtHitResult(hitResult: HitResult) {
         try {
             val modelPath = getModelPath()
             val pokemonName = selectedPokemon?.name ?: "Pokemon"
@@ -356,14 +515,11 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                 assetFileLocation = modelPath
             )
 
-            spawnCounter++
-
-            val xOffset = when (spawnCounter % 3) {
-                0 -> 0.3f
-                1 -> 0f
-                else -> -0.3f
+            val anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(sceneView.engine, anchor).apply {
+                // Mengaktifkan fitur drag-and-drop agar bisa dipindahkan (hold & drag)
+                isPositionEditable = true
             }
-            val zOffset = (spawnCounter / 3) * 0.3f
 
             val initialYRotation = 0f
 
@@ -372,21 +528,21 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                 scaleToUnits = 0.01f,
                 centerOrigin = Position(y = -0.5f)
             ).apply {
-                worldPosition = Position(
-                    x = xOffset,
-                    y = -0.3f,
-                    z = -0.5f - zOffset
-                )
                 rotation = Rotation(
                     x = 0f,
                     y = initialYRotation,
                     z = 0f
                 )
+                // Memastikan child node juga bisa disentuh untuk didrag
+                isPositionEditable = true
                 isShadowCaster = false
                 isShadowReceiver = false
             }
 
-            sceneView.addChildNode(newNode)
+            anchorNode.addChildNode(newNode)
+            sceneView.addChildNode(anchorNode)
+
+            anchorNodes.add(anchorNode)
             modelNodes.add(newNode)
             modelRotationAngles[newNode] = initialYRotation
 
@@ -421,25 +577,23 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                     assetFileLocation = "models/pikachu.glb"
                 )
 
-                spawnCounter++
-                val xOffset = when (spawnCounter % 3) {
-                    0 -> 0.3f
-                    1 -> 0f
-                    else -> -0.3f
-                }
+                val anchor = hitResult.createAnchor()
+                val anchorNode = AnchorNode(sceneView.engine, anchor)
 
                 val newNode = ModelNode(
                     modelInstance = modelInstance,
                     scaleToUnits = 0.01f,
                     centerOrigin = Position(y = -0.5f)
                 ).apply {
-                    worldPosition = Position(x = xOffset, y = -0.3f, z = -0.5f)
                     rotation = Rotation(x = 0f, y = 0f, z = 0f)
                     isShadowCaster = true
                     isShadowReceiver = true
                 }
 
-                sceneView.addChildNode(newNode)
+                anchorNode.addChildNode(newNode)
+                sceneView.addChildNode(anchorNode)
+
+                anchorNodes.add(anchorNode)
                 modelNodes.add(newNode)
                 modelRotationAngles[newNode] = 0f
 
@@ -468,7 +622,10 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         if (modelNodes.isNotEmpty()) {
             val lastNode = modelNodes.removeAt(modelNodes.size - 1)
             modelRotationAngles.remove(lastNode)
-            sceneView.removeChildNode(lastNode)
+            if (anchorNodes.isNotEmpty()) {
+                val lastAnchorNode = anchorNodes.removeAt(anchorNodes.size - 1)
+                sceneView.removeChildNode(lastAnchorNode)
+            }
             spawnCounter--
             updateUIState()
             Toast.makeText(requireContext(), "Last model removed (${modelNodes.size} left)", Toast.LENGTH_SHORT).show()
@@ -478,9 +635,10 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     }
 
     private fun removeAllModels() {
-        modelNodes.forEach { node ->
+        anchorNodes.forEach { node ->
             sceneView.removeChildNode(node)
         }
+        anchorNodes.clear()
         modelNodes.clear()
         modelRotationAngles.clear()
         spawnCounter = 0
@@ -525,13 +683,11 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         pokemonSelectionPanel.visibility = View.GONE
         selectedPokemon = pokemon
 
-        spawnPokemon()
-
         btnSelectPokemon.text = "📱 Pilih Pokemon Lain"
-        tvSelectedPokemon.text = "✅ ${pokemon.name} summoned!"
+        tvSelectedPokemon.text = "👉 Ketuk lantai terdeteksi untuk memunculkan ${pokemon.name}!"
         tvSelectedPokemon.visibility = View.VISIBLE
 
-        Toast.makeText(requireContext(), "${pokemon.name} summoned! Click again to add more!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Silakan ketuk lantai terdeteksi untuk memunculkan ${pokemon.name}!", Toast.LENGTH_LONG).show()
     }
 
     // ===== HELPERS =====
@@ -562,28 +718,6 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
     // ===== FIXED LIFECYCLE METHODS =====
 
-    override fun onPause() {
-        super.onPause()
-        // Pause AR session when fragment is paused
-        try {
-            // Try to pause the session if available
-            sceneView.session?.pause()
-        } catch (e: Exception) {
-            Log.e("CameraXRFragment", "Error pausing session", e)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Resume AR session when fragment is resumed
-        try {
-            // Try to resume the session if available
-            sceneView.session?.resume()
-        } catch (e: Exception) {
-            Log.e("CameraXRFragment", "Error resuming session", e)
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
@@ -593,9 +727,10 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
         // Remove all models first
         try {
-            modelNodes.forEach { node ->
+            anchorNodes.forEach { node ->
                 sceneView.removeChildNode(node)
             }
+            anchorNodes.clear()
             modelNodes.clear()
             modelRotationAngles.clear()
         } catch (e: Exception) {
