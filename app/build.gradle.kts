@@ -4,6 +4,12 @@ plugins {
     alias(libs.plugins.ksp) // Switched to use your libs.versions.toml alias
 }
 
+// Plugin Firebase google-services hanya di-apply jika google-services.json sudah ditaruh di folder app/.
+// Jadi build tetap jalan walau file konfigurasi Firebase belum ada.
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "com.example.proyek_mdp"
     compileSdk = 35 // Ubah ke 35 (Android 15) agar stabil
@@ -110,4 +116,11 @@ dependencies {
 
     // ZXing for QR Code
     implementation("com.google.zxing:core:3.5.3")
+
+    // --- FIREBASE ---
+    // BOM mengatur versi semua modul Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.storage) // upload gambar ke Firebase Storage
+    implementation(libs.firebase.auth)    // login/register via Firebase Auth
+    implementation(libs.kotlinx.coroutines.play.services) // .await() untuk Task Firebase
 }

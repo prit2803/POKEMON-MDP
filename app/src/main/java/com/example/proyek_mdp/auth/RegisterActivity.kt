@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.Data.local.entity.User
+import com.example.proyek_mdp.Data.remote.firebase.FirebaseAuthManager
 import com.example.proyek_mdp.viewmodel.RegisterViewModel
 import com.example.proyek_mdp.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
@@ -119,6 +120,24 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
 
                     return@launch
+                }
+
+                // Daftarkan juga ke Firebase Auth (opsional).
+                // Aktif otomatis setelah google-services.json terpasang.
+                if (FirebaseAuthManager.isAvailable(this@RegisterActivity)) {
+                    val authResult = FirebaseAuthManager.register(
+                        this@RegisterActivity,
+                        email,
+                        password
+                    )
+                    if (!authResult.success) {
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Registrasi Firebase gagal: ${authResult.error}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@launch
+                    }
                 }
 
                 viewModel.register(

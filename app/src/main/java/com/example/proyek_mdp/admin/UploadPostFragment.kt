@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.viewModels
 import com.example.proyek_mdp.R
 import com.example.proyek_mdp.Data.local.entity.Post
+import com.example.proyek_mdp.Data.remote.firebase.FirebaseStorageManager
 import com.example.proyek_mdp.viewmodel.UploadPostViewModel
 import com.example.proyek_mdp.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
@@ -86,7 +87,11 @@ class UploadPostFragment : Fragment() {
                 stock = stock
             )
 
-            viewModel.savePost(post)
+            viewLifecycleOwner.lifecycleScope.launch {
+                // Upload gambar ke Firebase Storage jika tersedia; jika tidak, tetap pakai path lokal.
+                val uploadedUrl = uploadImageIfPossible()
+                viewModel.savePost(post.copy(imagePath = uploadedUrl ?: pickedImagePath))
+            }
         }
         
         viewModel.saveSuccess.observe(viewLifecycleOwner) { success ->
@@ -103,6 +108,25 @@ class UploadPostFragment : Fragment() {
         }
 
         return view
+    }
+
+    private suspend fun uploadImageIfPossible(): String? {
+        val path = pickedImagePath ?: return null
+        if (!FirebaseStorageManager.isAvailable(requireContext())) return null
+        return try {
+            FirebaseStorageManager.uploadImage(
+                requireContext(),
+                Uri.fromFile(File(path)),
+                folder = "posts"
+            )
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                "Upload ke Firebase gagal, memakai gambar lokal: ${e.message}",
+                Toast.LENGTH_SHORT
+            ).show()
+            null
+        }
     }
 
     private fun copyImageToInternalStorage(sourceUri: Uri) {

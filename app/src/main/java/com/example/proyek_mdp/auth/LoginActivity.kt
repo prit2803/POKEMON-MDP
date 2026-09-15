@@ -2,6 +2,7 @@ package com.example.proyek_mdp.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.proyek_mdp.MainActivity
 import com.example.proyek_mdp.R
+import com.example.proyek_mdp.Data.remote.firebase.FirebaseAuthManager
 import com.example.proyek_mdp.admin.AdminActivity
 import com.example.proyek_mdp.viewmodel.LoginViewModel
 import com.example.proyek_mdp.viewmodel.ViewModelFactory
@@ -79,6 +81,20 @@ class LoginActivity : AppCompatActivity() {
                 )
 
                 if (user != null) {
+
+                    // Sinkronkan sesi ke Firebase Auth (opsional).
+                    // Aktif otomatis setelah google-services.json terpasang; kalau gagal,
+                    // login tetap lanjut karena backend tetap jadi sumber data utama.
+                    if (FirebaseAuthManager.isAvailable(this@LoginActivity)) {
+                        val authResult = FirebaseAuthManager.login(
+                            this@LoginActivity,
+                            user.email,
+                            password
+                        )
+                        if (!authResult.success) {
+                            Log.w("LoginActivity", "Firebase login gagal: ${authResult.error}")
+                        }
+                    }
 
                     SessionManager(this@LoginActivity)
                         .saveSession(
