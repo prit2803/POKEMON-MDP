@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# File konfigurasi berisi key/kredensial - jangan di-commit
+app/google-services.json
+backend/.env
