@@ -17,3 +17,13 @@ local.properties
 # File konfigurasi berisi key/kredensial - jangan di-commit
 app/google-services.json
 backend/.env
+
+# Model tambahan (tidak dipakai, ukurannya besar)
+/models_extra
+
+# Cache Firebase CLI
+webadmin/.firebase
+
+# Log unduhan model
+app/src/main/assets/models/download-log.csv
+app/src/main/assets/models/remaining-to-download.txt

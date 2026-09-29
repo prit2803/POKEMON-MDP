@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon MDP - Admin</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- LOGIN -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1>Pokemon MDP</h1>
+            <p class="muted">Admin Panel</p>
+            <input id="loginEmail" type="email" placeholder="Email admin" />
+            <input id="loginPassword" type="password" placeholder="Password" />
+            <button id="loginBtn">Masuk</button>
+            <p id="loginError" class="error"></p>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="appScreen" class="app hidden">
+        <aside class="sidebar">
+            <h2>Pokemon MDP</h2>
+            <nav>
+                <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+                <button class="nav-btn" data-section="users">Users</button>
+                <button class="nav-btn" data-section="posts">Posts / Shop</button>
+                <button class="nav-btn" data-section="pokemon">Pokemon</button>
+                <button class="nav-btn" data-section="payments">Pembayaran</button>
+            </nav>
+            <button id="logoutBtn" class="logout">Logout</button>
+        </aside>
+
+        <main class="content">
+            <!-- DASHBOARD -->
+            <section id="section-dashboard" class="section active">
+                <h1>Dashboard</h1>
+                <div class="stats">
+                    <div class="stat"><span id="statUsers">0</span><label>Users</label></div>
+                    <div class="stat"><span id="statPosts">0</span><label>Posts</label></div>
+                    <div class="stat"><span id="statPokemon">0</span><label>Pokemon</label></div>
+                    <div class="stat"><span id="statBanned">0</span><label>Banned</label></div>
+                </div>
+            </section>
+
+            <!-- USERS -->
+            <section id="section-users" class="section">
+                <h1>Users</h1>
+                <input id="userSearch" class="search" placeholder="Cari username / email..." />
+                <div class="table-wrap">
+                    <table id="usersTable">
+                        <thead>
+                            <tr><th>Username</th><th>Email</th><th>Coins</th><th>Status</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- POSTS -->
+            <section id="section-posts" class="section">
+                <h1>Posts / Shop</h1>
+                <button id="addPostBtn" class="primary">+ Tambah Post</button>
+                <div class="table-wrap">
+                    <table id="postsTable">
+                        <thead>
+                            <tr><th>Judul</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Aktif</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- POKEMON -->
+            <section id="section-pokemon" class="section">
+                <h1>Pokemon</h1>
+                <button id="givePokemonBtn" class="primary">+ Beri / Tambah Pokemon</button>
+                <input id="pokemonSearch" class="search" placeholder="Filter nama / userId..." />
+                <div class="table-wrap">
+                    <table id="pokemonTable">
+                        <thead>
+                            <tr><th>Nama</th><th>User</th><th>Lv</th><th>HP</th><th>Species</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PAYMENTS -->
+            <section id="section-payments" class="section">
+                <h1>Pembayaran</h1>
+                <div class="table-wrap">
+                    <table id="paymentsTable">
+                        <thead>
+                            <tr><th>User</th><th>Metode</th><th>Koin</th><th>Total</th><th>Status</th><th>Tanggal</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-card">
+            <h2 id="modalTitle">Form</h2>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button id="modalCancel" class="secondary">Batal</button>
+                <button id="modalSave" class="primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

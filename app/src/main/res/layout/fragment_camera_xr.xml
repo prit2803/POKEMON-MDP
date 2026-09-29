@@ -238,10 +238,30 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- POSE OVERLAY (SCANNER) & STATUS -->
+    <com.example.proyek_mdp.UI.XR.PoseOverlayView
+        android:id="@+id/poseOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvTrackingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="120dp"
+        android:background="#A0000000"
+        android:padding="8dp"
+        android:textColor="#00FF00"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <!-- MODE SWITCH -->
     <LinearLayout
         android:id="@+id/modeSwitchContainer"
-        android:layout_width="200dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="100dp"
@@ -255,7 +275,7 @@
             android:layout_height="36dp"
             android:layout_weight="1"
             android:text="Place"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:backgroundTint="#4CAF50"
             android:textColor="@android:color/white"
             android:padding="0dp" />
@@ -266,7 +286,18 @@
             android:layout_height="36dp"
             android:layout_weight="1"
             android:text="Capture"
-            android:textSize="12sp"
+            android:textSize="11sp"
+            android:backgroundTint="#80000000"
+            android:textColor="@android:color/white"
+            android:padding="0dp" />
+
+        <Button
+            android:id="@+id/btnModeTracking"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="Tracking"
+            android:textSize="11sp"
             android:backgroundTint="#80000000"
             android:textColor="@android:color/white"
             android:padding="0dp" />

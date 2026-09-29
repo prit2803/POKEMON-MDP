@@ -35,22 +35,10 @@
             android:name=".UI.Payment.PaymentPageActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.Payment.PaymentPageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UI.Payment.PaymentSuccessActivity"
-            android:exported="false" />
-        <activity
             android:name=".UI.Payment.PaymentSuccessActivity"
             android:exported="false" />
         <activity
             android:name=".UI.Payment.PaymentProcessActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UI.Payment.PaymentProcessActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UI.Payment.PaymentMethodActivity"
             android:exported="false" />
         <activity
             android:name=".UI.Payment.PaymentMethodActivity"

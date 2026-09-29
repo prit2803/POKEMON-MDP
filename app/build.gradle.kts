@@ -21,6 +21,12 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Hanya sertakan native lib untuk HP (ARM). Menghilangkan x86/x86_64
+        // (emulator) menghemat ~58 MB.
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
     }
 
     // UPDATE INI: Gunakan Java 17
@@ -122,5 +128,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.storage) // upload gambar ke Firebase Storage
     implementation(libs.firebase.auth)    // login/register via Firebase Auth
+    implementation(libs.firebase.firestore) // Cloud Firestore
+    implementation(libs.mediapipe.tasks.vision) // MediaPipe Tasks Vision for Pose Landmarker
     implementation(libs.kotlinx.coroutines.play.services) // .await() untuk Task Firebase
 }
