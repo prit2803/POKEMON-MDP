@@ -1,6 +1,5 @@
 package com.example.proyek_mdp.UI.XR
 
-import android.animation.ValueAnimator
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -10,8 +9,9 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.PixelCopy
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
-import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -39,6 +39,7 @@ import com.google.ar.core.HitResult
 import com.google.ar.core.Pose
 import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
+import dev.romainguy.kotlin.math.Float4
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.math.Position
@@ -84,7 +85,7 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     private lateinit var btnModePlace: Button
     private lateinit var btnModeCapture: Button
     private lateinit var btnModeTracking: Button
-    private lateinit var btnCapture: Button
+    private lateinit var btnCapture: android.widget.ImageButton
     private lateinit var topControls: LinearLayout
     private lateinit var bottomControls: LinearLayout
     private lateinit var captureContainer: FrameLayout
@@ -115,6 +116,22 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
     private var selectedPokemon: PokemonEntity? = null
     private var spawnCounter = 0
+    private var dragNode: ModelNode? = null
+    private var dragAnchor: AnchorNode? = null
+    private var isDraggingModel = false
+    private var lastTouchX = 0f
+    private var lastTouchY = 0f
+    private var lastDragPosition: Position? = null
+    private var followOffsetX = 0f
+    private var followOffsetY = 0f
+    private var followOffsetZ = 0f
+    private var dragStartOffsetX = 0f
+    private var dragStartOffsetY = 0f
+    private var dragStartOffsetZ = 0f
+    private var dragStartTouchX = 0f
+    private var dragStartTouchY = 0f
+    private var followScreenOffsetX = 0f
+    private var followScreenOffsetY = 0f
 
     // Track coroutine job
     private var loadPokemonJob: Job? = null
@@ -143,9 +160,11 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
     private var lastNodeY = 0f
     private var lastNodeZ = 0f
     private var smoothedYaw = 0f
+    private var smoothedHeadYaw = 0f
     private var lastDepthMeters = -1f
     private var depthFrameCounter = 0
     private var lastUsedDistance = poseFollowDistance
+    private var stableFollowDistance = poseFollowDistance
 
     @Volatile
     private var viewDestroyed = false
@@ -285,9 +304,110 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                 }
             })
 
+            val scaleGestureDetector = ScaleGestureDetector(requireContext(), object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+                    isDraggingModel = false
+                    return true
+                }
+
+                override fun onScale(detector: ScaleGestureDetector): Boolean {
+                    if (modelNodes.isEmpty() && followNode == null) return false
+                    currentScale = (currentScale * detector.scaleFactor).coerceIn(minScale, maxScale)
+                    applyScaleToAll()
+                    return true
+                }
+            })
+
             sceneView.setOnTouchListener { _, event ->
-                gestureDetector.onTouchEvent(event)
-                false // Tetap return false agar fungsi kamera lain (seperti rotasi) tetap bekerja
+                scaleGestureDetector.onTouchEvent(event)
+                when (event.actionMasked) {
+                    MotionEvent.ACTION_DOWN -> {
+                        val modelIndex = modelNodes.lastIndex
+                        dragAnchor = if (followNode == null && modelIndex >= 0) {
+                            anchorNodes.getOrNull(modelIndex)
+                        } else {
+                            null
+                        }
+                        dragNode = followNode ?: modelNodes.lastOrNull()
+                        isDraggingModel = false
+                        lastDragPosition = dragAnchor?.position ?: dragNode?.position
+                        lastTouchX = event.x
+                        lastTouchY = event.y
+                        dragStartTouchX = event.x
+                        dragStartTouchY = event.y
+                        dragStartOffsetX = followOffsetX
+                        dragStartOffsetY = followOffsetY
+                        dragStartOffsetZ = followOffsetZ
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        if (event.pointerCount == 1 && dragNode != null &&
+                            (kotlin.math.abs(event.x - lastTouchX) > 8f || kotlin.math.abs(event.y - lastTouchY) > 8f)) {
+                            isDraggingModel = true
+                            if (dragNode === followNode) {
+                                val cameraPose = sceneView.frame?.camera?.pose
+                                if (cameraPose != null) {
+                                    val right = FloatArray(3)
+                                    val up = FloatArray(3)
+                                    cameraPose.rotateVector(floatArrayOf(1f, 0f, 0f), 0, right, 0)
+                                    cameraPose.rotateVector(floatArrayOf(0f, 1f, 0f), 0, up, 0)
+                                    val sensitivity = (lastUsedDistance / 500f).coerceIn(0.001f, 0.01f)
+                                    val maxScreenX = sceneView.width * 0.35f
+                                    val maxScreenY = sceneView.height * 0.3f
+                                    followScreenOffsetX = (event.x - dragStartTouchX).coerceIn(-maxScreenX, maxScreenX)
+                                    followScreenOffsetY = (event.y - dragStartTouchY).coerceIn(-maxScreenY, maxScreenY)
+                                    followOffsetX = (right[0] * followScreenOffsetX - up[0] * followScreenOffsetY) * sensitivity
+                                    followOffsetY = (right[1] * followScreenOffsetX - up[1] * followScreenOffsetY) * sensitivity
+                                    followOffsetZ = (right[2] * followScreenOffsetX - up[2] * followScreenOffsetY) * sensitivity
+                                }
+                                lastTouchX = event.x
+                                lastTouchY = event.y
+                                return@setOnTouchListener true
+                            }
+                            val frame = sceneView.frame
+                            val hit = frame?.hitTest(event.x, event.y)?.firstOrNull { result ->
+                                val trackable = result.trackable
+                                trackable is com.google.ar.core.Plane && trackable.isPoseInPolygon(result.hitPose)
+                            }
+                            if (hit != null) {
+                                val pose = hit.hitPose
+                                val target = Position(pose.tx(), pose.ty(), pose.tz())
+                                val previous = lastDragPosition ?: target
+                                val smoothed = Position(
+                                    previous.x + (target.x - previous.x) * 0.35f,
+                                    previous.y + (target.y - previous.y) * 0.35f,
+                                    previous.z + (target.z - previous.z) * 0.35f
+                                )
+                                if (dragNode === followNode) {
+                                    followOffsetX = smoothed.x - lastNodeX
+                                    followOffsetY = smoothed.y - lastNodeY
+                                    followOffsetZ = smoothed.z - lastNodeZ
+                                } else if (dragAnchor != null) {
+                                    dragAnchor?.position = smoothed
+                                } else {
+                                    dragNode?.position = smoothed
+                                }
+                                lastDragPosition = smoothed
+                            }
+                            lastTouchX = event.x
+                            lastTouchY = event.y
+                        }
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        if (isDraggingModel) {
+                            dragNode = null
+                            dragAnchor = null
+                            lastDragPosition = null
+                            return@setOnTouchListener true
+                        }
+                        dragNode = null
+                        dragAnchor = null
+                        lastDragPosition = null
+                    }
+                }
+                if (!isDraggingModel && event.pointerCount == 1) {
+                    gestureDetector.onTouchEvent(event)
+                }
+                true
             }
         } catch (e: Exception) {
             Log.e("CameraXRFragment", "Error configuring session", e)
@@ -441,9 +561,15 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         sceneView.addChildNode(model)
         model.isPositionEditable = false
         followNode = model
+        followOffsetX = 0f
+        followOffsetY = 0f
+        followOffsetZ = 0f
+        followScreenOffsetX = 0f
+        followScreenOffsetY = 0f
 
         rigController = RigPoseController(requireContext(), getModelPath())
         demoPoseApplied = false
+        updateUIState()
 
         Toast.makeText(requireContext(), "Model siap mengikuti gerakan", Toast.LENGTH_SHORT).show()
     }
@@ -478,9 +604,15 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         node.isShadowReceiver = false
         sceneView.addChildNode(node)
         followNode = node
+        followOffsetX = 0f
+        followOffsetY = 0f
+        followOffsetZ = 0f
+        followScreenOffsetX = 0f
+        followScreenOffsetY = 0f
 
         rigController = RigPoseController(requireContext(), getModelPath())
         demoPoseApplied = false
+        updateUIState()
     }
 
     private fun removeFollowNode() {
@@ -622,12 +754,17 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                     lastNodeY = lastNodeY * (1f - posSmoothAlpha) + targetY * posSmoothAlpha
                     lastNodeZ = lastNodeZ * (1f - posSmoothAlpha) + targetZ * posSmoothAlpha
                 }
-                followNode?.position = Position(lastNodeX, lastNodeY, lastNodeZ)
+                val screenSensitivity = (lastUsedDistance / 1000f).coerceIn(0.0005f, 0.005f)
+                val screenOffsetX = followScreenOffsetX * screenSensitivity
+                val screenOffsetY = -followScreenOffsetY * screenSensitivity
+                followNode?.position = Position(
+                    lastNodeX + screenOffsetX,
+                    lastNodeY + screenOffsetY,
+                    lastNodeZ
+                )
 
-                // Kompensasi ukuran: jarak berubah (depth) tapi ukuran tampak tetap.
-                // Ukuran dasar tetap diatur manual oleh user lewat tombol + / -.
-                val sizeComp = currentScale * (lastUsedDistance / poseFollowDistance)
-                followNode?.scale = Position(sizeComp, sizeComp, sizeComp)
+                // Keep model size controlled only by user zoom.
+                followNode?.scale = Position(currentScale, currentScale, currentScale)
 
                 // Hadapkan model ke arah kamera (dengan smoothing yaw)
                 val targetYaw = Math.toDegrees(
@@ -695,8 +832,8 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
             val fore = rig.skinIndexByPrefix("${arm.side}ForeArm")
             if (upper < 0 || fore < 0) continue
 
-            val wUpper = rotateVecByPose(cameraPose, screenDirection(arm.shoulder, arm.elbow))
-            val wFore = rotateVecByPose(cameraPose, screenDirection(arm.elbow, arm.wrist))
+            val wUpper = worldToModel(rotateVecByPose(cameraPose, screenDirection(arm.shoulder, arm.elbow)))
+            val wFore = worldToModel(rotateVecByPose(cameraPose, screenDirection(arm.elbow, arm.wrist)))
             val upperRestDir = restDirection(rig, upper) ?: continue
             val foreRestDir = restDirection(rig, fore) ?: continue
 
@@ -717,7 +854,7 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
             val hand = rig.skinIndexByPrefix("${arm.side}Hand")
             if (hand >= 0) {
                 val indexTip = if (arm.side == "L") 19 else 20
-                val wHand = rotateVecByPose(cameraPose, screenDirection(arm.wrist, indexTip))
+                val wHand = worldToModel(rotateVecByPose(cameraPose, screenDirection(arm.wrist, indexTip)))
                 val handRestDir = restDirection(rig, hand)
                 if (handRestDir != null) {
                     val handRestRot = RigPoseController.rotationFrom4x4(rig.restGlobalOf(hand))
@@ -730,9 +867,174 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
             }
         }
 
-        // KAKI & BADAN: dibiarkan normal (rest). Hanya lengan & tangan yang bergerak.
+        // KAKI: thigh -> shin -> foot mengikuti gerakan kaki pengguna.
+        val legs = listOf(
+            LegSpec("L", 23, 25, 27, 31),
+            LegSpec("R", 24, 26, 28, 32)
+        )
+        for (leg in legs) {
+            val thigh = legBone(rig, leg.side, LegPart.THIGH)
+            val shin = legBone(rig, leg.side, LegPart.SHIN)
+            if (thigh < 0 || shin < 0) continue
+
+            val wThigh = worldToModel(rotateVecByPose(cameraPose, screenDirection(leg.hip, leg.knee)))
+            val wShin = worldToModel(rotateVecByPose(cameraPose, screenDirection(leg.knee, leg.ankle)))
+
+            val thighRestDir = restDirection(rig, thigh) ?: continue
+            val shinRestDir = restDirection(rig, shin) ?: continue
+
+            val parentThigh = rig.parentOf(thigh)
+            val parentRot = if (parentThigh >= 0) RigPoseController.rotationFrom4x4(rig.restGlobalOf(parentThigh)) else identity
+            val thighRestRot = RigPoseController.rotationFrom4x4(rig.restGlobalOf(thigh))
+            val shinRestRot = RigPoseController.rotationFrom4x4(rig.restGlobalOf(shin))
+
+            val deltaThigh = RigPoseController.rotationFromTo(thighRestDir, wThigh)
+            val desiredGlobalThigh = RigPoseController.mat3Mul(deltaThigh, thighRestRot)
+            overrides[thigh] = RigPoseController.mat3Mul(RigPoseController.mat3Transpose(parentRot), desiredGlobalThigh)
+
+            val deltaShin = RigPoseController.rotationFromTo(shinRestDir, wShin)
+            val desiredGlobalShin = RigPoseController.mat3Mul(deltaShin, shinRestRot)
+            overrides[shin] = RigPoseController.mat3Mul(RigPoseController.mat3Transpose(desiredGlobalThigh), desiredGlobalShin)
+
+            // Telapak kaki (ankle -> ujung kaki)
+            val foot = legBone(rig, leg.side, LegPart.FOOT)
+            if (foot >= 0) {
+                val wFoot = worldToModel(rotateVecByPose(cameraPose, screenDirection(leg.ankle, leg.toe)))
+                val footRestDir = restDirection(rig, foot)
+                if (footRestDir != null) {
+                    val footRestRot = RigPoseController.rotationFrom4x4(rig.restGlobalOf(foot))
+                    val deltaFoot = RigPoseController.rotationFromTo(footRestDir, wFoot)
+                    val desiredGlobalFoot = RigPoseController.mat3Mul(deltaFoot, footRestRot)
+                    overrides[foot] = RigPoseController.mat3Mul(
+                        RigPoseController.mat3Transpose(desiredGlobalShin), desiredGlobalFoot
+                    )
+                }
+            }
+        }
+
+        // KEPALA: menoleh kiri/kanan mengikuti arah hadap kepala orang.
+        val headBone = headBone(rig)
+        if (headBone >= 0) {
+            val upCam = floatArrayOf(0f, 1f, 0f)
+            val bodyRight = screenDirection(PoseTracker.LEFT_SHOULDER, PoseTracker.RIGHT_SHOULDER, 1.0f)
+            val headRight = screenDirection(PoseTracker.LEFT_EAR, PoseTracker.RIGHT_EAR, 1.0f)
+            val bodyFwd = cross3(upCam, bodyRight)
+            val headFwd = cross3(upCam, headRight)
+            var headYaw = signedAngleAround(bodyFwd, headFwd, upCam)
+            // clamp + smoothing agar tidak berputar berlebihan / bergetar
+            headYaw = headYaw.coerceIn(-0.6f, 0.6f)
+            smoothedHeadYaw = smoothedHeadYaw * (1f - 0.25f) + headYaw * 0.25f
+
+            // Sumbu putar = arah tulang leher->kepala (vertikal di ruang model),
+            // supaya kepala menoleh kiri/kanan, bukan menunduk/mendongak.
+            val headAxis = headVerticalAxis(rig, headBone)
+                ?: worldToModel(rotateVecByPose(cameraPose, upCam))
+            val headRestRot = RigPoseController.rotationFrom4x4(rig.restGlobalOf(headBone))
+            val yawRot = axisAngleRot(headAxis, smoothedHeadYaw)
+            val desiredGlobalHead = RigPoseController.mat3Mul(yawRot, headRestRot)
+            val parentHead = rig.parentOf(headBone)
+            val parentHeadRot = if (parentHead >= 0)
+                RigPoseController.rotationFrom4x4(rig.restGlobalOf(parentHead)) else identity
+            overrides[headBone] = RigPoseController.mat3Mul(
+                RigPoseController.mat3Transpose(parentHeadRot), desiredGlobalHead
+            )
+        }
 
         return overrides
+    }
+
+    /** Cari tulang kepala berdasarkan penamaan rig (mis. "Head" atau "head"). */
+    private fun headBone(rig: RigPoseController): Int {
+        for (c in listOf("Head", "head", "Head_")) {
+            val i = rig.skinIndexByPrefix(c)
+            if (i >= 0) return i
+        }
+        return -1
+    }
+
+    /** Sumbu vertikal kepala di ruang model = arah translasi parent (leher/neck) -> kepala. */
+    private fun headVerticalAxis(rig: RigPoseController, headBone: Int): FloatArray? {
+        val parent = rig.parentOf(headBone)
+        if (parent < 0) return null
+        val h = rig.restGlobalOf(headBone)
+        val p = rig.restGlobalOf(parent)
+        val v = floatArrayOf(h[12] - p[12], h[13] - p[13], h[14] - p[14])
+        val len = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+        return if (len < 1e-5f) null else floatArrayOf(v[0] / len, v[1] / len, v[2] / len)
+    }
+
+    /** Ubah arah vektor dari ruang dunia ARCore ke ruang lokal model (kebalikan yaw/rotasi node). */
+    private fun worldToModel(v: FloatArray): FloatArray {
+        val node = followNode ?: return v
+        return try {
+            val r = node.worldToLocal * Float4(v[0], v[1], v[2], 0f)
+            floatArrayOf(r.x, r.y, r.z)
+        } catch (e: Exception) {
+            v
+        }
+    }
+
+    private fun cross3(a: FloatArray, b: FloatArray): FloatArray = floatArrayOf(
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0]
+    )
+
+    /** Sudut bertanda dari vektor a ke b mengelilingi sumbu axis (radian). */
+    private fun signedAngleAround(a: FloatArray, b: FloatArray, axis: FloatArray): Float {
+        val na = normalize3(a)
+        val nb = normalize3(b)
+        val c = cross3(na, nb)
+        val sin = c[0] * axis[0] + c[1] * axis[1] + c[2] * axis[2]
+        val cos = na[0] * nb[0] + na[1] * nb[1] + na[2] * nb[2]
+        return kotlin.math.atan2(sin, cos)
+    }
+
+    /** Matriks rotasi 3x3 (row-major) memutar [angle] radian mengelilingi [axis]. */
+    private fun axisAngleRot(axis: FloatArray, angle: Float): FloatArray {
+        val a = normalize3(axis)
+        val x = a[0]; val y = a[1]; val z = a[2]
+        val c = kotlin.math.cos(angle)
+        val s = kotlin.math.sin(angle)
+        val t = 1f - c
+        return floatArrayOf(
+            t * x * x + c, t * x * y - s * z, t * x * z + s * y,
+            t * x * y + s * z, t * y * y + c, t * y * z - s * x,
+            t * x * z - s * y, t * y * z + s * x, t * z * z + c
+        )
+    }
+
+    private fun normalize3(v: FloatArray): FloatArray {
+        val len = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+        return if (len < 1e-6f) floatArrayOf(0f, 0f, 0f)
+        else floatArrayOf(v[0] / len, v[1] / len, v[2] / len)
+    }
+
+    private data class LegSpec(val side: String, val hip: Int, val knee: Int, val ankle: Int, val toe: Int)
+
+    private enum class LegPart { THIGH, SHIN, FOOT }
+
+    /** Cari tulang kaki berdasarkan penamaan rig (mis. "LThigh" atau "left_leg_01"). */
+    private fun legBone(rig: RigPoseController, side: String, part: LegPart): Int {
+        val candidates = when (part) {
+            LegPart.THIGH -> if (side == "L")
+                listOf("LThigh", "left_leg_01", "LeftUpLeg", "UpLeg_L")
+            else
+                listOf("RThigh", "right_leg_01", "RightUpLeg", "UpLeg_R")
+            LegPart.SHIN -> if (side == "L")
+                listOf("LLeg", "left_leg_02", "LeftLeg", "Leg_L")
+            else
+                listOf("RLeg", "right_leg_02", "RightLeg", "Leg_R")
+            LegPart.FOOT -> if (side == "L")
+                listOf("LFoot", "left_foot", "LeftFoot", "Foot_L")
+            else
+                listOf("RFoot", "right_foot", "RightFoot", "Foot_R")
+        }
+        for (c in candidates) {
+            val i = rig.skinIndexByPrefix(c)
+            if (i >= 0) return i
+        }
+        return -1
     }
 
     /** Low-pass filter posisi landmark agar gerakan lebih halus. */
@@ -753,11 +1055,11 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         }
     }
 
-    private fun screenDirection(a: Int, b: Int): FloatArray {
+    private fun screenDirection(a: Int, b: Int, depthFactor: Float = 0.6f): FloatArray {
         val dx = smoothX[b] - smoothX[a]
         val dy = smoothY[b] - smoothY[a]
         // Pengaruh kedalaman (MediaPipe z) untuk arah 3D.
-        val dz = (smoothZ[b] - smoothZ[a]) * 0.6f
+        val dz = (smoothZ[b] - smoothZ[a]) * depthFactor
         return floatArrayOf(dx, -dy, -dz)
     }
 
@@ -913,8 +1215,8 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
         val xCam = (px - cx) / fx
         val yCam = (py - cy) / fy
         val len = sqrt(xCam * xCam + yCam * yCam + 1f)
-        // Pakai kedalaman nyata jika valid; kalau tidak, jarak tetap.
-        val d = if (depthOverride in 0.3f..8f) depthOverride else poseFollowDistance
+        // Keep fixed distance so pose depth changes cannot resize the model.
+        val d = poseFollowDistance
         lastUsedDistance = d
         val local = floatArrayOf(xCam / len * d, -yCam / len * d, -d / len)
         val out = FloatArray(3)
@@ -1065,23 +1367,16 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
     // ===== ROTATE FUNCTION =====
     private fun rotateAllModels() {
-        Log.d("XR_Rotate", "=== ROTATE BUTTON PRESSED ===")
-        Log.d("XR_Rotate", "Model count: ${modelNodes.size}")
-
         if (modelNodes.isEmpty()) {
             Toast.makeText(requireContext(), "No models to rotate!", Toast.LENGTH_SHORT).show()
             return
         }
 
         try {
-            modelNodes.forEachIndexed { index, node ->
-                Log.d("XR_Rotate", "--- Rotating model $index ---")
-
+            modelNodes.forEach { node ->
                 val currentAngle = modelRotationAngles[node] ?: 0f
                 val newAngle = currentAngle + 45f
                 modelRotationAngles[node] = newAngle
-
-                Log.d("XR_Rotate", "Current angle: $currentAngle -> New angle: $newAngle")
 
                 node.rotation = Rotation(
                     x = 0f,
@@ -1092,8 +1387,6 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
 
             Toast.makeText(requireContext(), "🔄 Rotated 45°", Toast.LENGTH_SHORT).show()
             sceneView.invalidate()
-
-            Log.d("XR_Rotate", "=== ROTATE COMPLETE ===")
 
         } catch (e: Exception) {
             Log.e("XR_Rotate", "Error during rotation", e)
@@ -1108,7 +1401,6 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
             val pokemonName = selectedPokemon?.name ?: "Pokemon"
 
             Toast.makeText(requireContext(), "Summoning $pokemonName...", Toast.LENGTH_SHORT).show()
-            Log.d("XR", "Loading $modelPath")
 
             val modelInstance = sceneView.modelLoader.createModelInstance(
                 assetFileLocation = modelPath
@@ -1145,17 +1437,7 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
             modelNodes.add(newNode)
             modelRotationAngles[newNode] = initialYRotation
 
-            Log.d("XR", "Model added. Total: ${modelNodes.size}")
-            Log.d("XR", "Initial rotation: ${newNode.rotation}")
-
-            val scaleAnimator = ValueAnimator.ofFloat(0.01f, currentScale)
-            scaleAnimator.duration = 500
-            scaleAnimator.interpolator = OvershootInterpolator(1.5f)
-            scaleAnimator.addUpdateListener { animation ->
-                val scale = animation.animatedValue as Float
-                newNode.scale = Position(scale, scale, scale)
-            }
-            scaleAnimator.start()
+            newNode.scale = Position(currentScale, currentScale, currentScale)
 
             updateUIState()
 
@@ -1196,14 +1478,7 @@ class CameraXRFragment : Fragment(R.layout.fragment_camera_xr) {
                 modelNodes.add(newNode)
                 modelRotationAngles[newNode] = 0f
 
-                val scaleAnimator = ValueAnimator.ofFloat(0.01f, currentScale)
-                scaleAnimator.duration = 500
-                scaleAnimator.interpolator = OvershootInterpolator(1.5f)
-                scaleAnimator.addUpdateListener { animation ->
-                    val scale = animation.animatedValue as Float
-                    newNode.scale = Position(scale, scale, scale)
-                }
-                scaleAnimator.start()
+            newNode.scale = Position(currentScale, currentScale, currentScale)
 
                 updateUIState()
 
