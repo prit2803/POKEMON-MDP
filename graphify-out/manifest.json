@@ -1,0 +1,926 @@
+{
+  "app/build.gradle.kts": {
+    "mtime": 1790054302.5772388,
+    "seen": 1791188839.4804254,
+    "ast_hash": "e7a60519935f966e198712d1151029bc",
+    "semantic_hash": "e7a60519935f966e198712d1151029bc"
+  },
+  "app/src/androidTest/java/com/example/proyek_mdp/ExampleInstrumentedTest.kt": {
+    "mtime": 1779024484.0541139,
+    "seen": 1791188839.4804304,
+    "ast_hash": "40c31a4d981665a70ad0e00c9790ad02",
+    "semantic_hash": "40c31a4d981665a70ad0e00c9790ad02"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/PaymentHistoryDao.kt": {
+    "mtime": 1783595880.6630616,
+    "seen": 1791188839.4804327,
+    "ast_hash": "898c6ac2ef7c2296f3bc55437248022c",
+    "semantic_hash": "898c6ac2ef7c2296f3bc55437248022c"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/PokedexSpeciesDao.kt": {
+    "mtime": 1783595856.3084626,
+    "seen": 1791188839.480434,
+    "ast_hash": "a2181058d2177dd7abcce18cda8d795a",
+    "semantic_hash": "a2181058d2177dd7abcce18cda8d795a"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/PokemonDao.kt": {
+    "mtime": 1783765721.4434488,
+    "seen": 1791188839.4804351,
+    "ast_hash": "4123f552fa80cec693fc8427b614162f",
+    "semantic_hash": "4123f552fa80cec693fc8427b614162f"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/PostDao.kt": {
+    "mtime": 1783932750.3074176,
+    "seen": 1791188839.4804363,
+    "ast_hash": "ee64b1843669fe3e6f8b1a8917b4f43c",
+    "semantic_hash": "ee64b1843669fe3e6f8b1a8917b4f43c"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/PurchaseHistoryDao.kt": {
+    "mtime": 1783595899.8154404,
+    "seen": 1791188839.4804375,
+    "ast_hash": "d012be9379b04cf077fb831ee9e2d8fb",
+    "semantic_hash": "d012be9379b04cf077fb831ee9e2d8fb"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/TrainerStatsDao.kt": {
+    "mtime": 1783595976.9162858,
+    "seen": 1791188839.4804382,
+    "ast_hash": "b5746ade777515851094f7b8171ebfb7",
+    "semantic_hash": "b5746ade777515851094f7b8171ebfb7"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/UserDao.kt": {
+    "mtime": 1789972902.9149978,
+    "seen": 1791188839.4804392,
+    "ast_hash": "70d8aa1d21f0ef57800d41ce1361cf8f",
+    "semantic_hash": "70d8aa1d21f0ef57800d41ce1361cf8f"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/dao/UserInventoryDao.kt": {
+    "mtime": 1783926174.9279373,
+    "seen": 1791188839.4804404,
+    "ast_hash": "849e1e96b2bcfad8d20eb919f5fd5de6",
+    "semantic_hash": "849e1e96b2bcfad8d20eb919f5fd5de6"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/database/AppDatabase.kt": {
+    "mtime": 1783926235.712266,
+    "seen": 1791188839.4804413,
+    "ast_hash": "126701b8d6a1b1fc07c23ab4181527dd",
+    "semantic_hash": "126701b8d6a1b1fc07c23ab4181527dd"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/database/PokemonDatabase.kt": {
+    "mtime": 1783765674.5644417,
+    "seen": 1791188839.4804425,
+    "ast_hash": "41f393596307e544ff5be4b73f3cead5",
+    "semantic_hash": "41f393596307e544ff5be4b73f3cead5"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/datasource/InventoryLocalDataSource.kt": {
+    "mtime": 1783600807.960807,
+    "seen": 1791188839.480444,
+    "ast_hash": "3120f663875f136ce0fe008086b94fa8",
+    "semantic_hash": "3120f663875f136ce0fe008086b94fa8"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/datasource/PokedexLocalDataSource.kt": {
+    "mtime": 1783596757.144853,
+    "seen": 1791188839.480445,
+    "ast_hash": "2f5334b06e487e91782339aecc78acaa",
+    "semantic_hash": "2f5334b06e487e91782339aecc78acaa"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/datasource/PokemonLocalDataSource.kt": {
+    "mtime": 1783597809.010771,
+    "seen": 1791188839.4804456,
+    "ast_hash": "462b14921a3db0c8d5f27e60f6a3133e",
+    "semantic_hash": "462b14921a3db0c8d5f27e60f6a3133e"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/datasource/PostLocalDataSource.kt": {
+    "mtime": 1783600819.708195,
+    "seen": 1791188839.4804468,
+    "ast_hash": "0ae09cf8723463086c65d69554a234c2",
+    "semantic_hash": "0ae09cf8723463086c65d69554a234c2"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/datasource/TrainerStatsLocalDataSource.kt": {
+    "mtime": 1783596746.5038147,
+    "seen": 1791188839.4804478,
+    "ast_hash": "eb7c9d70a5c05e6887fc87db6e489419",
+    "semantic_hash": "eb7c9d70a5c05e6887fc87db6e489419"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/datasource/UserLocalDataSource.kt": {
+    "mtime": 1789972902.9555607,
+    "seen": 1791188839.4804487,
+    "ast_hash": "3d6dc2deb9fdf2a892bc09661ab9f652",
+    "semantic_hash": "3d6dc2deb9fdf2a892bc09661ab9f652"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/PaymentHistory.kt": {
+    "mtime": 1783595880.4538977,
+    "seen": 1791188839.4804494,
+    "ast_hash": "efef2002b9edacb335a3c78e9c964b2e",
+    "semantic_hash": "efef2002b9edacb335a3c78e9c964b2e"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/PokedexSpecies.kt": {
+    "mtime": 1783595856.4005468,
+    "seen": 1791188839.4804506,
+    "ast_hash": "26c06dd6b1600d0979ed2e70cac65b38",
+    "semantic_hash": "26c06dd6b1600d0979ed2e70cac65b38"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/PokemonEntity.kt": {
+    "mtime": 1783765702.2076547,
+    "seen": 1791188839.4804516,
+    "ast_hash": "8397beffd799a1ef8933d6644c0c6c4e",
+    "semantic_hash": "8397beffd799a1ef8933d6644c0c6c4e"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/Post.kt": {
+    "mtime": 1783765697.3913083,
+    "seen": 1791188839.4804525,
+    "ast_hash": "8f175bd9ca1165784392baf7b2ba5ad5",
+    "semantic_hash": "8f175bd9ca1165784392baf7b2ba5ad5"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/PurchaseHistory.kt": {
+    "mtime": 1783595899.7643936,
+    "seen": 1791188839.4804542,
+    "ast_hash": "189fec1803dd9cf481e6880146b85a5a",
+    "semantic_hash": "189fec1803dd9cf481e6880146b85a5a"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/TrainerStats.kt": {
+    "mtime": 1783595976.9683337,
+    "seen": 1791188839.4804552,
+    "ast_hash": "46bde34d82fbfb76b018f66f564d6818",
+    "semantic_hash": "46bde34d82fbfb76b018f66f564d6818"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/User.kt": {
+    "mtime": 1789972902.991575,
+    "seen": 1791188839.480456,
+    "ast_hash": "bb7031981d73a142cbe1f43391a14527",
+    "semantic_hash": "bb7031981d73a142cbe1f43391a14527"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/local/entity/UserInventory.kt": {
+    "mtime": 1783925857.816082,
+    "seen": 1791188839.4804573,
+    "ast_hash": "5204a59738c596d2d592297ad3e4232c",
+    "semantic_hash": "5204a59738c596d2d592297ad3e4232c"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/mapper/PokemonMapper.kt": {
+    "mtime": 1783596493.7883463,
+    "seen": 1791188839.4804583,
+    "ast_hash": "02cf3c7b0757450a9998837f3c1eed70",
+    "semantic_hash": "02cf3c7b0757450a9998837f3c1eed70"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/provider/RepositoryProvider.kt": {
+    "mtime": 1783767923.0001414,
+    "seen": 1791188839.4804592,
+    "ast_hash": "dc3be8117f7a9514255fe9a318175b41",
+    "semantic_hash": "dc3be8117f7a9514255fe9a318175b41"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/api/BackendApiService.kt": {
+    "mtime": 1783934216.7088504,
+    "seen": 1791188839.4804604,
+    "ast_hash": "3cf548baa3b56b5f02c889c4606b2f16",
+    "semantic_hash": "3cf548baa3b56b5f02c889c4606b2f16"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/api/BackendRetrofitClient.kt": {
+    "mtime": 1789357645.3980618,
+    "seen": 1791188839.4804614,
+    "ast_hash": "9efdb0e99c2797bb79ea6e07ac34ffbe",
+    "semantic_hash": "9efdb0e99c2797bb79ea6e07ac34ffbe"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/api/PokeApiService.kt": {
+    "mtime": 1783597537.903981,
+    "seen": 1791188839.480462,
+    "ast_hash": "7e23e45040e6f03a8610d8dd28cbf03f",
+    "semantic_hash": "7e23e45040e6f03a8610d8dd28cbf03f"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/api/RetrofitClient.kt": {
+    "mtime": 1783598107.5221581,
+    "seen": 1791188839.480463,
+    "ast_hash": "d06435757086ebb72464b6b2ce94ba0d",
+    "semantic_hash": "d06435757086ebb72464b6b2ce94ba0d"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/dao/ApiDAOs.kt": {
+    "mtime": 1789972902.99658,
+    "seen": 1791188839.4804642,
+    "ast_hash": "af5ac4fa2e1479525de96311ee9213cd",
+    "semantic_hash": "af5ac4fa2e1479525de96311ee9213cd"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/datasource/PokemonRemoteDataSource.kt": {
+    "mtime": 1783597932.414289,
+    "seen": 1791188839.4804652,
+    "ast_hash": "e073330408b1ecb37ee38eef32f5e4fe",
+    "semantic_hash": "e073330408b1ecb37ee38eef32f5e4fe"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/firebase/FirebaseAuthManager.kt": {
+    "mtime": 1789441764.8116603,
+    "seen": 1791188839.4804661,
+    "ast_hash": "e1bd9079b158df38750a067583128041",
+    "semantic_hash": "e1bd9079b158df38750a067583128041"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/firebase/FirebaseStorageManager.kt": {
+    "mtime": 1789441759.5121298,
+    "seen": 1791188839.480467,
+    "ast_hash": "02c7a439ceac7fb788da7ab60e7d1fe1",
+    "semantic_hash": "02c7a439ceac7fb788da7ab60e7d1fe1"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/firebase/FirestoreService.kt": {
+    "mtime": 1790058517.671713,
+    "seen": 1791188839.4804683,
+    "ast_hash": "cb3c5cb27b7cbabcec999feeb5d86335",
+    "semantic_hash": "cb3c5cb27b7cbabcec999feeb5d86335"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/remote/response/PokemonResponse.kt": {
+    "mtime": 1783596338.133354,
+    "seen": 1791188839.4804692,
+    "ast_hash": "217d8f1468f49ee6e516e0c55615efb9",
+    "semantic_hash": "217d8f1468f49ee6e516e0c55615efb9"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/repository/InventoryRepository.kt": {
+    "mtime": 1789972903.005589,
+    "seen": 1791188839.4804702,
+    "ast_hash": "5aba7b3519239d1e19df04846d1da9ea",
+    "semantic_hash": "5aba7b3519239d1e19df04846d1da9ea"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/repository/PokemonRepository.kt": {
+    "mtime": 1789972903.041724,
+    "seen": 1791188839.4804714,
+    "ast_hash": "4826c3c958a911ba9e3dca70323dd266",
+    "semantic_hash": "4826c3c958a911ba9e3dca70323dd266"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/repository/PostRepository.kt": {
+    "mtime": 1789972903.0457542,
+    "seen": 1791188839.4804723,
+    "ast_hash": "01fd5e0512f1e17017919b488fe2b6dc",
+    "semantic_hash": "01fd5e0512f1e17017919b488fe2b6dc"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/repository/UserRepository.kt": {
+    "mtime": 1789972903.047261,
+    "seen": 1791188839.480473,
+    "ast_hash": "d4fc12b4245b2ab738e391a4256ca732",
+    "semantic_hash": "d4fc12b4245b2ab738e391a4256ca732"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Data/worker/SyncWorker.kt": {
+    "mtime": 1789972903.0482621,
+    "seen": 1791188839.4804745,
+    "ast_hash": "ab40521dcba35cc79e9793dce9db60fc",
+    "semantic_hash": "ab40521dcba35cc79e9793dce9db60fc"
+  },
+  "app/src/main/java/com/example/proyek_mdp/ItemUserActivity.kt": {
+    "mtime": 1782881324.555472,
+    "seen": 1791188839.480476,
+    "ast_hash": "462b3881cced11107de92b8cfdac7e16",
+    "semantic_hash": "462b3881cced11107de92b8cfdac7e16"
+  },
+  "app/src/main/java/com/example/proyek_mdp/MainActivity.kt": {
+    "mtime": 1783577907.111005,
+    "seen": 1791188839.4804769,
+    "ast_hash": "16d6a0d546dbcfd59d061884c5c48a31",
+    "semantic_hash": "16d6a0d546dbcfd59d061884c5c48a31"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/HomeBannerAdapter.kt": {
+    "mtime": 1783347920.7076354,
+    "seen": 1791188839.480478,
+    "ast_hash": "6ef8895fd8f238f53ea072630c6e9350",
+    "semantic_hash": "6ef8895fd8f238f53ea072630c6e9350"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/HomeFeedAdapter.kt": {
+    "mtime": 1783595794.998752,
+    "seen": 1791188839.480479,
+    "ast_hash": "0e7836b4bfadeff4998e915019998dcc",
+    "semantic_hash": "0e7836b4bfadeff4998e915019998dcc"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/HomeInfoAdapter.kt": {
+    "mtime": 1783595794.9376965,
+    "seen": 1791188839.48048,
+    "ast_hash": "8a0aac221ea2d07c5a481ac6cf2e108e",
+    "semantic_hash": "8a0aac221ea2d07c5a481ac6cf2e108e"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/InventoryAdapter.kt": {
+    "mtime": 1783331412.5776453,
+    "seen": 1791188839.480481,
+    "ast_hash": "3cbd0d87915b905c161062ebba127e14",
+    "semantic_hash": "3cbd0d87915b905c161062ebba127e14"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/PokedexAdapter.kt": {
+    "mtime": 1783595856.4465888,
+    "seen": 1791188839.480482,
+    "ast_hash": "0fc1915b033ca070e944d9070c850b41",
+    "semantic_hash": "0fc1915b033ca070e944d9070c850b41"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/PokemonAdapter.kt": {
+    "mtime": 1783595665.198552,
+    "seen": 1791188839.480483,
+    "ast_hash": "da4f5bcb7b8d8938f117a2072d06c1cb",
+    "semantic_hash": "da4f5bcb7b8d8938f117a2072d06c1cb"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/PokemonSelectionAdapter.kt": {
+    "mtime": 1783595665.2796261,
+    "seen": 1791188839.4804838,
+    "ast_hash": "a8a2c5ef13fffc854e57e4800b2bd3b1",
+    "semantic_hash": "a8a2c5ef13fffc854e57e4800b2bd3b1"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Adapter/ShopAdapter.kt": {
+    "mtime": 1783595794.7084887,
+    "seen": 1791188839.4804852,
+    "ast_hash": "5aa4daab5e8c7be242acfaf28ed63c3d",
+    "semantic_hash": "5aa4daab5e8c7be242acfaf28ed63c3d"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Camera/CameraFragment.kt": {
+    "mtime": 1783933033.3038638,
+    "seen": 1791188839.480486,
+    "ast_hash": "b3dfcd824b9deaaec00bd04099a27d3d",
+    "semantic_hash": "b3dfcd824b9deaaec00bd04099a27d3d"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Collection/CollectionFragment.kt": {
+    "mtime": 1783933371.1251493,
+    "seen": 1791188839.4804869,
+    "ast_hash": "a825bafb42f36dfad5ba06dbaf83c40d",
+    "semantic_hash": "a825bafb42f36dfad5ba06dbaf83c40d"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Collection/PokedexDialogFragment.kt": {
+    "mtime": 1783599034.4967859,
+    "seen": 1791188839.4804878,
+    "ast_hash": "d00495249eb6481fb624484cf575cf4c",
+    "semantic_hash": "d00495249eb6481fb624484cf575cf4c"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Feed/FeedFragment.kt": {
+    "mtime": 1783606969.7325938,
+    "seen": 1791188839.480489,
+    "ast_hash": "449e4baa8bdfc5be9229dc35b78182eb",
+    "semantic_hash": "449e4baa8bdfc5be9229dc35b78182eb"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/History/HistoryActivity.kt": {
+    "mtime": 1783595617.3921528,
+    "seen": 1791188839.48049,
+    "ast_hash": "9f90f5e4850198435cda58b56a8eacda",
+    "semantic_hash": "9f90f5e4850198435cda58b56a8eacda"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/History/HistoryAdapter.kt": {
+    "mtime": 1783595880.5963092,
+    "seen": 1791188839.480491,
+    "ast_hash": "657f82c8979f838f811c2ffda2d12c35",
+    "semantic_hash": "657f82c8979f838f811c2ffda2d12c35"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Home/HomeFragment.kt": {
+    "mtime": 1783604843.5975485,
+    "seen": 1791188839.4804919,
+    "ast_hash": "47725c0145864745b16823772d1c9a01",
+    "semantic_hash": "47725c0145864745b16823772d1c9a01"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Inventory/InventoryFragment.kt": {
+    "mtime": 1783605449.5001137,
+    "seen": 1791188839.4804928,
+    "ast_hash": "c538cfb5bedbdaa55c9104f5df6b6417",
+    "semantic_hash": "c538cfb5bedbdaa55c9104f5df6b6417"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Inventory/InventoryItem.kt": {
+    "mtime": 1783331412.5806482,
+    "seen": 1791188839.4804938,
+    "ast_hash": "d0d06b5909e507ce5f7076e4bfd5d969",
+    "semantic_hash": "d0d06b5909e507ce5f7076e4bfd5d969"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Network/Midtrans/MidtransClient.kt": {
+    "mtime": 1783772049.0247478,
+    "seen": 1791188839.4804947,
+    "ast_hash": "c12a12f058a22e6b412771c07f7452a7",
+    "semantic_hash": "c12a12f058a22e6b412771c07f7452a7"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Network/Midtrans/MidtransConfig.kt": {
+    "mtime": 1783772049.0277503,
+    "seen": 1791188839.480496,
+    "ast_hash": "8c6d77b5e0df54ba01659232a5a7a939",
+    "semantic_hash": "8c6d77b5e0df54ba01659232a5a7a939"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Network/Midtrans/MidtransCoreService.kt": {
+    "mtime": 1783772049.0297518,
+    "seen": 1791188839.480497,
+    "ast_hash": "bc63a9cce92eb7ade65cbdb7ef6355d7",
+    "semantic_hash": "bc63a9cce92eb7ade65cbdb7ef6355d7"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Network/Midtrans/MidtransModels.kt": {
+    "mtime": 1783772049.030753,
+    "seen": 1791188839.4804978,
+    "ast_hash": "9cf2be917b60c9f2ca3d14e34cca30ef",
+    "semantic_hash": "9cf2be917b60c9f2ca3d14e34cca30ef"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Network/Midtrans/MidtransSnapService.kt": {
+    "mtime": 1783772049.0317535,
+    "seen": 1791188839.4804988,
+    "ast_hash": "83e0d6983d6b70ee150ffa1cfa726613",
+    "semantic_hash": "83e0d6983d6b70ee150ffa1cfa726613"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Payment/MidtransRepository.kt": {
+    "mtime": 1783772049.0347564,
+    "seen": 1791188839.4805,
+    "ast_hash": "af1f097b7346e5830688eb0fa6ac873e",
+    "semantic_hash": "af1f097b7346e5830688eb0fa6ac873e"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Payment/PaymentMethodActivity.kt": {
+    "mtime": 1783593952.0033119,
+    "seen": 1791188839.4805014,
+    "ast_hash": "c4e9afd26723d2e6da183228330ddb83",
+    "semantic_hash": "c4e9afd26723d2e6da183228330ddb83"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Payment/PaymentPageActivity.kt": {
+    "mtime": 1783772049.0367584,
+    "seen": 1791188839.4805028,
+    "ast_hash": "7d8a3b16bbcb9edc1685b78dc699f727",
+    "semantic_hash": "7d8a3b16bbcb9edc1685b78dc699f727"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Payment/PaymentResult.kt": {
+    "mtime": 1783772049.0377588,
+    "seen": 1791188839.480504,
+    "ast_hash": "14c3df1a60a4916ab37bd339a5e3bb5a",
+    "semantic_hash": "14c3df1a60a4916ab37bd339a5e3bb5a"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Payment/PaymentSuccessActivity.kt": {
+    "mtime": 1783772049.0397613,
+    "seen": 1791188839.480505,
+    "ast_hash": "88b3ecde6e3bb88dec59ee42df8f1e8d",
+    "semantic_hash": "88b3ecde6e3bb88dec59ee42df8f1e8d"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Payment/PaymentViewModel.kt": {
+    "mtime": 1783772049.040763,
+    "seen": 1791188839.4805064,
+    "ast_hash": "9b8af39fcbecc82bd850e39de6e8d8fa",
+    "semantic_hash": "9b8af39fcbecc82bd850e39de6e8d8fa"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Payment/PaymentWebViewActivity.kt": {
+    "mtime": 1783772049.0417633,
+    "seen": 1791188839.4805076,
+    "ast_hash": "19b8fd07c34d823fc1163e60941ccd2f",
+    "semantic_hash": "19b8fd07c34d823fc1163e60941ccd2f"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Profile/ProfileFragment.kt": {
+    "mtime": 1783595794.932691,
+    "seen": 1791188839.480509,
+    "ast_hash": "995c2620436fb9b674cde744fecec75a",
+    "semantic_hash": "995c2620436fb9b674cde744fecec75a"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Profile/SettingsDialogFragment.kt": {
+    "mtime": 1783595794.870636,
+    "seen": 1791188839.4805102,
+    "ast_hash": "f000ea1706f2165b619c244d73cec354",
+    "semantic_hash": "f000ea1706f2165b619c244d73cec354"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Shop/CoinNotEnoughDialog.kt": {
+    "mtime": 1783593952.009318,
+    "seen": 1791188839.4805112,
+    "ast_hash": "db1037bc7a2a9c4a513207c65bfa91bc",
+    "semantic_hash": "db1037bc7a2a9c4a513207c65bfa91bc"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/Shop/ShopDialogFragment.kt": {
+    "mtime": 1783934048.493735,
+    "seen": 1791188839.4805121,
+    "ast_hash": "81061b32477a1531126fa39fda87fe31",
+    "semantic_hash": "81061b32477a1531126fa39fda87fe31"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/TopUp/TopUpActivity.kt": {
+    "mtime": 1783772049.0427637,
+    "seen": 1791188839.4805133,
+    "ast_hash": "466bc540ebdec31e1e693f7c62f909fb",
+    "semantic_hash": "466bc540ebdec31e1e693f7c62f909fb"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/XR/CameraXrFragment.kt": {
+    "mtime": 1790058252.6163042,
+    "seen": 1791188839.4805143,
+    "ast_hash": "6ea50de42366e83d5da82a4cda94d037",
+    "semantic_hash": "6ea50de42366e83d5da82a4cda94d037"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/XR/PoseOverlayView.kt": {
+    "mtime": 1789694907.9967277,
+    "seen": 1791188839.4805152,
+    "ast_hash": "675d3270f2cca7d8abe582f1b0e05868",
+    "semantic_hash": "675d3270f2cca7d8abe582f1b0e05868"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/XR/PoseTracker.kt": {
+    "mtime": 1789696194.766298,
+    "seen": 1791188839.4805162,
+    "ast_hash": "530e9e68a590248e06a2c0f34ed467df",
+    "semantic_hash": "530e9e68a590248e06a2c0f34ed467df"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/XR/RigPoseController.kt": {
+    "mtime": 1790055088.0980098,
+    "seen": 1791188839.4805171,
+    "ast_hash": "7ca028291794a8e1442dc57dbbcd0d03",
+    "semantic_hash": "7ca028291794a8e1442dc57dbbcd0d03"
+  },
+  "app/src/main/java/com/example/proyek_mdp/UI/XR/YuvToBitmap.kt": {
+    "mtime": 1789696182.0985208,
+    "seen": 1791188839.480518,
+    "ast_hash": "738666dc230ab689b06ca4f03d18d70f",
+    "semantic_hash": "738666dc230ab689b06ca4f03d18d70f"
+  },
+  "app/src/main/java/com/example/proyek_mdp/Utils/NetworkUtils.kt": {
+    "mtime": 1783765683.1132035,
+    "seen": 1791188839.4805195,
+    "ast_hash": "40332827bfe1a6c6eaa58ce83f7c916e",
+    "semantic_hash": "40332827bfe1a6c6eaa58ce83f7c916e"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/AdminActivity.kt": {
+    "mtime": 1789972903.0552688,
+    "seen": 1791188839.4805207,
+    "ast_hash": "8677e7e74a71b62c998104db57c010cc",
+    "semantic_hash": "8677e7e74a71b62c998104db57c010cc"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/AdminProfileFragment.kt": {
+    "mtime": 1789972903.0562694,
+    "seen": 1791188839.4805238,
+    "ast_hash": "4dbd2743565ec7bb3dd44bcf8e71c36e",
+    "semantic_hash": "4dbd2743565ec7bb3dd44bcf8e71c36e"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/DashboardFragment.kt": {
+    "mtime": 1789972903.0602732,
+    "seen": 1791188839.480525,
+    "ast_hash": "27137dafc6ec4c4307336659b85860a7",
+    "semantic_hash": "27137dafc6ec4c4307336659b85860a7"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/ManagePostsFragment.kt": {
+    "mtime": 1789972903.061274,
+    "seen": 1791188839.4805264,
+    "ast_hash": "900987c78d12c62512c2bf5acb47dea0",
+    "semantic_hash": "900987c78d12c62512c2bf5acb47dea0"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/PokemonManagementFragment.kt": {
+    "mtime": 1789972903.063276,
+    "seen": 1791188839.4805274,
+    "ast_hash": "0d3f0c10cc39ead9228c7d6f4e9ad289",
+    "semantic_hash": "0d3f0c10cc39ead9228c7d6f4e9ad289"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/PostAdapter.kt": {
+    "mtime": 1789811712.992064,
+    "seen": 1791188839.4805286,
+    "ast_hash": "d652c476cd98bcac47d90be8330e1962",
+    "semantic_hash": "d652c476cd98bcac47d90be8330e1962"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/UploadPostFragment.kt": {
+    "mtime": 1789972903.080292,
+    "seen": 1791188839.48053,
+    "ast_hash": "a459a5ecb6da129fdf16e00c64df5c65",
+    "semantic_hash": "a459a5ecb6da129fdf16e00c64df5c65"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/UserAdapter.kt": {
+    "mtime": 1789972903.0812926,
+    "seen": 1791188839.480531,
+    "ast_hash": "acb7dd14fd00739b7fffcb9ca60b2a1c",
+    "semantic_hash": "acb7dd14fd00739b7fffcb9ca60b2a1c"
+  },
+  "app/src/main/java/com/example/proyek_mdp/admin/UserManagementFragment.kt": {
+    "mtime": 1789972903.083294,
+    "seen": 1791188839.480532,
+    "ast_hash": "9f1497999e9af6c7da5083cdedbf71f0",
+    "semantic_hash": "9f1497999e9af6c7da5083cdedbf71f0"
+  },
+  "app/src/main/java/com/example/proyek_mdp/auth/LoginActivity.kt": {
+    "mtime": 1789972903.0842948,
+    "seen": 1791188839.4805326,
+    "ast_hash": "04104480743a7969d18cd8022815d686",
+    "semantic_hash": "04104480743a7969d18cd8022815d686"
+  },
+  "app/src/main/java/com/example/proyek_mdp/auth/RegisterActivity.kt": {
+    "mtime": 1789442075.946081,
+    "seen": 1791188839.4805338,
+    "ast_hash": "6b3c8f01a24e9e3a6eaf090cdea84485",
+    "semantic_hash": "6b3c8f01a24e9e3a6eaf090cdea84485"
+  },
+  "app/src/main/java/com/example/proyek_mdp/auth/SessionManager.kt": {
+    "mtime": 1783050030.223605,
+    "seen": 1791188839.4805348,
+    "ast_hash": "945b05d2bf125fd5a74899001f7136e6",
+    "semantic_hash": "945b05d2bf125fd5a74899001f7136e6"
+  },
+  "app/src/main/java/com/example/proyek_mdp/auth/StarterSelectionActivity.kt": {
+    "mtime": 1783934970.1248736,
+    "seen": 1791188839.4805357,
+    "ast_hash": "ddb8e8ad76e1675e0ec1cc0d4b802959",
+    "semantic_hash": "ddb8e8ad76e1675e0ec1cc0d4b802959"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/CameraViewModel.kt": {
+    "mtime": 1783606956.6790988,
+    "seen": 1791188839.4805365,
+    "ast_hash": "103103b801b7521e9dac2c3598132bb9",
+    "semantic_hash": "103103b801b7521e9dac2c3598132bb9"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/CollectionViewModel.kt": {
+    "mtime": 1783933365.3974853,
+    "seen": 1791188839.4805377,
+    "ast_hash": "1ef8e15a645498c868e99065550da253",
+    "semantic_hash": "1ef8e15a645498c868e99065550da253"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/DashboardViewModel.kt": {
+    "mtime": 1783606912.0516055,
+    "seen": 1791188839.4805384,
+    "ast_hash": "f603ce0d7e8e211eab0ae7ff0592fef0",
+    "semantic_hash": "f603ce0d7e8e211eab0ae7ff0592fef0"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/FeedViewModel.kt": {
+    "mtime": 1783606905.6201808,
+    "seen": 1791188839.4805393,
+    "ast_hash": "7a600eab32572dd7deeec3e5370e9f87",
+    "semantic_hash": "7a600eab32572dd7deeec3e5370e9f87"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/HomeViewModel.kt": {
+    "mtime": 1783604533.935539,
+    "seen": 1791188839.4805405,
+    "ast_hash": "04d4e83c13784f9b85ff29e19147beef",
+    "semantic_hash": "04d4e83c13784f9b85ff29e19147beef"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/InventoryViewModel.kt": {
+    "mtime": 1783605045.5869052,
+    "seen": 1791188839.4805412,
+    "ast_hash": "a18833025dc68bcb3c2b00614211f5e2",
+    "semantic_hash": "a18833025dc68bcb3c2b00614211f5e2"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/LoginViewModel.kt": {
+    "mtime": 1783601187.0088198,
+    "seen": 1791188839.4805424,
+    "ast_hash": "13d52147dfae0a31e1bbd65dcd137548",
+    "semantic_hash": "13d52147dfae0a31e1bbd65dcd137548"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/ManagePostsViewModel.kt": {
+    "mtime": 1783606927.9346797,
+    "seen": 1791188839.4805434,
+    "ast_hash": "3ff4f6737c60c33d3025489fa76bf269",
+    "semantic_hash": "3ff4f6737c60c33d3025489fa76bf269"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/PokemonManagementViewModel.kt": {
+    "mtime": 1783606921.2272782,
+    "seen": 1791188839.4805443,
+    "ast_hash": "ab5d5cdda6819fa2781d1734bdb4a3dc",
+    "semantic_hash": "ab5d5cdda6819fa2781d1734bdb4a3dc"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/RegisterViewModel.kt": {
+    "mtime": 1783601215.2734835,
+    "seen": 1791188839.4805453,
+    "ast_hash": "ae07cf17a03b5cc491ca35f915c6ec0b",
+    "semantic_hash": "ae07cf17a03b5cc491ca35f915c6ec0b"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/UploadPostViewModel.kt": {
+    "mtime": 1783606933.7371728,
+    "seen": 1791188839.4805462,
+    "ast_hash": "d8c7585f5fde57727d58499aa6f61c46",
+    "semantic_hash": "d8c7585f5fde57727d58499aa6f61c46"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/UserManagementViewModel.kt": {
+    "mtime": 1789972903.087298,
+    "seen": 1791188839.4805474,
+    "ast_hash": "5094be7a094953e638377348127b22a1",
+    "semantic_hash": "5094be7a094953e638377348127b22a1"
+  },
+  "app/src/main/java/com/example/proyek_mdp/viewmodel/ViewModelFactory.kt": {
+    "mtime": 1789972903.0892994,
+    "seen": 1791188839.4805484,
+    "ast_hash": "e063dc81e5eaa6f9e941142afafecb82",
+    "semantic_hash": "e063dc81e5eaa6f9e941142afafecb82"
+  },
+  "app/src/test/java/com/example/proyek_mdp/ExampleUnitTest.kt": {
+    "mtime": 1779024484.0170813,
+    "seen": 1791188839.480549,
+    "ast_hash": "c1e8b647cc6cef3e995c033293197d2b",
+    "semantic_hash": "c1e8b647cc6cef3e995c033293197d2b"
+  },
+  "app/temp_sources/io/github/sceneview/ar/ARCore.kt": {
+    "mtime": 1789357645.407073,
+    "seen": 1791188839.48055,
+    "ast_hash": "8f4af5e0c349568a132477c6219598f7",
+    "semantic_hash": "8f4af5e0c349568a132477c6219598f7"
+  },
+  "app/temp_sources/io/github/sceneview/ar/ARScene.kt": {
+    "mtime": 1789357645.407073,
+    "seen": 1791188839.4805515,
+    "ast_hash": "50f4f3bcd6ab244c67a6f9723605c5ff",
+    "semantic_hash": "50f4f3bcd6ab244c67a6f9723605c5ff"
+  },
+  "app/temp_sources/io/github/sceneview/ar/ARSceneView.kt": {
+    "mtime": 1789357645.4080722,
+    "seen": 1791188839.4805522,
+    "ast_hash": "715ebb204af2495b8c465618c561becd",
+    "semantic_hash": "715ebb204af2495b8c465618c561becd"
+  },
+  "app/temp_sources/io/github/sceneview/ar/Deprecated.kt": {
+    "mtime": 1789357645.4090745,
+    "seen": 1791188839.4805532,
+    "ast_hash": "eb9d1ab60697415894295053bd65bc3e",
+    "semantic_hash": "eb9d1ab60697415894295053bd65bc3e"
+  },
+  "app/temp_sources/io/github/sceneview/ar/PlaneVisualizer.java": {
+    "mtime": 1789357645.410075,
+    "seen": 1791188839.4805543,
+    "ast_hash": "77776563f147f831663af3f4e3b573a0",
+    "semantic_hash": "77776563f147f831663af3f4e3b573a0"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/ArSession.kt": {
+    "mtime": 1789357645.4110773,
+    "seen": 1791188839.4805553,
+    "ast_hash": "b6e2ad5fa4df6e32fecdce30bd94b055",
+    "semantic_hash": "b6e2ad5fa4df6e32fecdce30bd94b055"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/AugmentedImage.kt": {
+    "mtime": 1789357645.412077,
+    "seen": 1791188839.4805562,
+    "ast_hash": "d0b1ca97231bdca9d67a66feb4f15e63",
+    "semantic_hash": "d0b1ca97231bdca9d67a66feb4f15e63"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/Camera.kt": {
+    "mtime": 1789357645.4130788,
+    "seen": 1791188839.4805572,
+    "ast_hash": "0f7e66c58357b09d826b3b985f0c289d",
+    "semantic_hash": "0f7e66c58357b09d826b3b985f0c289d"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/Earth.kt": {
+    "mtime": 1789357645.414079,
+    "seen": 1791188839.4805584,
+    "ast_hash": "4d87863fbc752d6188c98b178f39020c",
+    "semantic_hash": "4d87863fbc752d6188c98b178f39020c"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/Frame.kt": {
+    "mtime": 1789357645.415079,
+    "seen": 1791188839.4805593,
+    "ast_hash": "a650e4aa6b9f937f3f9866b8a11a0012",
+    "semantic_hash": "a650e4aa6b9f937f3f9866b8a11a0012"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/HitResult.kt": {
+    "mtime": 1789357645.41708,
+    "seen": 1791188839.4805603,
+    "ast_hash": "4fefc90df5a6d3e0ce86abde367a73d7",
+    "semantic_hash": "4fefc90df5a6d3e0ce86abde367a73d7"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/Pose.kt": {
+    "mtime": 1789357645.41708,
+    "seen": 1791188839.4805615,
+    "ast_hash": "527e5a03c813e21e1f490c6622affdab",
+    "semantic_hash": "527e5a03c813e21e1f490c6622affdab"
+  },
+  "app/temp_sources/io/github/sceneview/ar/arcore/Trackable.kt": {
+    "mtime": 1789357645.4180827,
+    "seen": 1791188839.4805622,
+    "ast_hash": "0333854292a9c4e97b3d918ed3771c01",
+    "semantic_hash": "0333854292a9c4e97b3d918ed3771c01"
+  },
+  "app/temp_sources/io/github/sceneview/ar/camera/ARCameraStream.kt": {
+    "mtime": 1789357645.420082,
+    "seen": 1791188839.4805632,
+    "ast_hash": "447a2d19eff9b65b48a2632f84eed8e3",
+    "semantic_hash": "447a2d19eff9b65b48a2632f84eed8e3"
+  },
+  "app/temp_sources/io/github/sceneview/ar/light/LightEstimator.kt": {
+    "mtime": 1789357645.421084,
+    "seen": 1791188839.480564,
+    "ast_hash": "fdf6cc7aa608847b3f6ba7488ec78eb7",
+    "semantic_hash": "fdf6cc7aa608847b3f6ba7488ec78eb7"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/ARCameraNode.kt": {
+    "mtime": 1789357645.4220855,
+    "seen": 1791188839.4805653,
+    "ast_hash": "d00cdd3b15df95cfc2012c725035acc9",
+    "semantic_hash": "d00cdd3b15df95cfc2012c725035acc9"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/AnchorNode.kt": {
+    "mtime": 1789357645.423086,
+    "seen": 1791188839.4805663,
+    "ast_hash": "303fcad8b6d6d830097f62852bffb119",
+    "semantic_hash": "303fcad8b6d6d830097f62852bffb119"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/AugmentedFaceNode.kt": {
+    "mtime": 1789357645.4240856,
+    "seen": 1791188839.4805672,
+    "ast_hash": "556c310b86f40509d6d90f4e93f012f4",
+    "semantic_hash": "556c310b86f40509d6d90f4e93f012f4"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/AugmentedImageNode.kt": {
+    "mtime": 1789357645.425088,
+    "seen": 1791188839.4805684,
+    "ast_hash": "f384a7358383790febeb9e6f45cebb47",
+    "semantic_hash": "f384a7358383790febeb9e6f45cebb47"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/CloudAnchorNode.kt": {
+    "mtime": 1789357645.426089,
+    "seen": 1791188839.4805691,
+    "ast_hash": "1469760ad4f371b656a6fdbd7cf91358",
+    "semantic_hash": "1469760ad4f371b656a6fdbd7cf91358"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/HitResultNode.kt": {
+    "mtime": 1789357645.458118,
+    "seen": 1791188839.48057,
+    "ast_hash": "7571b18710fee86505cc7c52e47eb2f8",
+    "semantic_hash": "7571b18710fee86505cc7c52e47eb2f8"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/PoseNode.kt": {
+    "mtime": 1789357645.459118,
+    "seen": 1791188839.4805708,
+    "ast_hash": "6889136b9c7de77b9adde0b75ff53bbd",
+    "semantic_hash": "6889136b9c7de77b9adde0b75ff53bbd"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/RooftopAnchorNode.kt": {
+    "mtime": 1789357645.460119,
+    "seen": 1791188839.480572,
+    "ast_hash": "467dda4f876c5bab82cd55b660378289",
+    "semantic_hash": "467dda4f876c5bab82cd55b660378289"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/StreetscapeGeometryNode.kt": {
+    "mtime": 1789357645.4611204,
+    "seen": 1791188839.4805732,
+    "ast_hash": "353bbf69fa920e2b40d9b1935453bb86",
+    "semantic_hash": "353bbf69fa920e2b40d9b1935453bb86"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/TerrainAnchorNode.kt": {
+    "mtime": 1789357645.4611204,
+    "seen": 1791188839.4805741,
+    "ast_hash": "cf137c74be50ba67b4ce3ce9671e03ad",
+    "semantic_hash": "cf137c74be50ba67b4ce3ce9671e03ad"
+  },
+  "app/temp_sources/io/github/sceneview/ar/node/TrackableNode.kt": {
+    "mtime": 1789357645.4621222,
+    "seen": 1791188839.480575,
+    "ast_hash": "e8d50484810eceb480512548f2f2fece",
+    "semantic_hash": "e8d50484810eceb480512548f2f2fece"
+  },
+  "app/temp_sources/io/github/sceneview/ar/scene/Anchor.kt": {
+    "mtime": 1789357645.463122,
+    "seen": 1791188839.480576,
+    "ast_hash": "8022c41ec71fab336114be6af3c9a004",
+    "semantic_hash": "8022c41ec71fab336114be6af3c9a004"
+  },
+  "app/temp_sources/io/github/sceneview/ar/scene/PlaneRenderer.kt": {
+    "mtime": 1789357645.4641218,
+    "seen": 1791188839.480577,
+    "ast_hash": "8f5e149ca4cd5ad6c0a8bc1ad6280592",
+    "semantic_hash": "8f5e149ca4cd5ad6c0a8bc1ad6280592"
+  },
+  "backend/db.js": {
+    "mtime": 1783872356.002854,
+    "seen": 1791188839.4805777,
+    "ast_hash": "feff0c5cbaaa942b126c84e37f971c40",
+    "semantic_hash": "feff0c5cbaaa942b126c84e37f971c40"
+  },
+  "backend/package.json": {
+    "mtime": 1783609233.7627378,
+    "seen": 1791188839.480579,
+    "ast_hash": "2f706fd9a1a9e6900d992daf96e350ad",
+    "semantic_hash": "2f706fd9a1a9e6900d992daf96e350ad"
+  },
+  "backend/schema.sql": {
+    "mtime": 1783613528.62299,
+    "seen": 1791188839.4805796,
+    "ast_hash": "311bc199fb8b3c04d1aae4b324837799",
+    "semantic_hash": "311bc199fb8b3c04d1aae4b324837799"
+  },
+  "backend/seeder.js": {
+    "mtime": 1783609423.7334485,
+    "seen": 1791188839.4805806,
+    "ast_hash": "6d436b98558d6cebeac3fba37388f26d",
+    "semantic_hash": "6d436b98558d6cebeac3fba37388f26d"
+  },
+  "backend/server.js": {
+    "mtime": 1783934204.347227,
+    "seen": 1791188839.4805815,
+    "ast_hash": "c7756126aaa3edee028282b401222046",
+    "semantic_hash": "c7756126aaa3edee028282b401222046"
+  },
+  "build.gradle.kts": {
+    "mtime": 1789441745.7669983,
+    "seen": 1791188839.4805827,
+    "ast_hash": "b76b428c5fa85e97c31d4226d4185dd8",
+    "semantic_hash": "b76b428c5fa85e97c31d4226d4185dd8"
+  },
+  "gradlew": {
+    "mtime": 1779024482.8470168,
+    "seen": 1791188839.4805837,
+    "ast_hash": "266606e78242737ef3da02a80ea0564d",
+    "semantic_hash": "266606e78242737ef3da02a80ea0564d"
+  },
+  "settings.gradle.kts": {
+    "mtime": 1779024483.5056157,
+    "seen": 1791188839.4805846,
+    "ast_hash": "14c531b15599e1df2d68e31aedd33a5c",
+    "semantic_hash": "14c531b15599e1df2d68e31aedd33a5c"
+  },
+  "webadmin/firebase.json": {
+    "mtime": 1789965053.134101,
+    "seen": 1791188839.4805858,
+    "ast_hash": "2ac3311ec77e4bdcbfd913cd82cc3d34",
+    "semantic_hash": "2ac3311ec77e4bdcbfd913cd82cc3d34"
+  },
+  "webadmin/public/app.js": {
+    "mtime": 1789964576.1151543,
+    "seen": 1791188839.4805868,
+    "ast_hash": "6fcff1d7238fd6b0c36fe24c8e0b4387",
+    "semantic_hash": "6fcff1d7238fd6b0c36fe24c8e0b4387"
+  },
+  "RANGKUMAN_BUKU_PROYEK_MAD.md": {
+    "mtime": 1790692731.734352,
+    "seen": 1791188839.4805875,
+    "ast_hash": "ecd8ec763e916c9792fffc0eba9478ca",
+    "semantic_hash": "ecd8ec763e916c9792fffc0eba9478ca"
+  },
+  "webadmin/public/index.html": {
+    "mtime": 1789811755.9997168,
+    "seen": 1791188839.4805884,
+    "ast_hash": "0d279b39fd62f2ddc72c46e5e6edb265",
+    "semantic_hash": "0d279b39fd62f2ddc72c46e5e6edb265"
+  },
+  "app/src/main/res/mipmap-hdpi/ic_launcher.webp": {
+    "mtime": 1779024483.2914214,
+    "seen": 1791188839.4805894,
+    "ast_hash": "39d9bb21eb48f128a71c3f01ad3cd427",
+    "semantic_hash": "39d9bb21eb48f128a71c3f01ad3cd427"
+  },
+  "app/src/main/res/mipmap-hdpi/ic_launcher_round.webp": {
+    "mtime": 1779024483.299428,
+    "seen": 1791188839.4805903,
+    "ast_hash": "70d6f58af3c76ee221c829b1ce9daa04",
+    "semantic_hash": "70d6f58af3c76ee221c829b1ce9daa04"
+  }
+}

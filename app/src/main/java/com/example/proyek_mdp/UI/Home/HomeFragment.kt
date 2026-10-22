@@ -200,11 +200,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         for ((button, category) in buttons) {
             val isSelected = category == currentCategory
             button.setBackgroundResource(
-                if (isSelected) R.drawable.bg_pill_navy else R.drawable.bg_pill_outline_navy
+                if (isSelected) R.drawable.bg_game_button_gold else R.drawable.bg_game_pill_outline
             )
             button.setTextColor(
-                if (isSelected) resources.getColor(android.R.color.white, null)
-                else android.graphics.Color.parseColor("#0F2A4D")
+                if (isSelected) resources.getColor(R.color.game_text_dark, null)
+                else resources.getColor(R.color.game_text_on_dark, null)
             )
         }
     }

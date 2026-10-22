@@ -12,22 +12,22 @@
 
     <!-- Foto bulat + badge lock -->
     <FrameLayout
-        android:layout_width="84dp"
-        android:layout_height="84dp">
+        android:layout_width="150dp"
+        android:layout_height="150dp">
 
         <ImageView
             android:id="@+id/imgPokemon"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:background="@drawable/bg_circle_light_gray"
-            android:padding="12dp"
-            android:scaleType="centerInside"
+            android:padding="14dp"
+            android:scaleType="fitCenter"
             android:src="@android:drawable/ic_menu_gallery" />
 
         <ImageView
             android:id="@+id/ivLock"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="top|end"
             android:background="@drawable/bg_badge_navy"
             android:contentDescription="Terkunci"

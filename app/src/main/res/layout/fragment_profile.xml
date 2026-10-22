@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@drawable/bg_game_screen">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,24 +16,28 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:background="@drawable/bg_game_topbar"
             android:paddingHorizontal="20dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="8dp">
+            android:paddingVertical="18dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Profile"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:textColor="#0F2A4D" />
+                android:textColor="@color/game_text_on_dark"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="2"
+                android:shadowRadius="5" />
 
             <TextView
                 android:id="@+id/btnSettings"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/bg_circle_light_gray"
+                android:background="@drawable/bg_game_button_ghost"
                 android:gravity="center"
                 android:text="⚙️"
                 android:textSize="18sp" />
@@ -42,11 +46,11 @@
         <!-- Avatar -->
         <ImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_circle_light_gray"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_game_panel"
             android:padding="16dp"
             android:scaleType="centerInside"
             android:src="@android:drawable/sym_def_app_icon" />
@@ -58,7 +62,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
             android:text="Trainer"
-            android:textColor="#111827"
+            android:textColor="@color/game_gold"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -68,18 +72,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="2dp"
-            android:textColor="#6B7280"
+            android:textColor="@color/game_text_on_dark"
             android:textSize="13sp"
             android:visibility="gone" />
 
-        <!-- Stats row gaya IG -->
+        <!-- Stats row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="20dp"
+            android:background="@drawable/bg_game_panel"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingVertical="14dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -93,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="#111827"
+                    android:textColor="@color/game_text_dark"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -101,14 +107,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pokemon"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/game_text_muted"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <View
-                android:layout_width="1dp"
+                android:layout_width="2dp"
                 android:layout_height="32dp"
-                android:background="#E5E7EB" />
+                android:background="@color/game_panel_alt" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -122,7 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="#111827"
+                    android:textColor="@color/game_text_dark"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -130,14 +136,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Koin"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/game_text_muted"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <View
-                android:layout_width="1dp"
+                android:layout_width="2dp"
                 android:layout_height="32dp"
-                android:background="#E5E7EB" />
+                android:background="@color/game_panel_alt" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -150,7 +156,7 @@
                     android:id="@+id/tvStatTeam"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_badge_navy"
+                    android:background="@drawable/bg_game_badge"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="3dp"
                     android:text="-"
@@ -163,7 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Tim"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/game_text_muted"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -180,9 +186,9 @@
 
             <TextView
                 android:id="@+id/btnInventory"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_circle_navy"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/bg_game_button_gold"
                 android:gravity="center"
                 android:text="🎒"
                 android:textSize="24sp" />
@@ -192,26 +198,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:text="Inventory"
-                android:textColor="#111827"
+                android:textColor="@color/game_text_on_dark"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
-
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginHorizontal="20dp"
-            android:background="#E5E7EB" />
 
         <!-- Statistik -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_card_border"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_game_panel"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -219,7 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Statistik Trainer"
-                android:textColor="#111827"
+                android:textColor="@color/game_text_dark"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -229,7 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="Battle Menang: 0"
-                android:textColor="#6B7280"
+                android:textColor="@color/game_text_muted"
                 android:textSize="13sp" />
 
             <TextView
@@ -238,7 +236,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:text="Jarak Tempuh: 0.0 km"
-                android:textColor="#6B7280"
+                android:textColor="@color/game_text_muted"
                 android:textSize="13sp" />
 
         </LinearLayout>

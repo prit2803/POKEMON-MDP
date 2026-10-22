@@ -542,6 +542,17 @@ app.get('/api/payments/:userId', async (req, res) => {
     }
 });
 
+// Get all payment history (untuk dashboard admin web)
+app.get('/api/payments', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM payment_history ORDER BY transactionDate DESC');
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ==========================================
 // 5. PURCHASE HISTORY ENDPOINTS
 // ==========================================

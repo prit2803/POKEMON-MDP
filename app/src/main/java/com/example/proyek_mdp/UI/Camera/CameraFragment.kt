@@ -480,7 +480,6 @@ class CameraFragment :
             latinRecognizer.process(image)
                 .addOnSuccessListener { visionText ->
                     val text = visionText.text
-                    Log.d("OCR_LATIN", text)
                     val pokemonName = extractPokemonName(text)
                     if (pokemonName.isNotEmpty()) {
                         isScanning = true
@@ -492,7 +491,6 @@ class CameraFragment :
                         )
                         japaneseRecognizer.process(image)
                             .addOnSuccessListener { jaText ->
-                                Log.d("OCR_JAPANESE", jaText.text)
                                 val jaName = extractPokemonName(jaText.text)
                                 if (jaName.isNotEmpty()) {
                                     isScanning = true
@@ -504,7 +502,6 @@ class CameraFragment :
                                     )
                                     chineseRecognizer.process(image)
                                         .addOnSuccessListener { zhText ->
-                                            Log.d("OCR_CHINESE", zhText.text)
                                             val zhName = extractPokemonName(zhText.text)
                                             if (zhName.isNotEmpty()) {
                                                 isScanning = true

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F7FA">
+    android:background="@drawable/bg_game_screen">
 
     <!-- Card Koin & Klaim Harian -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@android:color/white"
+        android:background="@drawable/bg_game_panel"
         android:padding="20dp"
         android:layout_margin="16dp"
-        android:elevation="4dp">
+        android:elevation="6dp">
 
         <TextView
             android:id="@+id/tvCoinBalance"
@@ -22,7 +23,7 @@
             android:text="Koin kamu: 0 🪙"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#212121" />
+            android:textColor="@color/game_text_dark" />
 
         <TextView
             android:id="@+id/tvStreakInfo"
@@ -31,14 +32,22 @@
             android:layout_marginTop="4dp"
             android:text="Streak login: 0 hari"
             android:textSize="14sp"
-            android:textColor="#757575" />
+            android:textColor="@color/game_text_muted" />
 
         <Button
             android:id="@+id/btnClaimDaily"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Klaim Reward Harian" />
+            android:layout_height="52dp"
+            android:layout_marginTop="14dp"
+            android:text="KLAIM REWARD HARIAN"
+            android:textAllCaps="false"
+            android:textColor="@color/game_text_dark"
+            android:textStyle="bold"
+            android:letterSpacing="0.04"
+            app:backgroundTint="@color/game_gold"
+            app:cornerRadius="26dp"
+            app:strokeColor="@color/game_border"
+            app:strokeWidth="3dp" />
 
     </LinearLayout>
 
@@ -50,7 +59,7 @@
         android:text="Makanan Pokemon"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#212121" />
+        android:textColor="@color/game_gold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFoodList"

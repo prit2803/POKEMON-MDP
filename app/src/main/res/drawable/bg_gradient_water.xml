@@ -5,4 +5,5 @@
         android:startColor="#4FC3F7"
         android:endColor="#01579B" />
     <corners android:radius="20dp" />
+    <stroke android:width="3dp" android:color="@color/game_border" />
 </shape>

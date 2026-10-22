@@ -133,7 +133,6 @@ class RigPoseController(
             }
         }
         val summary = "bones ok=$ok err=$err renderables=${modelNode.renderableNodes.size} $lastErr"
-        Log.d(TAG, summary)
         return summary
     }
 
@@ -191,7 +190,6 @@ class RigPoseController(
             }
         }
         val summary = "nodes ok=$ok err=$err joints=${joints.size} $lastErr"
-        Log.d(TAG, summary)
         return summary
     }
 

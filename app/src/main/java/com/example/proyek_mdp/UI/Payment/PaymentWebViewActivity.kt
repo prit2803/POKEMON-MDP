@@ -8,7 +8,6 @@
     import android.widget.ImageButton
     import android.widget.ProgressBar
     import android.widget.Toast
-    import android.util.Log
     import androidx.appcompat.app.AppCompatActivity
     import androidx.lifecycle.lifecycleScope
     import com.example.proyek_mdp.Data.local.database.AppDatabase
@@ -47,7 +46,6 @@
 
         private val pollingRunnable = object : Runnable {
             override fun run() {
-                Log.d("MIDTRANS","POLLING...")
                 checkTransactionStatus()
 
                 if (!alreadyHandled) {
@@ -99,7 +97,6 @@
         }
 
         private fun checkTransactionStatus() {
-            android.util.Log.d("MIDTRANS", "CHECK STATUS DIPANGGIL")
             lifecycleScope.launch {
                 try {
                     val response = MidtransClient.coreApi.getTransactionStatus(orderId)

@@ -115,7 +115,7 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:enabled="false"
-                android:text="−"
+                android:text="-"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
@@ -158,35 +158,40 @@
 
             <Button
                 android:id="@+id/btnRotate"
-                android:layout_width="44dp"
+                android:layout_width="wrap_content"
                 android:layout_height="44dp"
+                android:minWidth="0dp"
                 android:enabled="false"
-                android:text="↻"
-                android:textSize="22sp"
+                android:text="Putar"
+                android:textSize="12sp"
+                android:paddingHorizontal="12dp"
                 android:textColor="@android:color/white"
-                android:backgroundTint="#2196F3"
-                android:padding="0dp" />
+                android:backgroundTint="#2196F3" />
 
             <Button
                 android:id="@+id/btnRemove"
-                android:layout_width="44dp"
+                android:layout_width="wrap_content"
                 android:layout_height="44dp"
                 android:layout_marginStart="4dp"
+                android:minWidth="0dp"
                 android:enabled="false"
-                android:text="✕1"
-                android:textSize="16sp"
+                android:text="Hapus"
+                android:textSize="12sp"
+                android:paddingHorizontal="12dp"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
                 android:backgroundTint="#FF5722" />
 
             <Button
                 android:id="@+id/btnRemoveAll"
-                android:layout_width="44dp"
+                android:layout_width="wrap_content"
                 android:layout_height="44dp"
                 android:layout_marginStart="4dp"
+                android:minWidth="0dp"
                 android:enabled="false"
-                android:text="✕"
-                android:textSize="16sp"
+                android:text="Hapus Semua"
+                android:textSize="12sp"
+                android:paddingHorizontal="12dp"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
                 android:backgroundTint="#F44336" />
@@ -346,12 +351,17 @@
         android:layout_marginBottom="32dp"
         android:visibility="gone">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnCapture"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center"
             android:background="@drawable/shutter_button"
+            android:contentDescription="Capture"
+            android:padding="20dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_capture_photo"
+            android:tint="@null"
             android:elevation="4dp" />
     </FrameLayout>
 

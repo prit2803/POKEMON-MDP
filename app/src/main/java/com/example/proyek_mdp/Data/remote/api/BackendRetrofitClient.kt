@@ -1,28 +1,17 @@
 package com.example.proyek_mdp.Data.remote.api
 
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+import com.example.proyek_mdp.Data.remote.firebase.FirestoreApiService
 
+/**
+ * Titik akses data cloud aplikasi.
+ *
+ * Sebelumnya memakai Retrofit ke backend Node + MySQL/TiDB. Sekarang memakai
+ * Cloud Firestore ([FirestoreApiService]) supaya tidak perlu server SQL.
+ *
+ * Seluruh Repository & DAO tetap memakai [BackendApiService] yang sama,
+ * jadi tidak ada perubahan di sisi pemanggil.
+ */
 object BackendRetrofitClient {
 
-    // Gunakan IP WiFi PC (192.168.10.6) karena aplikasi dijalankan di HP fisik, bukan emulator
-//    http://192.168.10.6:3000/
-    private const val BASE_URL = "https://photograph-constitute-mounts-mouse.trycloudflare.com/"
-    //https://photograph-constitute-mounts-mouse.trycloudflare.com/
-    private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(3, TimeUnit.SECONDS)
-        .readTimeout(3, TimeUnit.SECONDS)
-        .writeTimeout(3, TimeUnit.SECONDS)
-        .build()    
-
-    val api: BackendApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(BackendApiService::class.java)
-    }
+    val api: BackendApiService by lazy { FirestoreApiService() }
 }

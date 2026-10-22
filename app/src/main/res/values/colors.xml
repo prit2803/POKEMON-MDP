@@ -2,4 +2,38 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- ===== Game palette ===== -->
+    <color name="game_bg_dark">#0E1730</color>
+    <color name="game_bg_mid">#16294C</color>
+    <color name="game_bg_top">#1E3A66</color>
+
+    <color name="game_navy">#123A6B</color>
+    <color name="game_navy_dark">#0A2445</color>
+    <color name="game_border">#16325C</color>
+
+    <color name="game_primary">#E53935</color>
+    <color name="game_primary_dark">#B71C1C</color>
+    <color name="game_primary_light">#FF6F60</color>
+
+    <color name="game_gold">#FFC107</color>
+    <color name="game_gold_dark">#F9A825</color>
+    <color name="game_gold_light">#FFE082</color>
+
+    <color name="game_grass">#4CAF50</color>
+    <color name="game_grass_dark">#2E7D32</color>
+    <color name="game_fire">#FF7043</color>
+    <color name="game_fire_dark">#D84315</color>
+    <color name="game_water">#29B6F6</color>
+    <color name="game_water_dark">#0277BD</color>
+
+    <color name="game_panel">#FFFDF5</color>
+    <color name="game_panel_alt">#F3EAD3</color>
+    <color name="game_text_dark">#102A43</color>
+    <color name="game_text_muted">#5B6B7F</color>
+    <color name="game_text_on_dark">#F4F8FF</color>
+
+    <color name="game_hp_green">#43A047</color>
+    <color name="game_hp_yellow">#FBC02D</color>
+    <color name="game_hp_red">#E53935</color>
 </resources>

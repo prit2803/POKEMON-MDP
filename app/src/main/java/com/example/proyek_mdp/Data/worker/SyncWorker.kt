@@ -16,7 +16,6 @@ class SyncWorker(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        Log.d("SyncWorker", "Starting synchronization background task...")
         try {
             val appDb = AppDatabase.getDatabase(applicationContext)
             val pokemonDb = PokemonDatabase.getDatabase(applicationContext)

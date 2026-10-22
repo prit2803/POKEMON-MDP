@@ -48,7 +48,13 @@ class PokedexAdapter(
         holder.tvName.text = species.name.replaceFirstChar { it.uppercase() }
 
         Glide.with(holder.itemView.context)
-            .load(species.imageUrl)
+            .load(officialArtworkUrl(species))
+            .centerInside()
+            .error(
+                Glide.with(holder.itemView.context)
+                    .load(species.imageUrl)
+                    .centerInside()
+            )
             .into(holder.ivImage)
 
         if (item.isCaught) {
@@ -88,6 +94,10 @@ class PokedexAdapter(
         items = newItems
         notifyDataSetChanged()
     }
+
+    /** Pakai official-artwork (resolusi besar) berdasarkan nomor spesies, fallback ke sprite. */
+    private fun officialArtworkUrl(species: PokedexSpecies): String =
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${species.speciesId}.png"
 
     private fun typeColor(type: String): Int {
         return when (type.lowercase()) {

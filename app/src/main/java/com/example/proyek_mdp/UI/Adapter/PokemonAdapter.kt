@@ -36,7 +36,13 @@ class PokemonAdapter(
         holder.tvPokemonHp.text = "HP: ${pokemon.hp}"
 
         Glide.with(holder.itemView.context)
-            .load(pokemon.imageUrl)
+            .load(officialArtworkUrl(pokemon.imageUrl))
+            .centerInside()
+            .error(
+                Glide.with(holder.itemView.context)
+                    .load(pokemon.imageUrl)
+                    .centerInside()
+            )
             .into(holder.imgPokemon)
 
         holder.ivLock.visibility = if (pokemon.isLocked == 1) View.VISIBLE else View.GONE
@@ -53,5 +59,12 @@ class PokemonAdapter(
     fun updateData(newList: List<PokemonEntity>) {
         this.pokemonList = newList
         notifyDataSetChanged()
+    }
+
+    /** Bangun URL official-artwork (resolusi besar) dari nomor spesies pada URL sprite. */
+    private fun officialArtworkUrl(url: String?): String? {
+        if (url.isNullOrEmpty()) return url
+        val id = Regex("(\\d+)\\.png").find(url)?.groupValues?.get(1) ?: return url
+        return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png"
     }
 }

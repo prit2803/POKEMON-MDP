@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@drawable/bg_game_screen">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,10 +15,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Pilih Starter Pokemon Kamu"
-            android:textColor="#0F2A4D"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:text="PILIH STARTER"
+            android:textColor="@color/game_gold"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="3"
+            android:shadowRadius="6" />
 
         <TextView
             android:layout_width="match_parent"
@@ -27,14 +32,15 @@
             android:layout_marginBottom="20dp"
             android:gravity="center"
             android:text="Pilihan ini cuma bisa dilakukan sekali, pilih dengan bijak!"
-            android:textColor="#6B7280"
+            android:textColor="@color/game_text_on_dark"
             android:textSize="13sp" />
 
         <!-- ===== Bulbasaur ===== -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="260dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:elevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,7 +48,6 @@
                 android:background="@drawable/bg_gradient_grass"
                 android:orientation="vertical">
 
-                <!-- Badge tipe -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,7 +57,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="#33FFFFFF"
+                        android:background="@drawable/bg_game_type_badge"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="3dp"
                         android:text="GRASS"
@@ -64,7 +69,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:background="#33FFFFFF"
+                        android:background="@drawable/bg_game_type_badge"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="3dp"
                         android:text="POISON"
@@ -73,7 +78,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Artwork gede -->
                 <ImageView
                     android:id="@+id/imgBulbasaur"
                     android:layout_width="match_parent"
@@ -82,12 +86,11 @@
                     android:scaleType="fitCenter" />
             </LinearLayout>
 
-            <!-- Overlay bawah: nama, HP, tombol -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="#99000000"
+                android:background="@drawable/bg_game_panel_dark"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="16dp">
@@ -118,14 +121,16 @@
                     android:id="@+id/btnPickBulbasaur"
                     android:layout_width="wrap_content"
                     android:layout_height="44dp"
-                    android:backgroundTint="@android:color/white"
                     android:paddingHorizontal="24dp"
-                    android:text="Pilih"
+                    android:text="PILIH"
                     android:textAllCaps="false"
-                    android:textColor="#0F2A4D"
+                    android:textColor="@color/game_text_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    app:cornerRadius="22dp" />
+                    app:backgroundTint="@color/game_gold"
+                    app:cornerRadius="22dp"
+                    app:strokeColor="@color/game_border"
+                    app:strokeWidth="2dp" />
             </LinearLayout>
         </FrameLayout>
 
@@ -133,7 +138,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="260dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:elevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -145,7 +151,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:background="#33FFFFFF"
+                    android:background="@drawable/bg_game_type_badge"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="3dp"
                     android:text="FIRE"
@@ -165,7 +171,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="#99000000"
+                android:background="@drawable/bg_game_panel_dark"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="16dp">
@@ -196,21 +202,24 @@
                     android:id="@+id/btnPickCharmander"
                     android:layout_width="wrap_content"
                     android:layout_height="44dp"
-                    android:backgroundTint="@android:color/white"
                     android:paddingHorizontal="24dp"
-                    android:text="Pilih"
+                    android:text="PILIH"
                     android:textAllCaps="false"
-                    android:textColor="#0F2A4D"
+                    android:textColor="@color/game_text_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    app:cornerRadius="22dp" />
+                    app:backgroundTint="@color/game_gold"
+                    app:cornerRadius="22dp"
+                    app:strokeColor="@color/game_border"
+                    app:strokeWidth="2dp" />
             </LinearLayout>
         </FrameLayout>
 
         <!-- ===== Squirtle ===== -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="260dp">
+            android:layout_height="260dp"
+            android:elevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -222,7 +231,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:background="#33FFFFFF"
+                    android:background="@drawable/bg_game_type_badge"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="3dp"
                     android:text="WATER"
@@ -242,7 +251,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="#99000000"
+                android:background="@drawable/bg_game_panel_dark"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="16dp">
@@ -273,14 +282,16 @@
                     android:id="@+id/btnPickSquirtle"
                     android:layout_width="wrap_content"
                     android:layout_height="44dp"
-                    android:backgroundTint="@android:color/white"
                     android:paddingHorizontal="24dp"
-                    android:text="Pilih"
+                    android:text="PILIH"
                     android:textAllCaps="false"
-                    android:textColor="#0F2A4D"
+                    android:textColor="@color/game_text_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    app:cornerRadius="22dp" />
+                    app:backgroundTint="@color/game_gold"
+                    app:cornerRadius="22dp"
+                    app:strokeColor="@color/game_border"
+                    app:strokeWidth="2dp" />
             </LinearLayout>
         </FrameLayout>
 

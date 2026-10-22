@@ -68,6 +68,10 @@ class PoseTracker(context: Context) {
 
         // Indeks landmark MediaPipe Pose (33 titik)
         const val NOSE = 0
+        const val LEFT_EYE = 2
+        const val RIGHT_EYE = 5
+        const val LEFT_EAR = 7
+        const val RIGHT_EAR = 8
         const val LEFT_SHOULDER = 11
         const val RIGHT_SHOULDER = 12
         const val LEFT_ELBOW = 13
@@ -76,5 +80,13 @@ class PoseTracker(context: Context) {
         const val RIGHT_WRIST = 16
         const val LEFT_HIP = 23
         const val RIGHT_HIP = 24
+        const val LEFT_KNEE = 25
+        const val RIGHT_KNEE = 26
+        const val LEFT_ANKLE = 27
+        const val RIGHT_ANKLE = 28
+        const val LEFT_HEEL = 29
+        const val RIGHT_HEEL = 30
+        const val LEFT_FOOT_INDEX = 31
+        const val RIGHT_FOOT_INDEX = 32
     }
 }

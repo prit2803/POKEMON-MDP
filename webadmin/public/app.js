@@ -3,7 +3,7 @@ import {
     getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-    getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc
+    getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // =========================================================
@@ -232,8 +232,9 @@ function renderPokemon() {
 $("pokemonSearch").oninput = renderPokemon;
 
 function givePokemonForm() {
+    // value = angka id user (bukan username), supaya userId tidak NaN.
     const userOptions = usersCache
-        .map((u) => `<option value="${escapeHtml(u._docId)}">${escapeHtml(u.username)}</option>`).join("");
+        .map((u) => `<option value="${escapeHtml(u.id ?? "")}">${escapeHtml(u.username)}</option>`).join("");
     return `
         <select id="g_user">${userOptions}</select>
         <input id="g_query" placeholder="Nama / nomor Pokemon (mis. charizard / 6)" />
@@ -293,6 +294,7 @@ document.body.addEventListener("click", async (e) => {
                 <input id="eu_email" placeholder="Email" value="${escapeHtml(u.email)}" />
                 <input id="eu_coins" type="number" placeholder="Coins" value="${u.coins ?? 0}" />
             `, async () => {
+                // Simpan pakai doc id = username (doc-nya memang keyed by username).
                 await updateDoc(doc(db, "users", docId), {
                     username: $("eu_username").value,
                     email: $("eu_email").value,
@@ -303,11 +305,12 @@ document.body.addEventListener("click", async (e) => {
                 loadAll();
             });
         } else if (act === "give") {
+            const u = usersCache.find((x) => x._docId === docId);
             openModal("Beri / Tambah Pokemon", givePokemonForm(), async () => {
                 await givePokemonTo($("g_user").value, $("g_query").value, $("g_level").value, $("g_hp").value);
             });
-            // pre-select user
-            $("g_user").value = docId;
+            // pre-select user (pakai numeric id)
+            if (u && u.id != null) $("g_user").value = String(u.id);
         } else if (act === "edit-post") {
             const p = postsCache.find((x) => x._docId === docId);
             openModal("Edit Post", postForm(p), async () => {
@@ -366,14 +369,21 @@ async function givePokemonTo(userId, queryRaw, level, hp) {
     const query = (queryRaw || "").trim().toLowerCase();
     if (!query) { toast("Isi nama/nomor Pokemon"); return; }
 
+    const uid = Number(userId);
+    if (!Number.isFinite(uid) || uid <= 0) {
+        toast("User ID tidak valid (user belum punya field 'id')");
+        return;
+    }
+
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`);
     if (!res.ok) { toast("Pokemon tidak ditemukan"); return; }
     const body = await res.json();
 
+    // id = timestamp (angka besar). Pakai doc id = id string.
     const id = Date.now();
     await setDoc(doc(db, "pokemon", String(id)), {
         id,
-        userId: Number(userId),
+        userId: uid,
         speciesId: body.id,
         name: body.name.charAt(0).toUpperCase() + body.name.slice(1),
         hp: Number(hp) || 50,

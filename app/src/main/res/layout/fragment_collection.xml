@@ -3,15 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@drawable/bg_game_screen">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@drawable/bg_game_topbar"
         android:paddingHorizontal="20dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="14dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -19,7 +20,11 @@
             android:text="Koleksi Pokemon"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#0F2A4D" />
+            android:textColor="@color/game_text_on_dark"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="5" />
 
         <TextView
             android:layout_width="match_parent"
@@ -28,7 +33,7 @@
             android:layout_marginBottom="14dp"
             android:text="Tap untuk beri makan, tap-tahan untuk kunci/hapus"
             android:textSize="12sp"
-            android:textColor="#6B7280" />
+            android:textColor="#B9C9E0" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,11 +46,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_pill_outline_navy"
+                android:background="@drawable/bg_game_button_gold"
                 android:gravity="center"
                 android:paddingVertical="10dp"
                 android:text="📖 Pokedex"
-                android:textColor="#0F2A4D"
+                android:textColor="@color/game_text_dark"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
@@ -54,11 +59,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_pill_outline_red"
+                android:background="@drawable/bg_game_button_primary"
                 android:gravity="center"
                 android:paddingVertical="10dp"
                 android:text="🗑️ Hapus Semua"
-                android:textColor="#E53935"
+                android:textColor="@color/white"
                 android:textSize="13sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -69,6 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginTop="10dp"
         android:paddingHorizontal="14dp"
         android:clipToPadding="false" />
 

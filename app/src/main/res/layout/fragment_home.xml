@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@drawable/bg_game_screen">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,14 +16,15 @@
             android:orientation="vertical"
             android:paddingBottom="96dp">
 
+            <!-- ===== Top bar ===== -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:background="@drawable/bg_game_topbar"
                 android:paddingHorizontal="20dp"
-                android:paddingTop="24dp"
-                android:paddingBottom="16dp">
+                android:paddingVertical="18dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -38,7 +39,11 @@
                         android:text="Halo, Trainer!"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="#0F2A4D" />
+                        android:textColor="@color/game_text_on_dark"
+                        android:shadowColor="#80000000"
+                        android:shadowDx="0"
+                        android:shadowDy="2"
+                        android:shadowRadius="5" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -46,14 +51,14 @@
                         android:layout_marginTop="2dp"
                         android:text="Selamat datang kembali"
                         android:textSize="13sp"
-                        android:textColor="#6B7280" />
+                        android:textColor="#B9C9E0" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btnCoin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_pill_outline_navy"
+                    android:background="@drawable/bg_game_pill_gold"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center_vertical"
@@ -73,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:text="0"
-                        android:textColor="#F9A825"
+                        android:textColor="@color/game_text_dark"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -82,7 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="+"
-                        android:textColor="#0F2A4D"
+                        android:textColor="@color/game_text_dark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -92,6 +97,7 @@
                 android:id="@+id/rvBanner"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                android:layout_marginTop="16dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:clipToPadding="false" />
@@ -113,7 +119,7 @@
                 android:layout_marginBottom="20dp"
                 android:text="Belum ada promo"
                 android:textSize="13sp"
-                android:textColor="#9CA3AF"
+                android:textColor="#A9BCD6"
                 android:visibility="gone" />
 
             <LinearLayout
@@ -124,7 +130,7 @@
                 android:layout_marginBottom="20dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="@drawable/bg_card_border"
+                android:background="@drawable/bg_game_panel"
                 android:padding="14dp"
                 android:visibility="gone">
 
@@ -146,7 +152,8 @@
                         android:layout_height="wrap_content"
                         android:text="STARTER KAMU"
                         android:textSize="10sp"
-                        android:textColor="#9CA3AF"
+                        android:textColor="@color/game_text_muted"
+                        android:textStyle="bold"
                         android:letterSpacing="0.05" />
 
                     <TextView
@@ -156,7 +163,7 @@
                         android:text="Bulbasaur"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="#111827" />
+                        android:textColor="@color/game_text_dark" />
 
                     <TextView
                         android:id="@+id/tvStarterLevel"
@@ -164,7 +171,7 @@
                         android:layout_height="wrap_content"
                         android:text="Level 1"
                         android:textSize="13sp"
-                        android:textColor="#0F2A4D" />
+                        android:textColor="@color/game_navy" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -176,7 +183,7 @@
                 android:text="Info &amp; Promo"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="#111827" />
+                android:textColor="@color/game_gold" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -195,11 +202,12 @@
                         android:id="@+id/btnFilterAll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_pill_navy"
+                        android:background="@drawable/bg_game_button_gold"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
                         android:text="Semua"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/game_text_dark"
+                        android:textStyle="bold"
                         android:textSize="12sp"
                         android:layout_marginEnd="8dp" />
 
@@ -207,11 +215,11 @@
                         android:id="@+id/btnFilterKartu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_pill_outline_navy"
+                        android:background="@drawable/bg_game_pill_outline"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
                         android:text="Kartu Pokemon"
-                        android:textColor="#0F2A4D"
+                        android:textColor="@color/game_text_on_dark"
                         android:textSize="12sp"
                         android:layout_marginEnd="8dp" />
 
@@ -219,11 +227,11 @@
                         android:id="@+id/btnFilterMakanan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_pill_outline_navy"
+                        android:background="@drawable/bg_game_pill_outline"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
                         android:text="Makanan"
-                        android:textColor="#0F2A4D"
+                        android:textColor="@color/game_text_on_dark"
                         android:textSize="12sp"
                         android:layout_marginEnd="8dp" />
 
@@ -231,11 +239,11 @@
                         android:id="@+id/btnFilterLainnya"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_pill_outline_navy"
+                        android:background="@drawable/bg_game_pill_outline"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
                         android:text="Lainnya"
-                        android:textColor="#0F2A4D"
+                        android:textColor="@color/game_text_on_dark"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -255,7 +263,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Belum ada info di kategori ini"
                 android:textSize="13sp"
-                android:textColor="#9CA3AF"
+                android:textColor="#A9BCD6"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -267,11 +275,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="24dp"
-        android:background="@drawable/bg_pill_navy"
+        android:background="@drawable/bg_game_button_gold"
         android:paddingHorizontal="20dp"
         android:paddingVertical="14dp"
-        android:text="🛒  Shop"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:text="🛒  SHOP"
+        android:textColor="@color/game_text_dark"
+        android:textStyle="bold"
+        android:letterSpacing="0.05" />
 
 </FrameLayout>
